@@ -65,7 +65,7 @@ header {
 }
 
 header.scrolled {
-    padding: 0.8rem 0;
+    padding: 0.5rem 0;
 }
 
 .header-content {
@@ -257,5 +257,23 @@ footer {
     .profile-pic {
         width: 150px;
         height: 150px;
+    }
+
+    /* Scrolled Header Styles for Mobile */
+    header.scrolled .header-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+    header.scrolled h1 {
+        font-size: 1.3rem;
+    }
+    header.scrolled p {
+        display: none; /* Hide affiliation on scroll */
+    }
+    header.scrolled #lang-toggle {
+        padding: 6px 10px;
+        font-size: 0.8rem;
     }
 }
