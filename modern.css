@@ -1,11 +1,27 @@
 body.dark-mode {
-    --primary-color: #8ab4f8; /* A lighter, vibrant blue for dark mode */
-    --background-color: #202124; /* Dark grey, almost black */
-    --card-background-color: #303134;
-    --text-color: #e8eaed; /* Light grey for text */
-    --heading-color: #ffffff;
-    --shadow-color: rgba(0, 0, 0, 0.3);
-    --border-color: #5f6368;
+    --primary-color: #64b5f6; /* A calm, professional blue */
+    --background-color: #121212; /* Material Design standard dark background */
+    --card-background-color: #1E1E1E; /* A slightly lighter grey for cards */
+    --text-color: rgba(255, 255, 255, 0.87); /* High-emphasis off-white */
+    --heading-color: #ffffff; /* Pure white for headings */
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --border-color: rgba(255, 255, 255, 0.12); /* Subtle white border */
+}
+
+body.dark-mode #research li {
+    background-color: rgba(100, 181, 246, 0.1); /* Faint blue background */
+    color: var(--primary-color);
+    border-left: 4px solid var(--primary-color);
+}
+
+body.dark-mode footer {
+    background-color: #121212; /* Match page background */
+    color: rgba(255, 255, 255, 0.6); /* Lower emphasis text for footer */
+    border-top: 1px solid var(--border-color);
+}
+
+body.dark-mode #publications hr {
+    background-color: var(--border-color);
 }
 
 :root {
@@ -45,6 +61,11 @@ header {
     top: 0;
     z-index: 1000;
     box-shadow: 0 2px 4px var(--shadow-color);
+    transition: padding var(--transition-speed) ease;
+}
+
+header.scrolled {
+    padding: 0.8rem 0;
 }
 
 .header-content {

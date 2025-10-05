@@ -1,7 +1,41 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const langToggle = document.getElementById('lang-toggle');
+    const themeToggle = document.getElementById('theme-toggle');
+    const header = document.querySelector('header');
     const userLang = navigator.language || navigator.userLanguage;
+
+    // --- Theme (Dark Mode) ---
+    const sunIcon = '<i class="fa-solid fa-sun"></i>';
+    const moonIcon = '<i class="fa-solid fa-moon"></i>';
+
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeToggle.innerHTML = sunIcon;
+        } else {
+            document.body.classList.remove('dark-mode');
+            themeToggle.innerHTML = moonIcon;
+        }
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+        applyTheme(currentTheme);
+        localStorage.setItem('theme', currentTheme);
+    }
+
+    themeToggle.addEventListener('click', toggleTheme);
+
+    // --- Header Scroll ---
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
 
     const translations = {
         'ja': {
@@ -75,7 +109,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     langToggle.addEventListener('click', toggleLanguage);
 
-    // Set initial language based on browser settings
+    // --- Initial Setup ---
+    // 1. Set theme from localStorage or system preference
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    applyTheme(initialTheme);
+
+    // 2. Set initial language based on browser settings
     const initialLang = userLang.startsWith('ja') ? 'ja' : 'en';
     setLanguage(initialLang);
 });
