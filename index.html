@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang-key="title">Keitaro Ueki (植木敬太郎) - 早稲田大学基幹理工学部</title>
+    <title data-lang-key="title">Keitaro Ueki - 早稲田大学基幹理工学部</title>
     <link rel="stylesheet" href="modern.css">
     <!-- Google Fonts (Poppins) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,30 +21,35 @@
                     <h1 data-lang-key="name">Keitaro Ueki</h1>
                     <p data-lang-key="affiliation">早稲田大学 基幹理工学部 情報通信学科 学部2年</p>
                 </div>
-                <button id="lang-toggle" data-current-lang="ja">English</button>
-                <button id="theme-toggle"><i class="fa-solid fa-moon"></i></button>
+                <div class="header-buttons">
+                    <button id="lang-toggle" data-current-lang="ja">English</button>
+                    <a href="https://www.nlp-waseda.jp/" target="_blank" id="lab-link" class="header-icon-btn" aria-label="研究室のウェブサイトへ"><i class="fa-solid fa-flask"></i></a>
+                    <button id="theme-toggle" class="header-icon-btn"><i class="fa-solid fa-moon"></i></button>
+                </div>
             </div>
         </div>
     </header>
 
     <main class="container">
         <!-- 1. 自己紹介セクション -->
-        <section id="about" class="card">
+        <section id="about" class="card reveal-on-scroll">
             <h2 data-lang-key="about-title"><i class="fa-solid fa-user"></i> About Me</h2>
             <div class="about-content">
                 <img src="images/自己紹介.jpg" alt="プロフィール写真" class="profile-pic">
                 <p data-lang-key="about-text">
-                    2005年生まれ。<br>
-                    桐蔭学園中等教育学校を卒業後、早稲田大学基幹理工学部情報通信学科に進学。<br>
-                    現在は学部2年生で、自然言語処理や音響信号処理に関心を持っています。<br>
-                    趣味は映画鑑賞、音楽鑑賞、プログラミング、そしてドラム演奏。<br>
-                    また、大学の人力飛行機を製作するプロジェクトに参加しており、主翼や尾翼の製作に日々取り組んでいます。
+                    ・2005年生まれ<br>
+                    ・2018年4月桐蔭学園中等教育学校入学<br>
+                    ・2023年3月桐蔭学園中等教育学校卒業<br>
+                    ・2024年4月早稲田大学基幹理工学部学系2入学<br>
+                    ・2025年4月早稲田大学基幹理工学部情報通信学科進学<br>
+                    <br>
+                    趣味は映画鑑賞・ドラム演奏です。人力飛行機を製作するプロジェクトに所属しており、日々主翼や尾翼を製作しています。
                 </p>
             </div>
         </section>
 
         <!-- 2. 研究分野セクション -->
-        <section id="research" class="card">
+        <section id="research" class="card reveal-on-scroll">
             <h2 data-lang-key="research-title"><i class="fa-solid fa-flask"></i> Research Interests</h2>
             <ul>
                 <li data-lang-key="research-item-1">音響信号処理</li>
@@ -55,7 +60,7 @@
         </section>
 
         <!-- 3. 研究業績セクション -->
-        <section id="publications" class="card">
+        <section id="publications" class="card reveal-on-scroll">
             <h2 data-lang-key="publications-title"><i class="fa-solid fa-book-open"></i> Publications & Projects</h2>
             <article>
                 <h3 data-lang-key="project-1-title">プロジェクト名 or 論文タイトル 1</h3>
@@ -71,7 +76,7 @@
         </section>
 
         <!-- 4. 連絡先セクション -->
-        <section id="contact" class="card">
+        <section id="contact" class="card reveal-on-scroll">
             <h2 data-lang-key="contact-title"><i class="fa-solid fa-envelope"></i> Contact</h2>
             <p data-lang-key="contact-text">ご意見、ご質問などありましたら、お気軽にご連絡ください。</p>
             <div class="contact-links">
@@ -85,9 +90,10 @@
 
     <footer>
         <div class="container">
-            <p data-lang-key="footer-text">&copy; 2025 Keitaro Ueki (植木敬太郎). All Rights Reserved.</p>
+            <p data-lang-key="footer-text">&copy; 2025 Keitaro Ueki. All Rights Reserved.</p>
         </div>
     </footer>
+    <a href="#" id="back-to-top" class="reveal-on-scroll"><i class="fa-solid fa-arrow-up"></i></a>
     <script src="script.js"></script>
 </body>
 </html>

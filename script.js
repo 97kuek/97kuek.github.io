@@ -28,27 +28,61 @@ document.addEventListener('DOMContentLoaded', () => {
     themeToggle.addEventListener('click', toggleTheme);
 
     // --- Header Scroll ---
+    const backToTopButton = document.getElementById('back-to-top');
+
     window.addEventListener('scroll', () => {
+        // Header scroll effect
         if (window.scrollY > 50) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
         }
+
+        // Back to top button visibility
+        if (window.scrollY > 300) {
+            backToTopButton.classList.add('visible');
+        } else {
+            backToTopButton.classList.remove('visible');
+        }
+    });
+
+    // --- Back to Top Click ---
+    backToTopButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // --- Scroll Animation ---
+    const revealElements = document.querySelectorAll('.reveal-on-scroll');
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    revealElements.forEach(element => {
+        revealObserver.observe(element);
     });
 
 
     const translations = {
         'ja': {
-            'title': 'Keitaro Ueki (植木敬太郎) - 早稲田大学',
-            'name': 'Keitaro Ueki (植木敬太郎)',
+            'title': 'Keitaro Ueki - 早稲田大学基幹理工学部',
+            'name': 'Keitaro Ueki',
             'affiliation': '早稲田大学 基幹理工学部 情報通信学科 学部2年',
             'about-title': 'About Me',
-            'about-text': '2005年生まれ。<br>桐蔭学園中等教育学校を卒業後、早稲田大学基幹理工学部情報通信学科に進学。<br>現在は学部2年生で、自然言語処理や音響信号処理に関心を持っています。<br>趣味は映画鑑賞、音楽鑑賞、プログラミング、そしてドラム演奏。<br>また、大学の人力飛行機を製作するプロジェクトに参加しており、主翼や尾翼の製作に日々取り組んでいます。',
+            'about-text': '・2005年生まれ<br>・2018年4月桐蔭学園中等教育学校入学<br>・2023年3月桐蔭学園中等教育学校卒業<br>・2024年4月早稲田大学基幹理工学部学系2入学<br>・2025年4月早稲田大学基幹理工学部情報通信学科進学<br><br>趣味は映画鑑賞・ドラム演奏です。人力飛行機を製作するプロジェクトに所属しており、日々主翼や尾翼を製作しています。',
             'research-title': 'Research Interests',
             'research-item-1': '音響信号処理',
             'research-item-2': '自然言語処理',
-            'research-item-3': '遺伝的アルゴリズムによる最適化',
-            'research-item-4': 'その他',
+            'research-item-3': '生命情報科学',
+            'research-item-4': '遺伝的アルゴリズムによる最適化',
             'publications-title': 'Publications & Projects',
             'project-1-title': 'プロジェクト名 or 論文タイトル 1',
             'project-1-meta': '<strong>[学会名 or 雑誌名], 2024.</strong>',
@@ -58,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'project-2-desc': '現在進行中のプロジェクトや研究について記述します。',
             'contact-title': 'Contact',
             'contact-text': 'ご意見、ご質問などありましたら、お気軽にご連絡ください。',
-            'footer-text': '&copy; 2025 Keitaro Ueki (植木敬太郎). All Rights Reserved.',
+            'footer-text': '&copy; 2025 Keitaro Ueki. All Rights Reserved.',
             'lang-btn': 'English'
         },
         'en': {
@@ -70,8 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'research-title': 'Research Interests',
             'research-item-1': 'Acoustic Signal Processing',
             'research-item-2': 'Natural Language Processing',
-            'research-item-3': 'Optimization with Genetic Algorithms',
-            'research-item-4': 'Others',
+            'research-item-3': 'Bioinformatics',
+            'research-item-4': 'Optimization with Genetic Algorithms',
             'publications-title': 'Publications & Projects',
             'project-1-title': 'Project or Publication Title 1',
             'project-1-meta': '<strong>[Conference or Journal Name], 2024.</strong>',

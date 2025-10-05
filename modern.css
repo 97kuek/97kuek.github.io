@@ -1,5 +1,5 @@
 body.dark-mode {
-    --primary-color: #64b5f6; /* A calm, professional blue */
+    --primary-color: #1a73e8; /* A calm, professional blue */
     --background-color: #121212; /* Material Design standard dark background */
     --card-background-color: #1E1E1E; /* A slightly lighter grey for cards */
     --text-color: rgba(255, 255, 255, 0.87); /* High-emphasis off-white */
@@ -61,17 +61,24 @@ header {
     top: 0;
     z-index: 1000;
     box-shadow: 0 2px 4px var(--shadow-color);
-    transition: padding var(--transition-speed) ease;
+    transition: padding var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
 
 header.scrolled {
     padding: 0.5rem 0;
+    box-shadow: 0 4px 15px var(--shadow-color);
 }
 
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Adjust gap between buttons */
 }
 
 header h1 {
@@ -104,17 +111,33 @@ header p {
     background-color: #1558b8; /* Darker blue */
 }
 
-#theme-toggle {
+.header-icon-btn {
     background: none;
     border: none;
     color: var(--text-color);
     font-size: 1.2rem;
     cursor: pointer;
-    transition: color var(--transition-speed) ease;
+    padding: 10px;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--transition-speed) ease, background-color var(--transition-speed) ease;
 }
 
-#theme-toggle:hover {
+.header-icon-btn:hover {
     color: var(--primary-color);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .header-icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#theme-toggle {
+    /* Now uses .header-icon-btn styles */
 }
 
 /* --- Main Content & Cards --- */
@@ -168,6 +191,12 @@ main {
     object-fit: cover;
     border: 5px solid var(--primary-color);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.profile-pic:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 /* Research Section */
@@ -186,6 +215,12 @@ main {
     border-radius: 10px;
     font-weight: 500;
     border-left: 4px solid var(--primary-color);
+    transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+#research li:hover {
+    background-color: #d0e3ff; /* Slightly darker blue */
+    transform: translateX(5px);
 }
 
 /* Publications Section */
@@ -231,7 +266,12 @@ main {
 .contact-links a:hover {
     background-color: var(--primary-color);
     color: white;
-    transform: translateY(-3px);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact-links a:hover i {
+    transform: rotate(-5deg) scale(1.1);
 }
 
 /* --- Footer --- */
@@ -242,6 +282,43 @@ footer {
     color: #6c757d;
     font-size: 0.9rem;
     border-top: 1px solid #ddd;
+}
+
+/* --- Back to Top Button --- */
+#back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s, background-color 0.3s;
+    z-index: 1001;
+}
+
+#back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#back-to-top:hover {
+    background-color: #1558b8; /* Darker blue */
+}
+
+body.dark-mode #back-to-top:hover {
+    background-color: #0d6efd;
 }
 
 /* --- Responsive Design --- */
