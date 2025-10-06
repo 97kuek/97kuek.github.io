@@ -93,7 +93,22 @@ document.addEventListener('DOMContentLoaded', () => {
             'contact-title': 'Contact',
             'contact-text': 'ご意見、ご質問などありましたら、お気軽にご連絡ください。',
             'footer-text': '&copy; 2025 Keitaro Ueki. All Rights Reserved.',
-            'lang-btn': 'English'
+            'lang-btn': 'English',
+            'nav-home': 'Home',
+            'nav-about': 'About',
+            'nav-research': 'Research',
+            'nav-publications': 'Publications',
+            'nav-blog': 'Blog',
+            'nav-contact': 'Contact',
+            'welcome-title': 'Welcome!',
+            'welcome-text': 'ウェブサイトへようこそ。上のナビゲーションバーから各ページをご覧ください。',
+            'blog-title': 'Blog',
+            'blog-post-1-title': '新しいウェブサイト',
+            'blog-post-1-meta': '2025年10月7日',
+            'blog-post-1-body': '新しいウェブサイトへようこそ！このブログでは、私の研究、プロジェクト、そして興味のあることについて書いていこうと思います。',
+            'blog-post-2-title': '最近の活動',
+            'blog-post-2-meta': '2025年10月6日',
+            'blog-post-2-body': '最近は、人力飛行機の製作に多くの時間を費やしています。主翼の設計と製作は非常に挑戦的ですが、とてもやりがいがあります。',
         },
         'en': {
             'title': 'Keitaro Ueki - Waseda University',
@@ -116,7 +131,22 @@ document.addEventListener('DOMContentLoaded', () => {
             'contact-title': 'Contact',
             'contact-text': 'Please feel free to contact me with any comments or questions.',
             'footer-text': '&copy; 2025 Keitaro Ueki. All Rights Reserved.',
-            'lang-btn': '日本語'
+            'lang-btn': '日本語',
+            'nav-home': 'Home',
+            'nav-about': 'About',
+            'nav-research': 'Research',
+            'nav-publications': 'Publications',
+            'nav-blog': 'Blog',
+            'nav-contact': 'Contact',
+            'welcome-title': 'Welcome!',
+            'welcome-text': 'Welcome to my website. Please use the navigation bar above to visit each page.',
+            'blog-title': 'Blog',
+            'blog-post-1-title': 'New Website',
+            'blog-post-1-meta': 'October 7, 2025',
+            'blog-post-1-body': 'Welcome to my new website! In this blog, I will write about my research, projects, and interests.',
+            'blog-post-2-title': 'Recent Activities',
+            'blog-post-2-meta': 'October 6, 2025',
+            'blog-post-2-body': 'Recently, I have been spending a lot of time building a human-powered aircraft. Designing and building the main wing is very challenging, but also very rewarding.',
         }
     };
 
@@ -153,4 +183,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Set initial language based on browser settings
     const initialLang = userLang.startsWith('ja') ? 'ja' : 'en';
     setLanguage(initialLang);
+
+    // 3. Set active navigation link
+    const currentPage = window.location.pathname.split('/').pop();
+    const navLinks = document.querySelectorAll('nav a');
+    navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+            link.classList.add('active');
+        }
+    });
 });
