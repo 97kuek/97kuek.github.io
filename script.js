@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'name': 'Keitaro Ueki',
             'affiliation': 'B2, Dept. of Communications and Computer Engineering, Waseda University',
             'about-title': 'About Me',
-            'about-text': 'Born in 2005.<br>After graduating from Toin Gakuen Secondary Education School, I entered the School of Fundamental Science and Engineering at Waseda University.<br>I am currently a sophomore with an interest in natural language processing and acoustic signal processing.<br>My hobbies include watching movies, listening to music, programming, and playing the drums.<br>I am also participating in the university\'s human-powered aircraft project, working daily on the construction of the main and tail wings.',
+            'about-text': '- Born in 2005<br>- April 2018: Entered Toin Gakuen Secondary Education School<br>- March 2023: Graduated from Toin Gakuen Secondary Education School<br>- April 2024: Entered Department II, School of Fundamental Science and Engineering, Waseda University<br>- April 2025: Scheduled to advance to the Department of Communications and Computer Engineering, School of Fundamental Science and Engineering, Waseda University<br><br>My hobbies are watching movies and playing the drums. I belong to a project that builds human-powered aircraft, and I am involved in the daily production of the main and tail wings.',
             'research-title': 'Research Interests',
             'research-item-1': 'Acoustic Signal Processing',
             'research-item-2': 'Natural Language Processing',
