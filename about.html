@@ -11,49 +11,89 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div>
+
+    <header id="main-header">
+        <div class="header-container">
+            <button id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+            <div class="header-title">
+                <a href="index.html" class="title-link">
                     <h1 data-lang-key="name">Keitaro Ueki</h1>
-                    <p data-lang-key="affiliation">早稲田大学 基幹理工学部 情報通信学科 学部2年</p>
-                </div>
-                <div class="header-buttons">
-                    <button id="lang-toggle" data-current-lang="ja">English</button>
-                    <a href="https://www.nlp-waseda.jp/" target="_blank" id="lab-link" class="header-icon-btn" aria-label="研究室のウェブサイトへ"><i class="fa-solid fa-flask"></i></a>
-                    <button id="theme-toggle" class="header-icon-btn"><i class="fa-solid fa-moon"></i></button>
-                </div>
+                    <p data-lang-key="affiliation">早稲田大学 基幹理工学部</p>
+                </a>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="index.html" data-lang-key="nav-home">Home</a></li>
-                    <li><a href="about.html" data-lang-key="nav-about">About</a></li>
-                    <li><a href="research.html" data-lang-key="nav-research">Research</a></li>
-                    <li><a href="publications.html" data-lang-key="nav-publications">Publications</a></li>
-                    <li><a href="blog.html" data-lang-key="nav-blog">Blog</a></li>
-                    <li><a href="contact.html" data-lang-key="nav-contact">Contact</a></li>
-                </ul>
-            </nav>
+            <div class="header-controls">
+                <button id="search-toggle"><i class="fa-solid fa-search"></i></button>
+                <button id="lang-toggle" data-current-lang="ja">EN/JA</button>
+                <button id="theme-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
         </div>
     </header>
 
-    <main class="container">
-        <section id="about" class="card reveal-on-scroll">
-            <h2 data-lang-key="about-title"><i class="fa-solid fa-user"></i> About Me</h2>
-            <div class="about-content">
-                <img src="images/自己紹介.jpg" alt="プロフィール写真" class="profile-pic">
-                <p data-lang-key="about-text">
-                    ・2005年生まれ<br>
-                    ・2018年4月桐蔭学園中等教育学校入学<br>
-                    ・2023年3月桐蔭学園中等教育学校卒業<br>
-                    ・2024年4月早稲田大学基幹理工学部学系2入学<br>
-                    ・2025年4月早稲田大学基幹理工学部情報通信学科進学<br>
-                    <br>
-                    趣味は映画鑑賞・ドラム演奏です。人力飛行機を製作するプロジェクトに所属しており、日々主翼や尾翼を製作しています。
-                </p>
-            </div>
-        </section>
-    </main>
+    <div id="search-overlay">
+        <input type="search" id="search-input" placeholder="Search...">
+        <div id="search-results"></div>
+    </div>
+
+    <aside id="sidebar">
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html" data-lang-key="nav-home"><i class="fa-solid fa-house fa-fw"></i> <span class="nav-text">Home</span></a></li>
+                <li><a href="about.html" data-lang-key="nav-about"><i class="fa-solid fa-user fa-fw"></i> <span class="nav-text">About</span></a></li>
+                <li><a href="research.html" data-lang-key="nav-research"><i class="fa-solid fa-flask fa-fw"></i> <span class="nav-text">Research</span></a></li>
+                <li><a href="publications.html" data-lang-key="nav-publications"><i class="fa-solid fa-book-open fa-fw"></i> <span class="nav-text">Publications</span></a></li>
+                <li><a href="blog.html" data-lang-key="nav-blog"><i class="fa-solid fa-pen-nib fa-fw"></i> <span class="nav-text">Blog</span></a></li>
+                <li><a href="contact.html" data-lang-key="nav-contact"><i class="fa-solid fa-envelope fa-fw"></i> <span class="nav-text">Contact</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <div id="content-wrapper">
+        <main class="container">
+            <section id="about" class="card reveal-on-scroll">
+                <h2 data-lang-key="about-title"><i class="fa-solid fa-user"></i> About Me</h2>
+                <div class="about-content">
+                    <img src="images/自己紹介.jpg" alt="プロフィール写真" class="profile-pic">
+                    <div>
+                        <h3 data-lang-key="education-title">学歴</h3>
+                        <table class="education-table">
+                            <thead>
+                                <tr>
+                                    <th data-lang-key="table-date">Date</th>
+                                    <th data-lang-key="table-event">Event</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Date">2005年</td>
+                                    <td data-label="Event" data-lang-key="birth-event">誕生</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Date">2018年4月</td>
+                                    <td data-label="Event" data-lang-key="school-start-event">桐蔭学園中等教育学校 入学</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Date">2023年3月</td>
+                                    <td data-label="Event" data-lang-key="school-end-event">桐蔭学園中等教育学校 卒業</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Date">2024年4月</td>
+                                    <td data-label="Event" data-lang-key="uni-start-event">早稲田大学基幹理工学部 学系II 入学</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Date">2025年4月</td>
+                                    <td data-label="Event" data-lang-key="major-event">早稲田大学基幹理工学部 情報通信学科 進学</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 data-lang-key="hobbies-title">趣味</h3>
+                        <p data-lang-key="hobbies-text">
+                            映画鑑賞、ドラム演奏。人力飛行機を製作するプロジェクトに所属しており、日々主翼や尾翼を製作しています。
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
 
     <footer>
         <div class="container">

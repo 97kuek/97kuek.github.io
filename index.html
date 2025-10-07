@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -14,40 +15,74 @@
 </head>
 <body>
 
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div>
+    <header id="main-header">
+        <div class="header-container">
+            <button id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+            <div class="header-title">
+                <a href="index.html" class="title-link">
                     <h1 data-lang-key="name">Keitaro Ueki</h1>
-                    <p data-lang-key="affiliation">早稲田大学 基幹理工学部 情報通信学科 学部2年</p>
-                </div>
-                <div class="header-buttons">
-                    <button id="lang-toggle" data-current-lang="ja">English</button>
-                    <a href="https://www.nlp-waseda.jp/" target="_blank" id="lab-link" class="header-icon-btn" aria-label="研究室のウェブサイトへ"><i class="fa-solid fa-flask"></i></a>
-                    <button id="theme-toggle" class="header-icon-btn"><i class="fa-solid fa-moon"></i></button>
-                </div>
+                    <p data-lang-key="affiliation">早稲田大学 基幹理工学部</p>
+                </a>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="index.html" data-lang-key="nav-home">Home</a></li>
-                    <li><a href="about.html" data-lang-key="nav-about">About</a></li>
-                    <li><a href="research.html" data-lang-key="nav-research">Research</a></li>
-                    <li><a href="publications.html" data-lang-key="nav-publications">Publications</a></li>
-                    <li><a href="blog.html" data-lang-key="nav-blog">Blog</a></li>
-                    <li><a href="contact.html" data-lang-key="nav-contact">Contact</a></li>
-                </ul>
-            </nav>
+            <div class="header-controls">
+                <button id="search-toggle"><i class="fa-solid fa-search"></i></button>
+                <button id="lang-toggle" data-current-lang="ja">EN/JA</button>
+                <button id="theme-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
         </div>
     </header>
 
-    <main class="container">
-        <section id="welcome" class="card reveal-on-scroll">
-            <h2 data-lang-key="welcome-title">Welcome!</h2>
-            <p data-lang-key="welcome-text">
-                ウェブサイトへようこそ。上のナビゲーションバーから各ページをご覧ください。
-            </p>
-        </section>
-    </main>
+    <div id="search-overlay">
+        <input type="search" id="search-input" placeholder="Search...">
+        <div id="search-results"></div>
+    </div>
+
+    <aside id="sidebar">
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html" data-lang-key="nav-home"><i class="fa-solid fa-house fa-fw"></i> <span class="nav-text">Home</span></a></li>
+                <li><a href="about.html" data-lang-key="nav-about"><i class="fa-solid fa-user fa-fw"></i> <span class="nav-text">About</span></a></li>
+                <li><a href="research.html" data-lang-key="nav-research"><i class="fa-solid fa-flask fa-fw"></i> <span class="nav-text">Research</span></a></li>
+                <li><a href="publications.html" data-lang-key="nav-publications"><i class="fa-solid fa-book-open fa-fw"></i> <span class="nav-text">Publications</span></a></li>
+                <li><a href="blog.html" data-lang-key="nav-blog"><i class="fa-solid fa-pen-nib fa-fw"></i> <span class="nav-text">Blog</span></a></li>
+                <li><a href="contact.html" data-lang-key="nav-contact"><i class="fa-solid fa-envelope fa-fw"></i> <span class="nav-text">Contact</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <div id="content-wrapper">
+        <main class="container">
+            <section id="quick-links" class="reveal-on-scroll">
+                <div class="link-card-container">
+                    <a href="about.html" class="link-card">
+                        <i class="fa-solid fa-user"></i>
+                        <h3 data-lang-key="nav-about">About</h3>
+                        <p data-lang-key="about-description">経歴やスキルについて</p>
+                    </a>
+                    <a href="research.html" class="link-card">
+                        <i class="fa-solid fa-flask"></i>
+                        <h3 data-lang-key="nav-research">Research</h3>
+                        <p data-lang-key="research-description">現在の研究内容</p>
+                    </a>
+                    <a href="publications.html" class="link-card">
+                        <i class="fa-solid fa-book-open"></i>
+                        <h3 data-lang-key="nav-publications">Publications</h3>
+                        <p data-lang-key="publications-description">過去の論文や発表</p>
+                    </a>
+                    <a href="blog.html" class="link-card">
+                        <i class="fa-solid fa-pen-nib"></i>
+                        <h3 data-lang-key="nav-blog">Blog</h3>
+                        <p data-lang-key="blog-description">日々の考えや学び</p>
+                    </a>
+                    <a href="contact.html" class="link-card">
+                        <i class="fa-solid fa-envelope"></i>
+                        <h3 data-lang-key="nav-contact">Contact</h3>
+                        <p data-lang-key="contact-description">お問い合わせはこちら</p>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
 
     <footer>
         <div class="container">
