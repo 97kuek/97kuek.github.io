@@ -6,8 +6,5 @@ endDate: 2024-03-31
 logo: '@assets/education/toin/logo.jpg'
 link: https://toin.ac.jp/
 ---
-- Lorem ipsum dolor sit amet.
-- Consectetur adipiscing elit.
-- Sed do eiusmod tempor incididunt.
-- Ut labore et dolore magna aliqua.
-- Enim ad minim veniam.
+- 中高一貫の男子校(今は共学)
+- 中2の時にLife is Tech!の夏のプログラムで初めてプログラミングに挑戦し、プログラミングの楽しさに気づく

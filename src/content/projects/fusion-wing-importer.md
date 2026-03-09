@@ -2,7 +2,7 @@
 featured: true
 title: "Fusion Wing Importer"
 description: "Flow5/XFLR5の解析データからAutodesk Fusion上に3D翼モデルを自動生成するアドイン"
-image: "./thumbnail.png"
+image: "@assets/projects/mary-ui-laravel-starter-kit/image.png"
 startDate: "2026-02-20"
 endDate: "2026-02-28"
 skills: ["Python", "Fusion API", "XML"]
@@ -11,8 +11,8 @@ sourceLink: "https://github.com/97kuek/fusion-wing-importer"
 
 ## プロジェクト概要
 
-流体解析ソフト「Flow5」や「XFLR5」で設計・解析した3次元翼のデータ（XMLおよびDATファイル）を読み込み、3D CADソフトである Autodesk Fusion 上にソリッドモデルを自動生成するPython製のアドインです。
-人力飛行機の翼設計などにおいて、空気力学的な解析から実際の機械設計（CADモデリング）への移行を手作業で行うのは非常に手間でした。このプロセスをスクリプトで完全自動化し、設計のサイクルをスムーズにするために開発しました。
+低レイノルズ数帯専用の流体解析ソフト`Flow5`や`XFLR5`で設計・解析した3次元翼のデータ（XMLおよびDATファイル）を読み込み、3D CADソフトである Autodesk Fusion 上にソリッドモデルを自動生成するPython製のアドインです。
+人力飛行機の尾翼設計において、全機の慣性モーメントを概算するのにFusionで翼を設計する必要がありました。流体解析ソフトからFusionにデータを移行するプロセスをスクリプトで完全自動化し、設計のサイクルをスムーズにするために開発しました。
 
 ## 工夫した点・対応した課題
 
@@ -32,8 +32,3 @@ Flow5が書き出すXMLファイルには翼のスパンやコード長、ねじ
 *   **言語:** Python
 *   **API/実行環境:** Autodesk Fusion API
 *   **データ形式:** XML, DAT
-
----
-
-> **📝 Note:** トップページなどで表示するプロジェクトのサムネイル画像が必要です。
-> `src/content/projects/` フォルダ 안에 `thumbnail.png` などのお好きな名前で画像を作成・配置し、上の `image: "./thumbnail.png"` という部分をそのファイル名に合わせて書き換えてください。（GIFなどを置いてもよいかもしれません！）
