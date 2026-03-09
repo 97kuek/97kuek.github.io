@@ -3,6 +3,7 @@ import Layout from "./Layout.astro";
 import { Image } from "astro:assets";
 import SkillBadge from "../components/SkillBadge.astro";
 import { ExternalLink } from "@lucide/astro";
+import Giscus from "../components/Giscus.astro";
 
 interface Props {
   title: string;
@@ -181,6 +182,9 @@ function calculateDuration(startDate: Date, endDate?: Date) {
     <div class="prose prose-lg max-w-none">
       <slot />
     </div>
+
+    <!-- Giscus Comments -->
+    <Giscus />
 
     <!-- Divider -->
     <div class="divider mt-12"></div>
