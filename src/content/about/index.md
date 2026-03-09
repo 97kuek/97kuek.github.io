@@ -1,8 +1,8 @@
 ---
 title: About Me
-photo: '@assets/about/photo.png'
-link: https://linkedin.com/in/lauroguedes
+photo: '@assets/about/photo.jpg'
+link: https://github.com/97kuek
 ---
-My toolkit revolves around the **Laravel and Vue JS** ecosystem. I enjoy crafting everything from robust APIs and full-stack applications to open-source tools like the [Mary UI Laravel Starter Kit](https://github.com/lauroguedes/mary-ui-starter-kit) and [Bloomfolio](https://github.com/lauroguedes/bloomfolio), an Astro portfolio template that's been forked dozens of times.
-
-When I'm not coding, I'm probably exploring AI art, traveling, or listening to 🎸 heavy music way too loud.
+早稲田大学基幹理工学部情報通信学科の学部3年生です。
+人力飛行機製作サークルのWASA鳥人間プロジェクトに所属しており、PMと翼班として活動に励んでいます。
+無線通信や音響信号処理に興味があります。
