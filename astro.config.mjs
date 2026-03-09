@@ -14,6 +14,7 @@ export default defineConfig({
   integrations: [react(), markdoc()],
 
   vite: {
+    // @ts-ignore
     plugins: [tailwindcss()],
   },
 

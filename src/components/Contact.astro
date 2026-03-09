@@ -1,8 +1,8 @@
----
+﻿---
 import { getEntry, render } from "astro:content";
 import { getIcon } from "../utils/iconMapper";
 
-const contactEntry = await getEntry("contact", "index");
+const contactEntry = (await getEntry("contact", "index"))!;
 const contact = contactEntry.data;
 const { Content } = await render(contactEntry);
 
@@ -25,7 +25,8 @@ const FooterIcon = getIcon(contact.footerIcon as any);
       and I'll respond whenever I can.
     </p>
     <p class="flex items-center space-x-1 text-base-content/60">
-      <span>Copyright © {new Date().getFullYear()} - {contact.footerText}</span>
+      <span>Copyright ﾂｩ {new Date().getFullYear()} - {contact.footerText}</span
+      >
       <a
         class="link link-hover inline-flex justify-center items-center"
         href={contact.footerLinkUrl}

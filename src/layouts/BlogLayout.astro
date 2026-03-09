@@ -1,4 +1,4 @@
----
+﻿---
 import Layout from "./Layout.astro";
 import { Image } from "astro:assets";
 import SkillBadge from "../components/SkillBadge.astro";
@@ -33,7 +33,7 @@ const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wo
   <article class="max-w-4xl mx-auto px-4 py-20">
     <!-- Back button -->
     <div class="mb-8">
-      <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-ghost btn-sm">
+      <a href={`${import.meta.env.BASE_URL}/blog`} class="btn btn-ghost btn-sm">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"
@@ -77,12 +77,12 @@ const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wo
         <time datetime={publishDate.toISOString()}>
           {formatDate(publishDate)}
         </time>
-        <span>•</span>
+        <span>窶｢</span>
         <span>{readingTime} min read</span>
         {
           updatedDate && (
             <>
-              <span>•</span>
+              <span>窶｢</span>
               <span>Updated: {formatDate(updatedDate)}</span>
             </>
           )
@@ -113,7 +113,7 @@ const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wo
 
     <!-- Back to blog link -->
     <div class="text-center mt-8">
-      <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary">
+      <a href={`${import.meta.env.BASE_URL}/blog`} class="btn btn-primary">
         View All Posts
       </a>
     </div>
