@@ -30,8 +30,8 @@ const general = generalEntry.data;
     <!-- Hero Section (Always visible) -->
     <Hero hero={heroEntry.data} />
 
-    <!-- All other sections hidden on mobile -->
-    <div class="hidden lg:block">
+    <!-- All other sections (visible on all devices now) -->
+    <div>
       <!-- About Section -->
       {
         general.showAboutSection && (
