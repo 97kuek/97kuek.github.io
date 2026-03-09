@@ -144,7 +144,7 @@ const entriesWithContent = await Promise.all(
                           <p class={`text-${color} font-semibold`}>
                             {entry.data.subtitle}
                           </p>
-                          {entry.data.location && (
+                          {"location" in entry.data && entry.data.location && (
                             <p class="text-sm text-base-content/60">
                               {entry.data.location}
                             </p>
@@ -191,7 +191,7 @@ const entriesWithContent = await Promise.all(
                     <p class={`text-${color} font-semibold`}>
                       {entry.data.subtitle}
                     </p>
-                    {entry.data.location && (
+                    {"location" in entry.data && entry.data.location && (
                       <p class="text-sm text-base-content/60">
                         {entry.data.location}
                       </p>
@@ -214,13 +214,15 @@ const entriesWithContent = await Promise.all(
                 </div>
 
                 {/* Skills */}
-                {entry.data.skills && entry.data.skills.length > 0 && (
-                  <div class="flex flex-wrap gap-2 mb-4">
-                    {entry.data.skills.map((skill: string) => (
-                      <SkillBadge skill={skill} />
-                    ))}
-                  </div>
-                )}
+                {"skills" in entry.data &&
+                  entry.data.skills &&
+                  entry.data.skills.length > 0 && (
+                    <div class="flex flex-wrap gap-2 mb-4">
+                      {entry.data.skills.map((skill: string) => (
+                        <SkillBadge skill={skill} />
+                      ))}
+                    </div>
+                  )}
 
                 {/* Modal Content */}
                 <div class="prose prose-sm max-w-none text-base-content/80">
