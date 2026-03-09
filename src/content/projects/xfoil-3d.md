@@ -2,7 +2,7 @@
 featured: true
 title: "XFOIL 3D"
 description: "XFOILを用いた翼型の3次元極曲線を計算・可視化するCLIツール"
-image: "./thumbnail.png"
+image: "@assets/projects/xfoil-3d/image.png"
 startDate: "2026-03-01"
 endDate: "2026-03-01"
 skills: ["Python", "XFOIL", "Plotly"]
