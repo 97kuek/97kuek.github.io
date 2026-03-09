@@ -1,33 +1,22 @@
-name: 🌻 Bloomfolio
-title: Astro Portfolio Template built with 🌼 DaisyUI
+name: 97kuek
+title: My Portfolio
 description: >-
-  A modern, responsive, and customizable portfolio template built with Astro and
-  DaisyUI. Perfect for developers, designers, and creatives to showcase their
-  work and skills.
-avatar: '@assets/hero/avatar.png'
-location: 🇧🇷 Brazil
+  早稲田大学基幹理工学部情報通信学科3年。WASA鳥人間プロジェクトのPMをしています。
+avatar: '@assets/hero/avatar.jpg'
+location: 🇯🇵 Japan
 socialLinks:
-  - url: mailto:hello@example.com
+  - url: mailto:keitaro.ueki@asagi.waseda.jp
     icon: Email
     label: Email
-  - url: https://github.com/lauroguedes
+  - url: https://github.com/97kuek
     icon: GitHub
     label: GitHub
-  - url: https://linkedin.com/in/lauroguedes
-    icon: LinkedIn
-    label: LinkedIn
-  - url: https://twitter.com/leowg
+  - url: https://twitter.com/97kuek_
     icon: Twitter
     label: X (Twitter)
-  - url: https://bsky.app/profile/lauroguedes.bsky.social
-    icon: Bluesky
-    label: Bluesky
-  - url: https://instagram.com/lauroguedes.dev
+  - url: https://instagram.com/97kuek_
     icon: Instagram
     label: Instagram
-  - url: https://youtube.com/leowgweb
+  - url: https://youtube.com/97kuek
     icon: YouTube
     label: YouTube
-  - url: https://codetips.cloud/u/lauroguedes
-    icon: FolderCode
-    label: CodeTips
