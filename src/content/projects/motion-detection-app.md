@@ -2,7 +2,7 @@
 featured: true
 title: "古典的な動体検知プログラム"
 description: "カメラで捉えた映像から動体を検知するプログラム"
-image: "@assets/projects/mary-ui-laravel-starter-kit/image.png'"
+image: "@assets/projects/motion-detection-app/image.png"
 startDate: "2025-10-12"
 endDate: "2025-12-21"
 skills: ["Python", "OpenCV"]

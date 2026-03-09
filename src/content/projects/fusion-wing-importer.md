@@ -2,7 +2,7 @@
 featured: true
 title: "Fusion Wing Importer"
 description: "Flow5/XFLR5の解析データからAutodesk Fusion上に3D翼モデルを自動生成するアドイン"
-image: "@assets/projects/mary-ui-laravel-starter-kit/image.png"
+image: "@assets/projects/fusion-wing-importer/image.png"
 startDate: "2026-02-20"
 endDate: "2026-02-28"
 skills: ["Python", "Fusion API", "XML"]
