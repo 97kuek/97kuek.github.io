@@ -28,7 +28,9 @@ function formatDate(date: Date) {
     <h3
       class="card-title text-base-100-content hover:text-primary-content transition-colors"
     >
-      <a href={`/blog/${post.id}`}>{post.data.title}</a>
+      <a href={`${import.meta.env.BASE_URL}blog/${post.id}`}
+        >{post.data.title}</a
+      >
     </h3>
     <time class="text-sm text-base-100-content/80">
       {formatDate(post.data.publishDate)}

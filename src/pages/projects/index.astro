@@ -7,7 +7,7 @@ const projects = await getCollection("projects");
 
 // Sort by start date, most recent first
 const sortedProjects = projects.sort(
-  (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime()
+  (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime(),
 );
 ---
 
@@ -27,7 +27,7 @@ const sortedProjects = projects.sort(
 
     <!-- Back to Home -->
     <div class="mb-8">
-      <a href="/" class="btn btn-ghost btn-sm">
+      <a href={import.meta.env.BASE_URL} class="btn btn-ghost btn-sm">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"

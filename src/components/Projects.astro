@@ -38,7 +38,10 @@ const featuredProjects = projectEntries
     }
 
     <div class="text-center mt-10">
-      <a href="/projects" class="btn btn-primary btn-outline">
+      <a
+        href={`${import.meta.env.BASE_URL}projects`}
+        class="btn btn-primary btn-outline"
+      >
         View All Projects
       </a>
     </div>

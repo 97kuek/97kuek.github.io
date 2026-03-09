@@ -7,7 +7,7 @@ const blogEntries = await getCollection("blog");
 
 // Sort by publish date, most recent first
 const sortedPosts = blogEntries.sort(
-  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime(),
 );
 
 // Get only the latest 3 posts
@@ -29,7 +29,7 @@ const latestPosts = sortedPosts.slice(0, 3);
     </div>
 
     <div class="text-center mt-12">
-      <a href="/blog" class="btn btn-primary gap-2">
+      <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary gap-2">
         View All Posts
         <ArrowRight class="size-4" />
       </a>
