@@ -15,15 +15,25 @@ const { title, photo, Content, link } = Astro.props;
 
 <section id="about" class="py-20 px-4">
   <div class="max-w-4xl mx-auto">
-    <div class="card card-side bg-base-200 shadow-sm">
+    <div class="card lg:card-side bg-base-200 shadow-sm">
       {
         photo && (
-          <figure class="shrink-0 w-48">
-            {typeof photo === "string" ? (
-              <img src={photo} alt={title} />
-            ) : (
-              <Image src={photo} alt={title} />
-            )}
+          <figure class="shrink-0 lg:w-48 pt-8 lg:pt-0">
+            <div class="w-48 h-48 lg:h-auto overflow-hidden rounded-full lg:rounded-none lg:w-full">
+              {typeof photo === "string" ? (
+                <img
+                  src={photo}
+                  alt={title}
+                  class="w-full h-full object-cover"
+                />
+              ) : (
+                <Image
+                  src={photo}
+                  alt={title}
+                  class="w-full h-full object-cover"
+                />
+              )}
+            </div>
           </figure>
         )
       }

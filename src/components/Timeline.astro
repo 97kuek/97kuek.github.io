@@ -256,11 +256,11 @@ const entriesWithContent = await Promise.all(
           {entriesWithContent.map(({ entry, Content }, index) => (
             <li class="border-b hover:opacity-85 transition-opacity border-base-300 last:border-b-0">
               <details class="collapse">
-                <summary class="collapse-title pe-5">
-                  <div class="list-row p-0 items-center after:hidden">
-                    <div>
+                <summary class="collapse-title pe-2 sm:pe-5">
+                  <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 w-full">
+                    <div class="flex items-center gap-3 sm:gap-4 flex-1">
                       {entry.data.logo && (
-                        <div class="avatar">
+                        <div class="avatar shrink-0">
                           <div class="w-10 mask mask-squircle">
                             <Image
                               src={entry.data.logo}
@@ -270,16 +270,18 @@ const entriesWithContent = await Promise.all(
                           </div>
                         </div>
                       )}
+
+                      <div class="min-w-0">
+                        <h3 class="font-bold text-lg leading-tight mb-1">
+                          {entry.data.title}
+                        </h3>
+                        <p class={`text-${color} font-semibold text-sm`}>
+                          {entry.data.subtitle}
+                        </p>
+                      </div>
                     </div>
 
-                    <div>
-                      <h3 class="font-bold text-lg">{entry.data.title}</h3>
-                      <p class={`text-${color} font-semibold text-sm`}>
-                        {entry.data.subtitle}
-                      </p>
-                    </div>
-
-                    <div class="text-sm text-base-content/70 font-mono whitespace-nowrap">
+                    <div class="text-xs sm:text-sm text-base-content/70 font-mono sm:whitespace-nowrap shrink-0 pl-13 sm:pl-0">
                       {formatPeriod(entry.data.startDate, entry.data.endDate)}
                       {calculateDuration(
                         entry.data.startDate,
