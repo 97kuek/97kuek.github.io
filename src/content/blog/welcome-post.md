@@ -1,30 +1,23 @@
 ---
-title: "Welcome to My Blog"
+title: "自己紹介"
 description: "An introduction to my blog where I'll share thoughts on web development, design, and technology."
 image: "@assets/blog/blog_post.jpg"
 publishDate: "2025-10-30"
 tags: ["Introduction", "Web Development"]
 ---
 
-# Welcome to My Blog!
+# 自己紹介
 
-Hello and welcome to my blog! I'm excited to share my journey, thoughts, and experiences in the world of web development and technology.
+- 植木 敬太郎(UEKI, Keitaro)
+- 早稲田大学 基幹理工学部 情報通信学科 学部3年生
+- [知覚情報システム・メディアインテリジェンス研究室](http://www.pcl.cs.waseda.ac.jp/)所属
 
-## What to Expect
+## 趣味
 
-In this blog, you can expect:
+ものづくり、映画、ボードゲーム
 
-- **Technical tutorials** on modern web development
-- **Project showcases** and case studies
-- **Thoughts on design** and user experience
-- **Industry trends** and insights
+面白ければ海でも山でもインターネットでも全部やります
 
-## About Me
+## 過去の活動
 
-I'm a passionate developer who loves creating beautiful and functional web applications. With years of experience in the field, I've worked on a variety of projects ranging from small startups to large enterprise applications.
-
-## Let's Connect
-
-I'd love to hear from you! Feel free to reach out through any of my social media channels or send me an email.
-
-Thanks for stopping by!
+- 早稲田大学宇宙航空研究会WASA 鳥人間プロジェクト(人力飛行機の製作) 
