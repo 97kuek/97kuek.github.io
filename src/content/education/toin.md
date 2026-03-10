@@ -7,4 +7,5 @@ logo: '@assets/education/toin/logo.jpg'
 link: https://toin.ac.jp/
 ---
 - 中高一貫の男子校(今は共学)
-- 中2の時にLife is Tech!の夏のプログラムで初めてプログラミングに挑戦し、プログラミングの楽しさに気づく
+- 中学2年生の時にLife is Tech!の夏季プログラムへ参加
+- 未経験からプログラミングに挑戦し、創造することの面白さに気づく
