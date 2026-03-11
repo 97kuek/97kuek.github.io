@@ -7,12 +7,20 @@ import react from "@astrojs/react";
 import markdoc from "@astrojs/markdoc";
 import astroExpressiveCode from "astro-expressive-code";
 
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://97kuek.github.io",
   base: "/my-portfolio",
 
   integrations: [astroExpressiveCode(), react(), markdoc()],
+
+  markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
+  },
 
   vite: {
     // @ts-ignore

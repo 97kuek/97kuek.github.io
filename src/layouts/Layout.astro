@@ -1,4 +1,4 @@
-﻿---
+---
 import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import ThemeSelector from "../components/ThemeSelector.astro";
@@ -74,6 +74,14 @@ const origin = Astro.url.origin;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${origin}/images/og_home.png`} />
+
+    <!-- KaTeX CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+      integrity="sha384-n9XVv97Z8NHmH6PQs6pLLle7uLkkqfaV8i9i08nVLS0S9v9S2W6E7MlgJJ3V99P8"
+      crossorigin="anonymous"
+    />
   </head>
   <body class="min-h-screen">
     <!-- Theme Controls - Fixed Position -->
