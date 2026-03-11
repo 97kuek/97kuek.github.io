@@ -1,4 +1,4 @@
-﻿---
+---
 import { getCollection } from "astro:content";
 import ProjectCard from "./ProjectCard.astro";
 
@@ -14,10 +14,9 @@ const featuredProjects = projectEntries
 <section id="projects" class="py-20 px-4 bg-base-200">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold mb-4">Check out my latest work</h2>
+      <h2 class="text-4xl font-bold mb-4">制作実績</h2>
       <p class="text-lg text-base-content/70">
-        I've worked on a variety of projects, from simple websites to complex
-        web applications. Here are a few of my favorites.
+        Webアプリから画像処理プログラムまで、これまで取り組んできたプロジェクトの一部をご紹介します。
       </p>
     </div>
 
@@ -42,7 +41,7 @@ const featuredProjects = projectEntries
         href={`${import.meta.env.BASE_URL}/projects`}
         class="btn btn-primary btn-outline"
       >
-        View All Projects
+        すべてのプロジェクトを見る
       </a>
     </div>
   </div>
