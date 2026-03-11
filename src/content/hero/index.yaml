@@ -1,8 +1,11 @@
 name: Keitaro Ueki
 title: Welcome to My Portfolio
-description: >-
-  早稲田大学基幹理工学部情報通信学科3年。
-  WASA鳥人間プロジェクトのPMをしています。
+description: |
+  情報通信学科の学部3年生
+  人力飛行機製作サークルに所属しています
+  趣味は、ものづくり、映画鑑賞、ボードゲームなどなど...
+  面白ければ海でも山でもインターネットでも全部やります
+  Python / MATLAB / C / C++ / Arduino
 avatar: '@assets/hero/avatar.jpg'
 location: 🇯🇵 Japan
 socialLinks:
