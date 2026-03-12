@@ -1,0 +1,15 @@
+---
+import { renderToString } from 'katex';
+
+interface Props {
+  formula: string;
+}
+
+const { formula } = Astro.props;
+const html = renderToString(formula, {
+  displayMode: true,
+  throwOnError: false
+});
+---
+
+<div class="katex-block my-8" set:html={html} />
