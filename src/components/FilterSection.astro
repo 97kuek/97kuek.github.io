@@ -27,24 +27,26 @@ const { tags, containerId } = Astro.props;
 </div>
 
 <script define:vars={{ containerId }}>
-  const filterSection = document.getElementById(`filter-${containerId}`);
-  const container = document.getElementById(containerId);
-  
-  if (filterSection && container) {
-    const buttons = filterSection.querySelectorAll('.filter-btn');
-    const items = container.querySelectorAll('[data-filter-tags]');
+  const initFilter = () => {
+    const filterSection = document.getElementById(`filter-${containerId}`);
+    const container = document.getElementById(containerId);
+    
+    if (filterSection && container) {
+      const buttons = filterSection.querySelectorAll('.filter-btn');
+      const items = container.querySelectorAll('[data-filter-tags]');
 
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        const selectedTag = button.getAttribute('data-tag');
-
+      const filterByTag = (selectedTag) => {
         // Update active state
         buttons.forEach(btn => {
-          btn.classList.remove('btn-primary', 'active');
-          btn.classList.add('btn-outline', 'btn-ghost');
+          const btnTag = btn.getAttribute('data-tag');
+          if (btnTag === selectedTag) {
+            btn.classList.add('btn-primary', 'active');
+            btn.classList.remove('btn-outline', 'btn-ghost');
+          } else {
+            btn.classList.remove('btn-primary', 'active');
+            btn.classList.add('btn-outline', 'btn-ghost');
+          }
         });
-        button.classList.add('btn-primary', 'active');
-        button.classList.remove('btn-outline', 'btn-ghost');
 
         // Filter items
         items.forEach(item => {
@@ -56,8 +58,31 @@ const { tags, containerId } = Astro.props;
             item.style.display = 'none';
           }
         });
+      };
+
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          filterByTag(button.getAttribute('data-tag'));
+        });
       });
-    });
+
+      // Handle deep linking from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlTag = urlParams.get('tag')?.toLowerCase();
+      if (urlTag) {
+        // Check if the tag exists in our filter
+        const targetBtn = Array.from(buttons).find(btn => btn.getAttribute('data-tag') === urlTag);
+        if (targetBtn) {
+          filterByTag(urlTag);
+        }
+      }
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFilter);
+  } else {
+    initFilter();
   }
 </script>
 

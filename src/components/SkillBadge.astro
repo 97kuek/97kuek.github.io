@@ -1,9 +1,21 @@
-﻿---
+---
 interface Props {
   skill: string;
+  href?: string;
 }
 
-const { skill } = Astro.props;
+const { skill, href } = Astro.props;
 ---
 
-<span class="badge badge-sm badge-soft badge-accent">{skill}</span>
+{
+  href ? (
+    <a
+      href={href}
+      class="badge badge-sm badge-soft badge-accent hover:badge-outline transition-colors"
+    >
+      {skill}
+    </a>
+  ) : (
+    <span class="badge badge-sm badge-soft badge-accent">{skill}</span>
+  )
+}

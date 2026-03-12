@@ -83,7 +83,10 @@ function formatPeriod(startDate: Date, endDate?: Date) {
                   {hackathon.data.skills && (
                     <div class="flex flex-wrap gap-2 mt-3">
                       {hackathon.data.skills.map((skill) => (
-                        <SkillBadge skill={skill} />
+                        <SkillBadge
+                          skill={skill}
+                          href={`${import.meta.env.BASE_URL}?tag=${encodeURIComponent(skill.toLowerCase())}#hackathons`}
+                        />
                       ))}
                     </div>
                   )}
