@@ -1,5 +1,5 @@
 ---
-title: 自己紹介
+title: プロフィール
 photo: '@assets/about/photo.jpg'
 link: /blog/welcome-post
 ---
