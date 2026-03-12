@@ -23,10 +23,16 @@
     ></script>
 
     <script is:inline>
+        function getGiscusTheme() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            const darkThemes = ['dark', 'synthwave', 'dim', 'halloween', 'night', 'coffee', 'luxury'];
+            return darkThemes.includes(theme) ? 'dark' : 'light';
+        }
+
         function updateGiscusTheme() {
-            const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            const theme = getGiscusTheme();
             const iframe = document.querySelector('iframe.giscus-frame');
-            if (iframe) {
+            if (iframe && iframe.contentWindow) {
                 iframe.contentWindow.postMessage(
                     { giscus: { setConfig: { theme } } },
                     'https://giscus.app'
@@ -34,6 +40,9 @@
             }
         }
 
+        // Set initial theme in script tag data attribute if possible, 
+        // but since it's is:inline and loaded async, we'll rely on the message.
+        
         // Listen for theme changes from the site's theme toggle
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -45,12 +54,28 @@
 
         observer.observe(document.documentElement, { attributes: true });
 
-        // Also try to update when the iframe finishes loading
-        window.addEventListener('message', (event) => {
-            if (event.origin !== 'https://giscus.app') return;
-            if (event.data.giscus && event.data.giscus.discussion) {
-                updateGiscusTheme();
-            }
-        });
+        // Handle initial load and view transitions
+        const initGiscus = () => {
+            // Try to update theme immediately
+            updateGiscusTheme();
+            
+            // Also listen for giscus load completion
+            window.addEventListener('message', (event) => {
+                if (event.origin !== 'https://giscus.app') return;
+                if (event.data.giscus && (event.data.giscus.discussion || event.data.giscus.viewer)) {
+                    updateGiscusTheme();
+                }
+            });
+        };
+
+        // Run on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initGiscus);
+        } else {
+            initGiscus();
+        }
+
+        // For Astro view transitions
+        document.addEventListener('astro:after-swap', updateGiscusTheme);
     </script>
 </div>
