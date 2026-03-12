@@ -14,6 +14,8 @@ sourceLink: "https://github.com/97kuek/Motion-Detection-App"
 Webカメラや動画ファイルなどのビデオソースを監視し、指定された関心領域(ROI)内での動きを検出して、自動的にその瞬間の画像を保存する監視システムです。
 単なるフレーム間差分ではなく、動的な背景モデルの構築やノイズ除去、ステートマシンを用いたイベント管理ロジックを実装することで、環境変化に強く誤検知の少ない実用的な動体検知を実現しました。今回実装した動体検知の詳しい理論については、[こちらのブログ記事](@content/blog/motion-detection-app.md)をご覧ください。
 
+![検出結果](@assets/projects/motion-detection-app/検出結果.gif)
+
 - 使用言語: Python
 - 使用ライブラリ: OpenCV(`opencv-python`),NumPy
 - 主な機能: 動体検知、ROI指定、動的背景更新、検知画像の自動保存機能
