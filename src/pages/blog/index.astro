@@ -12,8 +12,14 @@ const sortedPosts = blogPosts.sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime(),
 );
 
-// Get unique tags
+// Get unique tags and counts
 const allTags = [...new Set(blogPosts.flatMap(post => post.data.tags || []))].sort();
+const tagCounts = blogPosts.reduce((acc, post) => {
+  (post.data.tags || []).forEach(tag => {
+    acc[tag] = (acc[tag] || 0) + 1;
+  });
+  return acc;
+}, {} as Record<string, number>);
 
 function formatDate(date: Date) {
   return date.toLocaleDateString("en-US", {
@@ -58,7 +64,7 @@ function formatDate(date: Date) {
     </div>
 
     <!-- Filter -->
-    <FilterSection tags={allTags} containerId="blog-grid" />
+    <FilterSection tags={allTags} tagCounts={tagCounts} totalCount={sortedPosts.length} containerId="blog-grid" />
 
     <!-- Blog Posts Grid -->
     {

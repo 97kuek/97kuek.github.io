@@ -11,8 +11,14 @@ const sortedProjects = projects.sort(
   (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime(),
 );
 
-// Get unique skills
+// Get unique skills and counts
 const allSkills = [...new Set(projects.flatMap(p => p.data.skills))].sort();
+const skillCounts = projects.reduce((acc, project) => {
+  project.data.skills.forEach(skill => {
+    acc[skill] = (acc[skill] || 0) + 1;
+  });
+  return acc;
+}, {} as Record<string, number>);
 ---
 
 <Layout
@@ -49,7 +55,7 @@ const allSkills = [...new Set(projects.flatMap(p => p.data.skills))].sort();
     </div>
 
     <!-- Filter -->
-    <FilterSection tags={allSkills} containerId="projects-grid" />
+    <FilterSection tags={allSkills} tagCounts={skillCounts} totalCount={sortedProjects.length} containerId="projects-grid" />
 
     <!-- Projects Grid -->
     {

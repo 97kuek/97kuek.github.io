@@ -11,8 +11,14 @@ const sortedHackathons = hackathonEntries.sort(
   (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime(),
 );
 
-// Get unique skills
+// Get unique skills and counts
 const allSkills = [...new Set(hackathonEntries.flatMap(h => h.data.skills || []))].sort();
+const skillCounts = hackathonEntries.reduce((acc, hackathon) => {
+  (hackathon.data.skills || []).forEach(skill => {
+    acc[skill] = (acc[skill] || 0) + 1;
+  });
+  return acc;
+}, {} as Record<string, number>);
 
 function formatPeriod(startDate: Date, endDate?: Date) {
   const options: Intl.DateTimeFormatOptions = {
@@ -43,7 +49,7 @@ function formatPeriod(startDate: Date, endDate?: Date) {
       </p>
     </div>
 
-    <FilterSection tags={allSkills} containerId="hackathons-list" />
+    <FilterSection tags={allSkills} tagCounts={skillCounts} containerId="hackathons-list" />
 
     <div class="space-y-6" id="hackathons-list">
       {

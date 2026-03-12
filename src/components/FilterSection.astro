@@ -2,78 +2,147 @@
 interface Props {
   tags: string[];
   containerId: string;
+  tagCounts?: Record<string, number>;
+  totalCount?: number;
 }
 
-const { tags, containerId } = Astro.props;
+const { tags, containerId, tagCounts, totalCount } = Astro.props;
 ---
 
-<div class="flex flex-wrap gap-2 mb-8" id={`filter-${containerId}`}>
-  <button
-    class="btn btn-sm btn-primary filter-btn active"
-    data-tag="all"
+<div class="mb-8" id={`filter-section-${containerId}`}>
+  <div class="flex flex-wrap gap-2 mb-4" id={`filter-${containerId}`}>
+    <button
+      class="btn btn-sm btn-primary filter-btn active"
+      data-tag="all"
+    >
+      All {totalCount !== undefined && <span class="opacity-70">({totalCount})</span>}
+    </button>
+    {
+      tags.map((tag) => (
+        <button
+          class="btn btn-sm btn-outline btn-ghost filter-btn"
+          data-tag={tag.toLowerCase()}
+        >
+          {tag} {tagCounts?.[tag] !== undefined && <span class="opacity-70">({tagCounts[tag]})</span>}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="flex items-center justify-between px-2 text-sm text-base-content/60">
+    <div id={`results-count-${containerId}`}>
+      {totalCount !== undefined ? `${totalCount} item${totalCount !== 1 ? 's' : ''} found` : ''}
+    </div>
+  </div>
+
+  <div 
+    id={`no-results-${containerId}`} 
+    class="hidden text-center py-20 border-2 border-dashed border-base-300 rounded-xl mt-4"
   >
-    All
-  </button>
-  {
-    tags.map((tag) => (
-      <button
-        class="btn btn-sm btn-outline btn-ghost filter-btn"
-        data-tag={tag.toLowerCase()}
-      >
-        {tag}
-      </button>
-    ))
-  }
+    <p class="text-xl text-base-content/50">No items match the selected filters.</p>
+    <button class="btn btn-ghost btn-sm mt-4 reset-filters">
+      Clear all filters
+    </button>
+  </div>
 </div>
 
 <script define:vars={{ containerId }}>
   const initFilter = () => {
+    const filterRoot = document.getElementById(`filter-section-${containerId}`);
     const filterSection = document.getElementById(`filter-${containerId}`);
     const container = document.getElementById(containerId);
+    const countDisplay = document.getElementById(`results-count-${containerId}`);
+    const noResults = document.getElementById(`no-results-${containerId}`);
     
-    if (filterSection && container) {
+    if (filterSection && container && countDisplay && noResults) {
       const buttons = filterSection.querySelectorAll('.filter-btn');
+      const resetBtn = filterRoot.querySelector('.reset-filters');
       const items = container.querySelectorAll('[data-filter-tags]');
+      let activeTags = new Set();
 
-      const filterByTag = (selectedTag) => {
-        // Update active state
+      const updateUI = () => {
+        let visibleCount = 0;
+
+        // Update button states
         buttons.forEach(btn => {
           const btnTag = btn.getAttribute('data-tag');
-          if (btnTag === selectedTag) {
-            btn.classList.add('btn-primary', 'active');
-            btn.classList.remove('btn-outline', 'btn-ghost');
+          if (btnTag === 'all') {
+            if (activeTags.size === 0) {
+              btn.classList.add('btn-primary', 'active');
+              btn.classList.remove('btn-outline', 'btn-ghost');
+            } else {
+              btn.classList.remove('btn-primary', 'active');
+              btn.classList.add('btn-outline', 'btn-ghost');
+            }
           } else {
-            btn.classList.remove('btn-primary', 'active');
-            btn.classList.add('btn-outline', 'btn-ghost');
+            if (activeTags.has(btnTag)) {
+              btn.classList.add('btn-primary', 'active');
+              btn.classList.remove('btn-outline', 'btn-ghost');
+            } else {
+              btn.classList.remove('btn-primary', 'active');
+              btn.classList.add('btn-outline', 'btn-ghost');
+            }
           }
         });
 
-        // Filter items
+        // Filter items with AND logic
         items.forEach(item => {
           const itemTags = item.getAttribute('data-filter-tags').split(',').map(t => t.trim().toLowerCase());
+          const isVisible = activeTags.size === 0 || Array.from(activeTags).every(tag => itemTags.includes(tag));
           
-          if (selectedTag === 'all' || itemTags.includes(selectedTag)) {
+          if (isVisible) {
             item.style.display = '';
+            visibleCount++;
           } else {
             item.style.display = 'none';
           }
         });
+
+        // Update count and no-results message
+        countDisplay.textContent = `${visibleCount} item${visibleCount !== 1 ? 's' : ''} found`;
+        if (visibleCount === 0) {
+          noResults.classList.remove('hidden');
+          container.classList.add('hidden');
+        } else {
+          noResults.classList.add('hidden');
+          container.classList.remove('hidden');
+        }
+      };
+
+      const toggleTag = (tag) => {
+        if (tag === 'all') {
+          activeTags.clear();
+        } else {
+          if (activeTags.has(tag)) {
+            activeTags.delete(tag);
+          } else {
+            activeTags.add(tag);
+          }
+        }
+        updateUI();
       };
 
       buttons.forEach(button => {
         button.addEventListener('click', () => {
-          filterByTag(button.getAttribute('data-tag'));
+          toggleTag(button.getAttribute('data-tag'));
         });
       });
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          activeTags.clear();
+          updateUI();
+        });
+      }
 
       // Handle deep linking from URL parameters
       const urlParams = new URLSearchParams(window.location.search);
       const urlTag = urlParams.get('tag')?.toLowerCase();
       if (urlTag) {
-        // Check if the tag exists in our filter
         const targetBtn = Array.from(buttons).find(btn => btn.getAttribute('data-tag') === urlTag);
         if (targetBtn) {
-          filterByTag(urlTag);
+          activeTags.add(urlTag);
+          updateUI();
         }
       }
     }
@@ -87,7 +156,7 @@ const { tags, containerId } = Astro.props;
 </script>
 
 <style>
-  .filter-btn.active {
+  .filter-btn.active[data-tag="all"] {
     pointer-events: none;
   }
 </style>

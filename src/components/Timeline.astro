@@ -1,8 +1,9 @@
-﻿---
+---
 import { getCollection, getEntry, render } from "astro:content";
 import { Image } from "astro:assets";
 import { ExternalLink } from "@lucide/astro";
 import SkillBadge from "./SkillBadge.astro";
+import FilterSection from "./FilterSection.astro";
 
 interface Props {
   collection: "work" | "education";
@@ -83,6 +84,22 @@ const entriesWithContent = await Promise.all(
     return { entry, Content };
   }),
 );
+
+// Filtering logic for Work Experience (skills only)
+const allSkills = collection === "work" 
+  ? [...new Set(entries.flatMap(e => (e.data as any).skills || []))].sort()
+  : [];
+
+const skillCounts = collection === "work"
+  ? entries.reduce((acc, entry) => {
+      ((entry.data as any).skills || []).forEach((skill: string) => {
+        acc[skill] = (acc[skill] || 0) + 1;
+      });
+      return acc;
+    }, {} as Record<string, number>)
+  : {};
+
+const containerId = `${collection}-items`;
 ---
 
 <section id={collection} class={`py-20 px-4 bg-${backgroundColor}`}>
@@ -97,11 +114,19 @@ const entriesWithContent = await Promise.all(
     </div>
 
     {
+      collection === "work" && allSkills.length > 0 && (
+        <div class="flex justify-center">
+          <FilterSection tags={allSkills} tagCounts={skillCounts} totalCount={entries.length} containerId={containerId} />
+        </div>
+      )
+    }
+
+    {
       variant === "timeline" ? (
         <>
-          <ul class="timeline timeline-vertical timeline-snap-icon">
+          <ul class="timeline timeline-vertical timeline-snap-icon" id={containerId}>
             {entriesWithContent.map(({ entry, Content }, index) => (
-              <li>
+              <li data-filter-tags={((entry.data as any).skills || []).join(",")}>
                 {index > 0 && <hr class="bg-base-100" />}
                 <div class="timeline-middle">
                   <IconComponent class={`size-5 text-${color} mx-3 my-1`} />
@@ -218,7 +243,7 @@ const entriesWithContent = await Promise.all(
                   entry.data.skills &&
                   entry.data.skills.length > 0 && (
                     <div class="flex flex-wrap gap-2 mb-4">
-                      {entry.data.skills.map((skill: string) => (
+                      {(entry.data.skills as string[]).map((skill: string) => (
                         <SkillBadge skill={skill} />
                       ))}
                     </div>
