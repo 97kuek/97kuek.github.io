@@ -13,7 +13,6 @@ import rehypeKatex from "rehype-katex";
 // https://astro.build/config
 export default defineConfig({
   site: "https://97kuek.github.io",
-  base: "/my-portfolio",
 
   integrations: [astroExpressiveCode(), react(), markdoc()],
 

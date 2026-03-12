@@ -1,2 +1,2 @@
 # 97kuek's Portfolio
-[This web pages](https://97kuek.github.io/my-portfolio/) is built with Astro and hosted on GitHub Pages.
+[This web pages](https://97kuek.github.io) is built with Astro and hosted on GitHub Pages.
