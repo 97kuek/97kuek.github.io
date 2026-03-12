@@ -17,7 +17,7 @@ sourceLink: "https://github.com/97kuek/Motion-Detection-App"
 
 技術的な理論背景については、[こちらの解説ブログ](@content/blog/motion-detection-app.md)で詳しく公開しています。
 
-![検出結果](@assets/projects/motion-detection-app/検出結果.gif)
+![検出結果](@assets/projects/motion-detection-app/detection-result.gif)
 
 - 使用言語: Python
 - 使用ライブラリ: OpenCV(`opencv-python`),NumPy
