@@ -122,7 +122,7 @@ const about = defineCollection({
     z.object({
       title: z.string(),
       photo: image().optional(),
-      link: z.string().url().optional(),
+      link: z.string().optional(),
     }),
 });
 

@@ -1,4 +1,4 @@
-﻿---
+---
 import { Plus } from "@lucide/astro";
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
@@ -47,8 +47,16 @@ const { title, photo, Content, link } = Astro.props;
         {
           link && (
             <div class="card-actions justify-end mt-4">
-              <div class="tooltip" data-tip="More about me">
-                <a href={link} target="_blank" class="btn btn-primary">
+              <div class="tooltip" data-tip="詳細を読む">
+                <a
+                  href={
+                    link.startsWith("http")
+                      ? link
+                      : `${import.meta.env.BASE_URL}${link.startsWith("/") ? link.slice(1) : link}`
+                  }
+                  target={link.startsWith("http") ? "_blank" : "_self"}
+                  class="btn btn-primary"
+                >
                   <Plus class="size-5" />
                 </a>
               </div>
