@@ -4,8 +4,8 @@ import { House, FolderOpen } from "@lucide/astro";
 ---
 
 <Layout
-  title="404 - Page Not Found | Bloomfolio"
-  description="The page you're looking for doesn't exist."
+  title="404 - ページが見つかりません | Bloomfolio"
+  description="お探しのページは存在しません。"
 >
   <div class="min-h-screen flex items-center justify-center px-4 py-20">
     <div class="text-center max-w-2xl mx-auto">
@@ -17,8 +17,7 @@ import { House, FolderOpen } from "@lucide/astro";
 
       <!-- Error Description -->
       <p class="text-xl mb-8 text-base-content/70">
-        Oops! The page you're looking for doesn't exist or has been moved. Let's
-        get you back on track.
+        お探しのページは存在しないか、移動した可能性があります。
       </p>
 
       <!-- Divider -->
@@ -28,34 +27,34 @@ import { House, FolderOpen } from "@lucide/astro";
       <div class="flex gap-4 justify-center flex-wrap mt-8">
         <a href={import.meta.env.BASE_URL} class="btn btn-primary gap-2">
           <House class="size-5" />
-          Go Home
+          ホームに戻る
         </a>
         <a
           href={`${import.meta.env.BASE_URL}/#projects`}
           class="btn btn-outline gap-2"
         >
           <FolderOpen class="size-5" />
-          View Projects
+          プロジェクトを見る
         </a>
       </div>
 
       <!-- Helpful Links -->
       <div class="flex justify-center gap-2 mt-12">
         <p class="text-sm text-base-content/60 mb-4">
-          You might be looking for:
+          こちらのリンクもお探しですか？
         </p>
         <div class="flex gap-3 justify-center flex-wrap text-sm">
           <a href={`${import.meta.env.BASE_URL}blog`} class="link link-hover"
-            >Blog</a
+            >ブログ</a
           >
           <span class="text-base-content/30">&bull;</span>
           <a href={`${import.meta.env.BASE_URL}#about`} class="link link-hover"
-            >About</a
+            >プロフィール</a
           >
           <span class="text-base-content/30">&bull;</span>
           <a
             href={`${import.meta.env.BASE_URL}blog/guides/bloomfolio-complete-guide`}
-            class="link link-hover">Documentation</a
+            class="link link-hover">ドキュメント</a
           >
         </div>
       </div>

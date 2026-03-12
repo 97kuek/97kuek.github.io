@@ -23,5 +23,13 @@ export default defineMarkdocConfig({
         username: { type: String },
       },
     },
+    LinkCard: {
+      render: component('./src/components/LinkCard.astro'),
+      attributes: {
+        id: { type: String },
+        url: { type: String },
+        collection: { type: String, default: 'blog' },
+      },
+    },
   },
 });

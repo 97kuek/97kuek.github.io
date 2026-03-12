@@ -1,0 +1,132 @@
+---
+import { getEntry } from "astro:content";
+import { Image } from "astro:assets";
+
+interface Props {
+  id?: string;
+  url?: string;
+  collection?: "blog" | "projects";
+}
+
+const { id, url, collection = "blog" } = Astro.props;
+
+let entryData: any = null;
+let linkUrl = "";
+let typeLabel = "";
+
+if (id) {
+  // Internal link
+  try {
+    const entry = await getEntry(collection as any, id);
+    if (entry) {
+      entryData = {
+        title: entry.data.title,
+        description: entry.data.description,
+        image: entry.data.image,
+        date: entry.data.publishDate,
+      };
+      linkUrl = `${import.meta.env.BASE_URL}${collection}/${id}`;
+      typeLabel = collection === "blog" ? "ブログ" : "プロジェクト";
+    }
+  } catch (e) {
+    console.error(`LinkCard error: Could not find entry ${id} in ${collection}`);
+  }
+} else if (url) {
+  // External link
+  linkUrl = url;
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+
+    const getMeta = (metaName: string) => {
+      const match = html.match(
+        new RegExp(`<meta[^>]+(?:property|name)=["']${metaName}["'][^>]+content=["']([^"']+)["']`, "i")
+      ) || html.match(
+        new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']${metaName}["']`, "i")
+      );
+      return match ? match[1] : null;
+    };
+
+    const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
+    const title = getMeta("og:title") || (titleMatch ? titleMatch[1] : url);
+    const description = getMeta("og:description") || getMeta("description") || "";
+    const image = getMeta("og:image");
+    const siteName = getMeta("og:site_name") || new URL(url).hostname;
+
+    entryData = {
+      title,
+      description,
+      image,
+      siteName,
+    };
+    typeLabel = "外部リンク";
+  } catch (e) {
+    console.error(`LinkCard error: Could not fetch metadata for ${url}`, e);
+    // Fallback if fetch fails
+    entryData = {
+      title: url,
+      description: "リンク先の内容を取得できませんでした。",
+      siteName: new URL(url).hostname,
+    };
+    typeLabel = "外部リンク";
+  }
+}
+
+if (!entryData) return null;
+---
+
+<div class="not-prose my-8">
+  <a
+    href={linkUrl}
+    target={url ? "_blank" : "_self"}
+    rel={url ? "noopener noreferrer" : ""}
+    class="group flex flex-col md:flex-row bg-base-200 hover:bg-base-300 rounded-2xl border border-base-300 overflow-hidden transition-all duration-300 hover:shadow-lg no-underline"
+  >
+    {
+      entryData.image && (
+        <div class="md:w-1/3 aspect-video md:aspect-auto overflow-hidden">
+          {typeof entryData.image === "string" ? (
+            <img
+              src={entryData.image}
+              alt={entryData.title}
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+            />
+          ) : (
+            <Image
+              src={entryData.image}
+              alt={entryData.title}
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              width={400}
+              height={225}
+            />
+          )}
+        </div>
+      )
+    }
+    <div class="p-6 flex-1 flex flex-col justify-center">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="badge badge-primary badge-sm">
+          {entryData.siteName || typeLabel}
+        </span>
+        {
+          entryData.date && (
+            <time class="text-xs text-base-content/50">
+              {entryData.date.toLocaleDateString("ja-JP", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </time>
+          )
+        }
+      </div>
+      <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-1">
+        {entryData.title}
+      </h3>
+      <p class="text-sm text-base-content/70 line-clamp-2">
+        {entryData.description}
+      </p>
+    </div>
+  </a>
+</div>

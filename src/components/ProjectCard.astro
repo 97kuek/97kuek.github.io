@@ -15,10 +15,10 @@ function formatPeriod(startDate: Date, endDate?: Date) {
     month: "short",
     year: "numeric",
   };
-  const start = startDate.toLocaleDateString("en-US", options);
+  const start = startDate.toLocaleDateString("ja-JP", options);
   const end = endDate
-    ? endDate.toLocaleDateString("en-US", options)
-    : "Present";
+    ? endDate.toLocaleDateString("ja-JP", options)
+    : "現在";
   return `${start} - ${end}`;
 }
 ---
@@ -96,7 +96,7 @@ function formatPeriod(startDate: Date, endDate?: Date) {
           </a>
         )
       }
-      <div class="tooltip" data-tip="View project details">
+      <div class="tooltip" data-tip="プロジェクト詳細を見る">
         <a
           href={`${import.meta.env.BASE_URL}projects/${project.id}`}
           class="btn btn-sm btn-primary"
