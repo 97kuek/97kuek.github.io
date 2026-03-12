@@ -167,7 +167,10 @@ function calculateDuration(startDate: Date, endDate?: Date) {
             <h2 class="card-title text-lg mb-3">Tech Stack</h2>
             <div class="flex flex-wrap gap-2">
               {skills.map((skill) => (
-                <SkillBadge skill={skill} />
+                <SkillBadge
+                  skill={skill}
+                  href={`${import.meta.env.BASE_URL}projects?tag=${encodeURIComponent(skill.toLowerCase())}`}
+                />
               ))}
             </div>
           </div>
