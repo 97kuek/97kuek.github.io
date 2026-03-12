@@ -1,10 +1,10 @@
 ---
 icon: MessageCircleCode
 linkUrl: https://x.com/97kuek_
-linkText: with a direct question on X (twitter)
+linkText: X (Twitter) で直接質問する
 footerIcon: Pickaxe
-footerText: Crafted by 97kuek
+footerText: 97kuek により制作
 footerLinkText: 97kuek
-footerLinkUrl: https://97kuek.github.io/my-portfolio/
+footerLinkUrl: https://97kuek.github.io/
 ---
-Want to chat? shoot me a dm
+お気軽にDMでご連絡ください。

@@ -78,12 +78,12 @@ const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wo
         <time datetime={publishDate.toISOString()}>
           {formatDate(publishDate)}
         </time>
-        <span>窶｢</span>
+        <span>&bull;</span>
         <span>{readingTime} min read</span>
         {
           updatedDate && (
             <>
-              <span>窶｢</span>
+              <span>&bull;</span>
               <span>Updated: {formatDate(updatedDate)}</span>
             </>
           )

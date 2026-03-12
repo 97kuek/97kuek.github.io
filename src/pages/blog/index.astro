@@ -1,4 +1,4 @@
-﻿---
+---
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
@@ -21,15 +21,15 @@ function formatDate(date: Date) {
 ---
 
 <Layout
-  title="Blog - Bloomfolio"
-  description="Read my latest blog posts and articles"
+  title="ブログ - 97kuek"
+  description="最新の技術記事や開発の記録を掲載しています"
 >
   <main class="max-w-6xl mx-auto px-4 py-20">
     <!-- Header -->
     <div class="text-center mb-16">
-      <h1 class="text-5xl font-bold mb-4">Blog</h1>
+      <h1 class="text-5xl font-bold mb-4">ブログ</h1>
       <p class="text-xl text-base-content/70">
-        Thoughts, stories, and ideas about development, design, and technology.
+        開発、デザイン、テクノロジーに関する考えや学びを記録しています。
       </p>
     </div>
 
@@ -49,7 +49,7 @@ function formatDate(date: Date) {
         >
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        Back to Home
+        ホームに戻る
       </a>
     </div>
 
@@ -58,7 +58,7 @@ function formatDate(date: Date) {
       sortedPosts.length === 0 ? (
         <div class="text-center py-20">
           <p class="text-2xl text-base-content/60">
-            No blog posts yet. Check back soon!
+            まだ記事がありません。公開をお楽しみに！
           </p>
         </div>
       ) : (
@@ -79,7 +79,7 @@ function formatDate(date: Date) {
                   {formatDate(post.data.publishDate)}
                 </time>
                 <h2 class="card-title hover:text-primary transition-colors">
-                  <a href={`${import.meta.env.BASE_URL}/blog/${post.id}`}>
+                  <a href={`${import.meta.env.BASE_URL}blog/${post.id}`}>
                     {post.data.title}
                   </a>
                 </h2>
@@ -93,10 +93,10 @@ function formatDate(date: Date) {
                 )}
                 <div class="card-actions justify-end mt-4">
                   <a
-                    href={`${import.meta.env.BASE_URL}/blog/${post.id}`}
+                    href={`${import.meta.env.BASE_URL}blog/${post.id}`}
                     class="btn btn-primary btn-sm"
                   >
-                    Read More
+                    記事を読む
                   </a>
                 </div>
               </div>

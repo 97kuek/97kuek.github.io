@@ -1,4 +1,4 @@
-﻿---
+---
 import { getEntry, render } from "astro:content";
 import { getIcon } from "../utils/iconMapper";
 
@@ -22,10 +22,11 @@ const FooterIcon = getIcon(contact.footerIcon as any);
       >
         {contact.linkText}
       </a>
-      and I'll respond whenever I can.
+      </a>
+      。できるだけ早くお返事します。
     </p>
     <p class="flex items-center space-x-1 text-base-content/60">
-      <span>Copyright ﾂｩ {new Date().getFullYear()} - {contact.footerText}</span
+      <span>Copyright &copy; {new Date().getFullYear()} - {contact.footerText}</span
       >
       <a
         class="link link-hover inline-flex justify-center items-center"

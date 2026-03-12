@@ -108,12 +108,12 @@ function calculateDuration(startDate: Date, endDate?: Date) {
         class="flex flex-wrap items-center gap-4 text-sm text-base-content/60 mb-6"
       >
         <span class="font-semibold">{formatPeriod(startDate, endDate)}</span>
-        <span>窶｢</span>
+        <span>&bull;</span>
         <span>{calculateDuration(startDate, endDate)}</span>
         {
           !endDate && (
             <>
-              <span>窶｢</span>
+              <span>&bull;</span>
               <span class="badge badge-success badge-sm">Ongoing</span>
             </>
           )
