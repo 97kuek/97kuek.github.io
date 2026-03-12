@@ -4,7 +4,6 @@ import ThemeToggle from "../components/ThemeToggle.astro";
 import ThemeSelector from "../components/ThemeSelector.astro";
 import FabFlower from "../components/FabFlower.astro";
 import Dock from "../components/Dock.astro";
-import { ClientRouter } from "astro:transitions";
 import { getEntry } from "astro:content";
 
 // Load general singleton
@@ -21,32 +20,10 @@ const {
   description = "A modern portfolio template built with Astro and DaisyUI",
 } = Astro.props;
 
-// Custom blur-fade animation configuration
-const blurFadeAnimation = {
-  old: {
-    name: "blurFadeOut",
-    duration: "0.3s",
-    easing: "ease-in-out",
-    fillMode: "forwards",
-  },
-  new: {
-    name: "blurFadeIn",
-    duration: "0.3s",
-    easing: "ease-in-out",
-    fillMode: "backwards",
-  },
-};
-
-const pageTransition = {
-  forwards: blurFadeAnimation,
-  backwards: blurFadeAnimation,
-};
-
 const origin = Astro.url.origin;
 ---
 
 <!doctype html>
-<html lang="en" transition:animate={pageTransition}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -58,9 +35,6 @@ const origin = Astro.url.origin;
     />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-
-    <!-- View Transitions -->
-    <ClientRouter />
 
     <!-- Open Graph / Social Media -->
     <meta property="og:title" content={title} />
@@ -114,46 +88,6 @@ const origin = Astro.url.origin;
     <style is:global>
       html {
         scroll-behavior: smooth;
-      }
-
-      /* Initial Page Load Blur-Fade Animation */
-      @keyframes pageLoadBlurFade {
-        0% {
-          opacity: 0;
-          filter: blur(8px);
-        }
-        100% {
-          opacity: 1;
-          filter: blur(0px);
-        }
-      }
-
-      html {
-        animation: pageLoadBlurFade 0.3s ease-in-out;
-        animation-fill-mode: both;
-      }
-
-      /* Blur Fade View Transitions (for page-to-page navigation) */
-      @keyframes blurFadeIn {
-        0% {
-          opacity: 0;
-          filter: blur(10px);
-        }
-        100% {
-          opacity: 1;
-          filter: blur(0px);
-        }
-      }
-
-      @keyframes blurFadeOut {
-        0% {
-          opacity: 1;
-          filter: blur(0px);
-        }
-        100% {
-          opacity: 0;
-          filter: blur(10px);
-        }
       }
     </style>
   </body>
