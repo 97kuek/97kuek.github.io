@@ -23,17 +23,17 @@ const { id, title, description, publishDate, updatedDate, image, tags, headings 
   Astro.props;
 
 function formatDate(date: Date) {
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString("ja-JP", {
+    year: "numeric",
     month: "long",
     day: "numeric",
-    year: "numeric",
   });
 }
 
-// Calculate reading time (rough estimate based on word count)
+// Calculate reading time for Japanese (assuming 500 chars/min)
 const content = await Astro.slots.render("default");
-const wordCount = content.split(/\s+/).length;
-const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 words/min
+const charCount = content.replace(/<[^>]*>/g, "").length;
+const readingTime = Math.ceil(charCount / 500);
 ---
 
 <Layout title={title} description={description}>
@@ -56,7 +56,7 @@ const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wo
         >
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        Back to Blog
+        ブログ一覧へ
       </a>
     </div>
 
@@ -87,12 +87,12 @@ const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wo
           {formatDate(publishDate)}
         </time>
         <span>&bull;</span>
-        <span>{readingTime} min read</span>
+        <span>読了目安: 約{readingTime}分</span>
         {
           updatedDate && (
             <>
               <span>&bull;</span>
-              <span>Updated: {formatDate(updatedDate)}</span>
+              <span>最終更新日: {formatDate(updatedDate)}</span>
             </>
           )
         }
@@ -139,7 +139,7 @@ const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wo
     <!-- Back to blog link -->
     <div class="text-center mt-8">
       <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary">
-        View All Posts
+        すべての記事を見る
       </a>
     </div>
   </article>
