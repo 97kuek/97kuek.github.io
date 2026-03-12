@@ -23,7 +23,10 @@ function formatPeriod(startDate: Date, endDate?: Date) {
 }
 ---
 
-<article class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+<article
+  class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow"
+  data-filter-tags={project.data.skills.join(",")}
+>
   <a
     class="hover:opacity-80 transition-opacity"
     href={`${import.meta.env.BASE_URL}projects/${project.id}`}

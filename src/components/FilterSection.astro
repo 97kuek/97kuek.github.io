@@ -1,0 +1,68 @@
+---
+interface Props {
+  tags: string[];
+  containerId: string;
+}
+
+const { tags, containerId } = Astro.props;
+---
+
+<div class="flex flex-wrap gap-2 mb-8" id={`filter-${containerId}`}>
+  <button
+    class="btn btn-sm btn-primary filter-btn active"
+    data-tag="all"
+  >
+    All
+  </button>
+  {
+    tags.map((tag) => (
+      <button
+        class="btn btn-sm btn-outline btn-ghost filter-btn"
+        data-tag={tag.toLowerCase()}
+      >
+        {tag}
+      </button>
+    ))
+  }
+</div>
+
+<script define:vars={{ containerId }}>
+  const filterSection = document.getElementById(`filter-${containerId}`);
+  const container = document.getElementById(containerId);
+  
+  if (filterSection && container) {
+    const buttons = filterSection.querySelectorAll('.filter-btn');
+    const items = container.querySelectorAll('[data-filter-tags]');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const selectedTag = button.getAttribute('data-tag');
+
+        // Update active state
+        buttons.forEach(btn => {
+          btn.classList.remove('btn-primary', 'active');
+          btn.classList.add('btn-outline', 'btn-ghost');
+        });
+        button.classList.add('btn-primary', 'active');
+        button.classList.remove('btn-outline', 'btn-ghost');
+
+        // Filter items
+        items.forEach(item => {
+          const itemTags = item.getAttribute('data-filter-tags').split(',').map(t => t.trim().toLowerCase());
+          
+          if (selectedTag === 'all' || itemTags.includes(selectedTag)) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  }
+</script>
+
+<style>
+  .filter-btn.active {
+    pointer-events: none;
+  }
+</style>

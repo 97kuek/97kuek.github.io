@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import ProjectCard from "../../components/ProjectCard.astro";
+import FilterSection from "../../components/FilterSection.astro";
 
 const projects = await getCollection("projects");
 
@@ -9,6 +10,9 @@ const projects = await getCollection("projects");
 const sortedProjects = projects.sort(
   (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime(),
 );
+
+// Get unique skills
+const allSkills = [...new Set(projects.flatMap(p => p.data.skills))].sort();
 ---
 
 <Layout
@@ -44,6 +48,9 @@ const sortedProjects = projects.sort(
       </a>
     </div>
 
+    <!-- Filter -->
+    <FilterSection tags={allSkills} containerId="projects-grid" />
+
     <!-- Projects Grid -->
     {
       sortedProjects.length === 0 ? (
@@ -53,7 +60,7 @@ const sortedProjects = projects.sort(
           </p>
         </div>
       ) : (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
           {sortedProjects.map((project) => (
             <ProjectCard project={project} />
           ))}
