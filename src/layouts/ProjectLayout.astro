@@ -14,6 +14,7 @@ interface Props {
   skills: string[];
   demoLink?: string;
   sourceLink?: string;
+  updatedDate?: Date;
 }
 
 const {
@@ -25,7 +26,16 @@ const {
   skills,
   demoLink,
   sourceLink,
+  updatedDate,
 } = Astro.props;
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
 function formatPeriod(startDate: Date, endDate?: Date) {
   const options: Intl.DateTimeFormatOptions = {
@@ -115,6 +125,14 @@ function calculateDuration(startDate: Date, endDate?: Date) {
             <>
               <span>&bull;</span>
               <span class="badge badge-success badge-sm">Ongoing</span>
+            </>
+          )
+        }
+        {
+          updatedDate && (
+            <>
+              <span>&bull;</span>
+              <span>Last updated: {formatDate(updatedDate)}</span>
             </>
           )
         }

@@ -60,7 +60,7 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
       const items = container.querySelectorAll('[data-filter-tags]');
       let activeTags = new Set();
 
-      const updateUI = () => {
+      const updateUI = (updateUrl = true) => {
         let visibleCount = 0;
 
         // Update button states
@@ -107,6 +107,18 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
           noResults.classList.add('hidden');
           container.classList.remove('hidden');
         }
+
+        // Synchronize with URL
+        if (updateUrl) {
+          const url = new URL(window.location.href);
+          url.searchParams.delete('tag');
+          activeTags.forEach(tag => url.searchParams.append('tag', tag));
+          
+          // Only push state if the URL actually changed to avoid history bloating
+          if (url.toString() !== window.location.href) {
+            window.history.pushState({ tags: Array.from(activeTags) }, '', url);
+          }
+        }
       };
 
       const toggleTag = (tag) => {
@@ -136,15 +148,27 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
       }
 
       // Handle deep linking from URL parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlTag = urlParams.get('tag')?.toLowerCase();
-      if (urlTag) {
-        const targetBtn = Array.from(buttons).find(btn => btn.getAttribute('data-tag') === urlTag);
-        if (targetBtn) {
-          activeTags.add(urlTag);
-          updateUI();
-        }
-      }
+      const syncFromUrl = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlTags = urlParams.getAll('tag');
+        activeTags.clear();
+        urlTags.forEach(tag => {
+          const lowerTag = tag.toLowerCase();
+          const targetBtn = Array.from(buttons).find(btn => btn.getAttribute('data-tag') === lowerTag);
+          if (targetBtn) {
+            activeTags.add(lowerTag);
+          }
+        });
+        updateUI(false); // Don't push state again
+      };
+
+      // Handle browser back/forward
+      window.addEventListener('popstate', (event) => {
+        syncFromUrl();
+      });
+
+      // Initial sync
+      syncFromUrl();
     }
   };
 

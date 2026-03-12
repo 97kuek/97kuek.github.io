@@ -3,6 +3,7 @@ title: "自己紹介"
 description: "早稲田大学3年の植木敬太郎です。人力飛行機製作や知覚情報システムの研究など、これまでの活動とこれからの展望をまとめました。"
 image: "@assets/blog/welcome-post/welcome-post.jpg"
 publishDate: "2025-10-30"
+updatedDate: 2026-03-12
 tags: ["自己紹介", "人力飛行機", "研究室", "モノづくり"]
 ---
 

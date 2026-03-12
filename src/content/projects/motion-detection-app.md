@@ -3,9 +3,10 @@ featured: true
 title: "OpenCVを用いた古典的なリアルタイム動体検知アプリケーション"
 description: "ビデオソース内の特定の領域（ROI）を監視し、動きを記録する動体検知アプリケーション。移動平均を用いた背景モデルの構築、モルフォロジー変換によるノイズ除去、デバウンス処理を取り入れたステートマシンによるイベント管理を実装。"
 image: "@assets/projects/motion-detection-app/image.png"
-startDate: "2025-10-12"
-endDate: "2025-12-21"
-skills: ["Python", "OpenCV"]
+startDate: 2024-05-01
+endDate: 2024-06-01
+updatedDate: 2026-03-12
+skills: ["Python", "OpenCV", "Tkinter"]
 sourceLink: "https://github.com/97kuek/Motion-Detection-App"
 ---
 
