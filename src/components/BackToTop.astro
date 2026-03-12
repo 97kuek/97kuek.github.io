@@ -1,0 +1,63 @@
+---
+// BackToTop.astro
+---
+
+<button
+  id="back-to-top"
+  class="fixed bottom-8 right-8 btn btn-circle btn-primary shadow-lg translate-y-24 opacity-0 transition-all duration-300 z-50 hover:scale-110 active:scale-95"
+  aria-label="Back to top"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="m18 15-6-6-6 6"></path>
+  </svg>
+</button>
+
+<script>
+  const initBackToTop = () => {
+    const button = document.getElementById('back-to-top');
+    if (!button) return;
+
+    const toggleVisible = () => {
+      if (window.scrollY > 300) {
+        button.classList.remove('translate-y-24', 'opacity-0');
+        button.classList.add('translate-y-0', 'opacity-100');
+      } else {
+        button.classList.add('translate-y-24', 'opacity-0');
+        button.classList.remove('translate-y-0', 'opacity-100');
+      }
+    };
+
+    button.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    window.addEventListener('scroll', toggleVisible);
+    
+    // Initial call
+    toggleVisible();
+  };
+
+  // Run on page load
+  initBackToTop();
+  // Run on view transitions
+  document.addEventListener('astro:after-swap', initBackToTop);
+</script>
+
+<style>
+  #back-to-top {
+    /* Ensure it doesn't overlap with other fixed elements if necessary */
+  }
+</style>

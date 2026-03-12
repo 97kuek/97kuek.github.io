@@ -1,0 +1,48 @@
+---
+// ReadingProgress.astro
+---
+
+<div 
+  id="reading-progress-container" 
+  class="fixed top-0 left-0 w-full h-1.5 z-[100] pointer-events-none"
+>
+  <div 
+    id="reading-progress-bar" 
+    class="h-full bg-primary w-0 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(var(--p),0.5)]"
+  ></div>
+</div>
+
+<script>
+  const initProgress = () => {
+    const progressBar = document.getElementById('reading-progress-bar');
+    if (!progressBar) return;
+
+    const updateProgress = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight <= 0) {
+        progressBar.style.width = '0%';
+        return;
+      }
+      const scrollPercent = (window.scrollY / scrollHeight) * 100;
+      progressBar.style.width = `${scrollPercent}%`;
+    };
+
+    window.addEventListener('scroll', updateProgress);
+    window.addEventListener('resize', updateProgress);
+    
+    // Initial call
+    updateProgress();
+  };
+
+  // Run on page load
+  initProgress();
+  // Run on view transitions
+  document.addEventListener('astro:after-swap', initProgress);
+</script>
+
+<style>
+  #reading-progress-container {
+    /* Ensure it's above everything but doesn't block clicks */
+    background: transparent;
+  }
+</style>

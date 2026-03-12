@@ -5,6 +5,8 @@ import SkillBadge from "../components/SkillBadge.astro";
 import Giscus from "../components/Giscus.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import RelatedContent from "../components/RelatedContent.astro";
+import ReadingProgress from "../components/ReadingProgress.astro";
+import BackToTop from "../components/BackToTop.astro";
 
 interface Props {
   id: string;
@@ -35,6 +37,8 @@ const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wo
 ---
 
 <Layout title={title} description={description}>
+  <ReadingProgress />
+  <BackToTop />
   <article class="max-w-4xl mx-auto px-4 py-20">
     <!-- Back button -->
     <div class="mb-8">
