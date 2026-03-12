@@ -3,17 +3,21 @@ import Layout from "./Layout.astro";
 import { Image } from "astro:assets";
 import SkillBadge from "../components/SkillBadge.astro";
 import Giscus from "../components/Giscus.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+import RelatedContent from "../components/RelatedContent.astro";
 
 interface Props {
+  id: string;
   title: string;
   description: string;
   publishDate: Date;
   updatedDate?: Date;
   image: any;
   tags?: string[];
+  headings: { depth: number; slug: string; text: string }[];
 }
 
-const { title, description, publishDate, updatedDate, image, tags } =
+const { id, title, description, publishDate, updatedDate, image, tags, headings } =
   Astro.props;
 
 function formatDate(date: Date) {
@@ -107,10 +111,20 @@ const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wo
     <!-- Divider -->
     <div class="divider"></div>
 
-    <!-- Post Content -->
+    <!-- Table of Contents (Now at top) -->
+    <TableOfContents headings={headings} />
+
+    <!-- Content Body -->
     <div class="prose prose-lg max-w-none">
       <slot />
     </div>
+
+    <!-- Related Content -->
+    <RelatedContent 
+      currentId={id} 
+      collection="blog" 
+      tags={tags || []} 
+    />
 
     <!-- Giscus Comments -->
     <Giscus />

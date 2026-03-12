@@ -1,0 +1,65 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+
+interface Props {
+  currentId: string;
+  collection: "blog" | "projects";
+  tags: string[];
+  maxResults?: number;
+}
+
+const { currentId, collection, tags, maxResults = 3 } = Astro.props;
+
+if (!tags || tags.length === 0) return null;
+
+const allEntries = await getCollection(collection);
+
+// Calculate relevance score based on tag overlap
+const relatedEntries = allEntries
+  .filter((entry) => entry.id !== currentId)
+  .map((entry) => {
+    const entryTags = (collection === "blog" ? (entry.data as any).tags : (entry.data as any).skills) || [];
+    const intersection = tags.filter((tag) => entryTags.includes(tag));
+    return { entry, score: intersection.length };
+  })
+  .filter((item) => item.score > 0)
+  .sort((a, b) => b.score - a.score)
+  .slice(0, maxResults);
+
+if (relatedEntries.length === 0) return null;
+---
+
+<section class="mt-20">
+  <div class="divider mb-12"></div>
+  <h2 class="text-3xl font-bold mb-8">Related {collection === "blog" ? "Posts" : "Projects"}</h2>
+  
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {
+      relatedEntries.map(({ entry }) => (
+        <a 
+          href={`${import.meta.env.BASE_URL}${collection}/${entry.id}`}
+          class="group block card bg-base-200 hover:bg-base-300 transition-all duration-300 overflow-hidden"
+        >
+          <figure class="aspect-video overflow-hidden">
+            <Image 
+              src={(entry.data as any).image} 
+              alt={(entry.data as any).title}
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              width={400}
+              height={225}
+            />
+          </figure>
+          <div class="card-body p-4">
+            <h3 class="card-title text-lg group-hover:text-primary transition-colors">
+              {(entry.data as any).title}
+            </h3>
+            <p class="text-sm text-base-content/70 line-clamp-2">
+              {(entry.data as any).description}
+            </p>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</section>
