@@ -25,15 +25,9 @@ export default defineMarkdocConfig({
     },
     Math: {
       render: component('./src/components/Math.astro'),
-      attributes: {
-        formula: { type: String, required: true },
-      },
     },
     InlineMath: {
       render: component('./src/components/InlineMath.astro'),
-      attributes: {
-        formula: { type: String, required: true },
-      },
     },
     LinkCard: {
       render: component('./src/components/LinkCard.astro'),

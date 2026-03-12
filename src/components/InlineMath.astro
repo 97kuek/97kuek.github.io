@@ -1,12 +1,8 @@
 ---
 import { renderToString } from 'katex';
 
-interface Props {
-  formula: string;
-}
-
-const { formula } = Astro.props;
-const html = renderToString(formula, {
+const formula = await Astro.slots.render("default");
+const html = renderToString(formula.trim(), {
   displayMode: false,
   throwOnError: false
 });
