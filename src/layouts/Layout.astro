@@ -57,7 +57,7 @@ const origin = Astro.url.origin;
       crossorigin="anonymous"
     />
   </head>
-  <body class="min-h-screen">
+  <body class="min-h-screen overflow-x-hidden">
     <!-- Theme Controls - Fixed Position -->
     <div class="fixed top-4 right-4 z-50">
       {general.enableThemeSelector ? <ThemeSelector /> : <ThemeToggle />}
