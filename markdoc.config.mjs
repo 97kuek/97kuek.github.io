@@ -44,7 +44,6 @@ export default defineMarkdocConfig({
       attributes: {
         content: { type: String, render: true },
         language: { type: String, render: true },
-        ...nodes.fence.attributes,
       },
     },
   },

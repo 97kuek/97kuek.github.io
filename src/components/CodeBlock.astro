@@ -6,8 +6,11 @@ interface Props {
   language?: string;
 }
 
-const { content, language, ...rest } = Astro.props;
-const code = content || (await Astro.slots.render("default")) || "// No code provided";
+const { language, ...rest } = Astro.props;
+const html = await Astro.slots.render("default");
+// Usually Markdoc passes raw text, but let's be safe.
+// If it's wrapped in a pre/code tag by another processor, we might need to strip it.
+const code = html.replace(/<[^>]*>/g, "").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim();
 ---
 
 <Code code={code} lang={language || 'plaintext'} {...rest} />
