@@ -1,4 +1,4 @@
-import { defineMarkdocConfig, component } from '@astrojs/markdoc/config';
+import { defineMarkdocConfig, component, nodes } from '@astrojs/markdoc/config';
 
 export default defineMarkdocConfig({
   tags: {
@@ -35,6 +35,16 @@ export default defineMarkdocConfig({
         id: { type: String },
         url: { type: String },
         collection: { type: String, default: 'blog' },
+      },
+    },
+  },
+  nodes: {
+    fence: {
+      render: component('./src/components/CodeBlock.astro'),
+      attributes: {
+        content: { type: String, render: true },
+        language: { type: String, render: true },
+        ...nodes.fence.attributes,
       },
     },
   },

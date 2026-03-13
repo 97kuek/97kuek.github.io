@@ -1,0 +1,13 @@
+---
+import { Code } from 'astro-expressive-code/components';
+
+interface Props {
+  content: string;
+  language?: string;
+}
+
+const { content, language, ...rest } = Astro.props;
+const code = content || (await Astro.slots.render("default")) || "// No code provided";
+---
+
+<Code code={code} lang={language || 'plaintext'} {...rest} />

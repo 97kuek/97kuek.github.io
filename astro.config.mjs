@@ -14,7 +14,13 @@ import rehypeKatex from "rehype-katex";
 export default defineConfig({
   site: "https://97kuek.github.io",
 
-  integrations: [astroExpressiveCode(), react(), markdoc()],
+  integrations: [
+    astroExpressiveCode({
+      themes: ["github-dark", "github-light"],
+    }),
+    react(),
+    markdoc(),
+  ],
 
   markdown: {
     remarkPlugins: [remarkMath],
