@@ -1,8 +1,10 @@
 ---
 import { renderToString } from 'katex';
 
-const formula = await Astro.slots.render("default");
-const html = renderToString(formula.trim(), {
+const rawFormula = await Astro.slots.render("default");
+// Markdoc sometimes wraps the formula in <p> tags, which breaks KaTeX
+const formula = rawFormula.replace(/<[^>]*>/g, "").trim();
+const html = renderToString(formula, {
   displayMode: true,
   throwOnError: false
 });

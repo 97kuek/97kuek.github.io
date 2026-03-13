@@ -4,29 +4,35 @@
 
 <div class="giscus-container mt-16 max-w-4xl mx-auto px-4 w-full">
     <div class="giscus"></div>
-    <script
-        is:inline
-        src="https://giscus.app/client.js"
-        data-repo="97kuek/97kuek.github.io"
-        data-repo-id="R_kgDORh6lYA"
-        data-category="General"
-        data-category-id="DIC_kwDORh6lYM4C3_9j"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="preferred_color_scheme"
-        data-lang="ja"
-        crossorigin="anonymous"
-        async
-    ></script>
-
     <script is:inline>
         function getGiscusTheme() {
-            const theme = document.documentElement.getAttribute('data-theme');
+            const theme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('theme');
             const darkThemes = ['dark', 'synthwave', 'dim', 'halloween', 'night', 'coffee', 'luxury'];
             return darkThemes.includes(theme) ? 'dark' : 'light';
+        }
+
+        function loadGiscus() {
+            const theme = getGiscusTheme();
+            const script = document.createElement('script');
+            script.src = 'https://giscus.app/client.js';
+            script.setAttribute('data-repo', '97kuek/97kuek.github.io');
+            script.setAttribute('data-repo-id', 'R_kgDORh6lYA');
+            script.setAttribute('data-category', 'General');
+            script.setAttribute('data-category-id', 'DIC_kwDORh6lYM4C3_9j');
+            script.setAttribute('data-mapping', 'pathname');
+            script.setAttribute('data-strict', '0');
+            script.setAttribute('data-reactions-enabled', '1');
+            script.setAttribute('data-emit-metadata', '0');
+            script.setAttribute('data-input-position', 'bottom');
+            script.setAttribute('data-theme', theme);
+            script.setAttribute('data-lang', 'ja');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.async = true;
+            
+            const container = document.querySelector('.giscus');
+            if (container) {
+                container.appendChild(script);
+            }
         }
 
         function updateGiscusTheme() {
@@ -40,9 +46,6 @@
             }
         }
 
-        // Set initial theme in script tag data attribute if possible, 
-        // but since it's is:inline and loaded async, we'll rely on the message.
-        
         // Listen for theme changes from the site's theme toggle
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -54,28 +57,21 @@
 
         observer.observe(document.documentElement, { attributes: true });
 
-        // Handle initial load and view transitions
-        const initGiscus = () => {
-            // Try to update theme immediately
-            updateGiscusTheme();
-            
-            // Also listen for giscus load completion
-            window.addEventListener('message', (event) => {
-                if (event.origin !== 'https://giscus.app') return;
-                if (event.data.giscus && (event.data.giscus.discussion || event.data.giscus.viewer)) {
-                    updateGiscusTheme();
-                }
-            });
-        };
-
         // Run on page load
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initGiscus);
+            document.addEventListener('DOMContentLoaded', loadGiscus);
         } else {
-            initGiscus();
+            loadGiscus();
         }
 
         // For Astro view transitions
-        document.addEventListener('astro:after-swap', updateGiscusTheme);
+        document.addEventListener('astro:after-swap', () => {
+            // After swap, we might need to re-inject or just update
+            if (!document.querySelector('iframe.giscus-frame')) {
+                loadGiscus();
+            } else {
+                updateGiscusTheme();
+            }
+        });
     </script>
 </div>
