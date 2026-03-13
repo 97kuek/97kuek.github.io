@@ -15,11 +15,12 @@ export default defineConfig({
   site: "https://97kuek.github.io",
 
   integrations: [
-    astroExpressiveCode({
-      themes: ["github-dark", "github-light"],
-    }),
     react(),
     markdoc(),
+    astroExpressiveCode({
+      themes: ["github-dark", "github-light"],
+      emitExternalStylesheet: false,
+    }),
   ],
 
   markdown: {

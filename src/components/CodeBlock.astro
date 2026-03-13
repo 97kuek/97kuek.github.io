@@ -1,16 +1,10 @@
 ---
 import { Code } from 'astro-expressive-code/components';
 
-interface Props {
-  content: string;
-  language?: string;
-}
-
-const { language, ...rest } = Astro.props;
-const html = await Astro.slots.render("default");
-// Usually Markdoc passes raw text, but let's be safe.
-// If it's wrapped in a pre/code tag by another processor, we might need to strip it.
-const code = html.replace(/<[^>]*>/g, "").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim();
+const { content, language, ...rest } = Astro.props;
+const slotHtml = await Astro.slots.render("default");
+// If content is empty, try to get it from slot and clean it up
+const code = content || slotHtml.replace(/<[^>]*>/g, "").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim();
 ---
 
 <Code code={code} lang={language || 'plaintext'} {...rest} />

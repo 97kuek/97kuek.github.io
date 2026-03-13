@@ -42,8 +42,8 @@ export default defineMarkdocConfig({
     fence: {
       render: component('./src/components/CodeBlock.astro'),
       attributes: {
-        content: { type: String, render: true },
-        language: { type: String, render: true },
+        content: { type: String },
+        language: { type: String },
       },
     },
   },
