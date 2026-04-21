@@ -1,5 +1,5 @@
 ---
-const { color } = Astro.props;
+const { color, title } = Astro.props;
 
 const styles: Record<string, string> = {
   info: 'border-info/70 bg-info/10',
@@ -12,6 +12,7 @@ const colorClass = styles[color] ?? 'border-base-content/40 bg-base-200';
 ---
 
 <div class={`not-prose my-8 rounded-2xl border-2 p-6 ${colorClass}`}>
+  {title && <p class="mb-3 text-sm font-bold uppercase tracking-widest opacity-70">{title}</p>}
   <div class="prose max-w-none">
     <slot />
   </div>

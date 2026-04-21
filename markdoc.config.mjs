@@ -41,6 +41,7 @@ export default defineMarkdocConfig({
       render: component('./src/components/Box.astro'),
       attributes: {
         color: { type: String },
+        title: { type: String },
       },
     },
   },
