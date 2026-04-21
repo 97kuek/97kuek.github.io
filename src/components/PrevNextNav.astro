@@ -1,0 +1,58 @@
+---
+interface NavEntry {
+  title: string;
+  description: string;
+  url: string;
+}
+
+interface Props {
+  prev?: NavEntry;
+  next?: NavEntry;
+  collection: "blog" | "projects";
+}
+
+const { prev, next, collection } = Astro.props;
+const label = collection === "blog" ? "記事" : "プロジェクト";
+---
+
+{
+  (prev || next) && (
+    <nav class="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4" aria-label="前後ナビゲーション">
+      {prev ? (
+        <a
+          href={prev.url}
+          class="group flex flex-col gap-1 card bg-base-200 hover:bg-base-300 transition-all duration-200 p-5"
+        >
+          <span class="text-xs text-base-content/50 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            前の{label}
+          </span>
+          <span class="font-semibold text-sm leading-snug group-hover:text-primary transition-colors line-clamp-2">
+            {prev.title}
+          </span>
+          <span class="text-xs text-base-content/50 line-clamp-1">{prev.description}</span>
+        </a>
+      ) : (
+        <div />
+      )}
+
+      {next ? (
+        <a
+          href={next.url}
+          class="group flex flex-col gap-1 card bg-base-200 hover:bg-base-300 transition-all duration-200 p-5 sm:text-right sm:items-end"
+        >
+          <span class="text-xs text-base-content/50 flex items-center gap-1 sm:flex-row-reverse">
+            次の{label}
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </span>
+          <span class="font-semibold text-sm leading-snug group-hover:text-primary transition-colors line-clamp-2">
+            {next.title}
+          </span>
+          <span class="text-xs text-base-content/50 line-clamp-1">{next.description}</span>
+        </a>
+      ) : (
+        <div />
+      )}
+    </nav>
+  )
+}

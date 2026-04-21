@@ -5,8 +5,15 @@ import SkillBadge from "../components/SkillBadge.astro";
 import Giscus from "../components/Giscus.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import RelatedContent from "../components/RelatedContent.astro";
+import PrevNextNav from "../components/PrevNextNav.astro";
 import ReadingProgress from "../components/ReadingProgress.astro";
 import BackToTop from "../components/BackToTop.astro";
+
+interface NavEntry {
+  title: string;
+  description: string;
+  url: string;
+}
 
 interface Props {
   id: string;
@@ -18,9 +25,11 @@ interface Props {
   tags?: string[];
   headings: { depth: number; slug: string; text: string }[];
   readingTime: number;
+  prev?: NavEntry;
+  next?: NavEntry;
 }
 
-const { id, title, description, publishDate, updatedDate, image, tags, headings, readingTime } =
+const { id, title, description, publishDate, updatedDate, image, tags, headings, readingTime, prev, next } =
   Astro.props;
 
 const ogImage = image
@@ -123,11 +132,14 @@ function formatDate(date: Date) {
       <slot />
     </div>
 
+    <!-- Prev / Next Navigation -->
+    <PrevNextNav prev={prev} next={next} collection="blog" />
+
     <!-- Related Content -->
-    <RelatedContent 
-      currentId={id} 
-      collection="blog" 
-      tags={tags || []} 
+    <RelatedContent
+      currentId={id}
+      collection="blog"
+      tags={tags || []}
     />
 
     <!-- Giscus Comments -->

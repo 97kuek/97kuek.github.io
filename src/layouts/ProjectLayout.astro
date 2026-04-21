@@ -5,8 +5,15 @@ import SkillBadge from "../components/SkillBadge.astro";
 import { ExternalLink } from "@lucide/astro";
 import Giscus from "../components/Giscus.astro";
 import RelatedContent from "../components/RelatedContent.astro";
+import PrevNextNav from "../components/PrevNextNav.astro";
 import ReadingProgress from "../components/ReadingProgress.astro";
 import BackToTop from "../components/BackToTop.astro";
+
+interface NavEntry {
+  title: string;
+  description: string;
+  url: string;
+}
 
 interface Props {
   id: string;
@@ -19,6 +26,8 @@ interface Props {
   demoLink?: string;
   sourceLink?: string;
   updatedDate?: Date;
+  prev?: NavEntry;
+  next?: NavEntry;
 }
 
 const {
@@ -32,6 +41,8 @@ const {
   demoLink,
   sourceLink,
   updatedDate,
+  prev,
+  next,
 } = Astro.props;
 
 function formatDate(date: Date) {
@@ -214,11 +225,14 @@ const ogImage = image
       <slot />
     </div>
 
+    <!-- Prev / Next Navigation -->
+    <PrevNextNav prev={prev} next={next} collection="projects" />
+
     <!-- Related Content -->
-    <RelatedContent 
-      currentId={id} 
-      collection="projects" 
-      tags={skills} 
+    <RelatedContent
+      currentId={id}
+      collection="projects"
+      tags={skills}
     />
 
     <!-- Giscus Comments -->

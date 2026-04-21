@@ -21,6 +21,15 @@ if (!entry) {
 }
 
 const { Content } = await render(entry);
+
+const allProjects = await getCollection("projects");
+const sorted = allProjects.sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+const currentIndex = sorted.findIndex((e) => e.id === entry.id);
+const prevEntry = sorted[currentIndex + 1];
+const nextEntry = sorted[currentIndex - 1];
+const base = import.meta.env.BASE_URL;
+const prevNav = prevEntry ? { title: prevEntry.data.title, description: prevEntry.data.description, url: `${base}projects/${prevEntry.id}` } : undefined;
+const nextNav = nextEntry ? { title: nextEntry.data.title, description: nextEntry.data.description, url: `${base}projects/${nextEntry.id}` } : undefined;
 ---
 
 <ProjectLayout
@@ -34,6 +43,8 @@ const { Content } = await render(entry);
   demoLink={entry.data.demoLink}
   sourceLink={entry.data.sourceLink}
   updatedDate={entry.data.updatedDate}
+  prev={prevNav}
+  next={nextNav}
 >
   <Content />
 </ProjectLayout>
