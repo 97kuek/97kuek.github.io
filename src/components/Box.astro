@@ -2,17 +2,17 @@
 const { color } = Astro.props;
 
 const styles: Record<string, string> = {
-  info: 'border-info/40 bg-info/10',
-  warning: 'border-warning/40 bg-warning/10',
-  success: 'border-success/40 bg-success/10',
-  error: 'border-error/40 bg-error/10',
+  info: 'border-info/70 bg-info/10',
+  warning: 'border-warning/70 bg-warning/10',
+  success: 'border-success/70 bg-success/10',
+  error: 'border-error/70 bg-error/10',
 };
 
-const colorClass = styles[color] ?? 'border-base-300 bg-base-200';
+const colorClass = styles[color] ?? 'border-base-content/40 bg-base-200';
 ---
 
 <div class={`not-prose my-8 rounded-2xl border-2 p-6 ${colorClass}`}>
-  <div class="prose prose-sm max-w-none">
+  <div class="prose max-w-none">
     <slot />
   </div>
 </div>
