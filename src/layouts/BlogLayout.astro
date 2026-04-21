@@ -23,6 +23,10 @@ interface Props {
 const { id, title, description, publishDate, updatedDate, image, tags, headings, readingTime } =
   Astro.props;
 
+const ogImage = image
+  ? `${Astro.url.origin}${typeof image === 'object' && 'src' in image ? image.src : image}`
+  : undefined;
+
 function formatDate(date: Date) {
   return date.toLocaleDateString("ja-JP", {
     year: "numeric",
@@ -32,7 +36,7 @@ function formatDate(date: Date) {
 }
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} ogImage={ogImage}>
   <ReadingProgress />
   <BackToTop />
   <article class="max-w-4xl mx-auto px-4 py-20">

@@ -29,7 +29,7 @@ if (id) {
       typeLabel = collection === "blog" ? "ブログ" : "プロジェクト";
     }
   } catch (e) {
-    console.error(`LinkCard error: Could not find entry ${id} in ${collection}`);
+    // Entry not found — render nothing
   }
 } else if (url) {
   // External link
@@ -61,7 +61,6 @@ if (id) {
     };
     typeLabel = "外部リンク";
   } catch (e) {
-    console.error(`LinkCard error: Could not fetch metadata for ${url}`, e);
     // Fallback if fetch fails
     entryData = {
       title: url,

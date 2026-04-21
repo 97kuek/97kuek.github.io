@@ -70,9 +70,13 @@ function calculateDuration(startDate: Date, endDate?: Date) {
   if (remainingMonths === 0) return `${years}年`;
   return `${years}年${remainingMonths}ヶ月`;
 }
+
+const ogImage = image
+  ? `${Astro.url.origin}${typeof image === 'object' && 'src' in image ? image.src : image}`
+  : undefined;
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} ogImage={ogImage}>
   <ReadingProgress />
   <BackToTop />
   <article class="max-w-4xl mx-auto px-4 py-20">

@@ -13,17 +13,21 @@ const general = generalEntry.data;
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
   title = "Bloomfolio Template",
   description = "A modern portfolio template built with Astro and DaisyUI",
+  ogImage,
 } = Astro.props;
 
 const origin = Astro.url.origin;
+const ogImageUrl = ogImage ?? `${origin}/images/og_home.png`;
 ---
 
 <!doctype html>
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -40,14 +44,14 @@ const origin = Astro.url.origin;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={origin} />
-    <meta property="og:image" content={`${origin}/images/og_home.png`} />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:image" content={ogImageUrl} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={`${origin}/images/og_home.png`} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- KaTeX CSS -->
     <link
@@ -92,3 +96,4 @@ const origin = Astro.url.origin;
     </style>
   </body>
 </html>
+

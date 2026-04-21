@@ -18,6 +18,7 @@ const FooterIcon = getIcon(contact.footerIcon as any);
       <a
         href={contact.linkUrl}
         target="_blank"
+        rel="noopener noreferrer"
         class="link link-hover text-primary"
       >
         {contact.linkText}
@@ -30,6 +31,7 @@ const FooterIcon = getIcon(contact.footerIcon as any);
         class="link link-hover inline-flex justify-center items-center"
         href={contact.footerLinkUrl}
         target="_blank"
+        rel="noopener noreferrer"
       >
         <FooterIcon class="size-3 inline-block mr-1" />
         {contact.footerLinkText}

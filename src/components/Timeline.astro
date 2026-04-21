@@ -129,7 +129,7 @@ const containerId = `${collection}-items`;
               <li data-filter-tags={((entry.data as any).skills || []).join(",")}>
                 {index > 0 && <hr class="bg-base-100" />}
                 <div class="timeline-middle">
-                  <IconComponent class={`size-5 text-${color} mx-3 my-1`} />
+                  <IconComponent class="size-5 mx-3 my-1" style={`color: var(--color-${color})`} />
                 </div>
                 <div
                   class={`timeline-${index % 2 === 0 ? "start" : "end"} max-w-2xs pt-3 mb-10`}
@@ -166,7 +166,7 @@ const containerId = `${collection}-items`;
                         )}
                         <div class="flex-1">
                           <h3 class="card-title">{entry.data.title}</h3>
-                          <p class={`text-${color} font-semibold`}>
+                          <p class="font-semibold" style={`color: var(--color-${color})`}>
                             {entry.data.subtitle}
                           </p>
                           {"location" in entry.data && entry.data.location && (
