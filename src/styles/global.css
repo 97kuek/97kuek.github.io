@@ -17,3 +17,18 @@ The name should be the same as the theme name below.
     valentine,
     dim;
 }
+
+[data-theme="dark"] .prose :is(h1, h2, h3, h4, h5, h6),
+[data-theme="synthwave"] .prose :is(h1, h2, h3, h4, h5, h6),
+[data-theme="dim"] .prose :is(h1, h2, h3, h4, h5, h6) {
+  color: color-mix(in oklch, var(--color-primary), white 35%);
+}
+
+[data-theme="dark"] .prose h2,
+[data-theme="synthwave"] .prose h2,
+[data-theme="dim"] .prose h2,
+[data-theme="dark"] .prose h3,
+[data-theme="synthwave"] .prose h3,
+[data-theme="dim"] .prose h3 {
+  border-color: color-mix(in oklch, var(--color-primary), white 35%);
+}
