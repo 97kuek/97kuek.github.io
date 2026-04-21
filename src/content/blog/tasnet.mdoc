@@ -321,7 +321,7 @@ LSTM層4 ←────────────────┘（足し算）
 
 この{% InlineMath %}z_k{% /InlineMath %}の値はどんな値でもあり得ます。しかし、マスクとして使うには0~1に収める必要があります。そこでSoftmaxを使います。
 
-{% Box color="info" title = "Softmax関数" %}
+{% Box color="info" title="Softmax関数" %}
 Softmax関数は**複数の値を合計が1になる割合に変換する関数**です。
 
 {% Math %}m_{i,j} = \frac{e^{z_{i,j}}}{\sum_{n=1}^{N} e^{z_{n,j}}}{% /Math %}
