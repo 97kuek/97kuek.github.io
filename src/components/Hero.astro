@@ -48,7 +48,7 @@ const { hero } = Astro.props;
         {hero.description}
       </p>
       <div
-        class="grid grid-cols-4 gap-2 justify-items-center lg:flex lg:gap-4 lg:justify-start"
+        class="flex flex-wrap gap-3 justify-center lg:justify-start"
       >
         {
           hero.socialLinks.map((link) => {
