@@ -9,12 +9,11 @@ interface Props {
 const { post } = Astro.props;
 
 function formatDate(date: Date) {
-  const options: Intl.DateTimeFormatOptions = {
+  return date.toLocaleDateString("ja-JP", {
+    year: "numeric",
     month: "long",
     day: "numeric",
-    year: "numeric",
-  };
-  return date.toLocaleDateString("ja-JP", options);
+  });
 }
 ---
 
@@ -23,7 +22,7 @@ function formatDate(date: Date) {
     <Image src={post.data.image} alt={post.data.title} />
   </figure>
   <div
-    class="card-body rounded-lg justify-end bg-linear-to-b from-primary/80 to-transparent"
+    class="card-body rounded-lg justify-end bg-gradient-to-b from-primary/80 to-transparent"
   >
     <h3
       class="card-title text-base-100-content hover:text-primary-content transition-colors"

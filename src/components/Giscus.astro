@@ -47,7 +47,7 @@
         }
 
         // Listen for theme changes from the site's theme toggle
-        const observer = new MutationObserver((mutations) => {
+        let observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
                     updateGiscusTheme();
@@ -55,7 +55,24 @@
             });
         });
 
-        observer.observe(document.documentElement, { attributes: true });
+        function startObserver() {
+            observer.disconnect();
+            observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                        updateGiscusTheme();
+                    }
+                });
+            });
+            observer.observe(document.documentElement, { attributes: true });
+        }
+
+        // Disconnect before page swap to prevent leaks
+        document.addEventListener('astro:before-swap', () => {
+            observer.disconnect();
+        });
+
+        startObserver();
 
         // Run on page load
         if (document.readyState === 'loading') {
@@ -66,7 +83,7 @@
 
         // For Astro view transitions
         document.addEventListener('astro:after-swap', () => {
-            // After swap, we might need to re-inject or just update
+            startObserver();
             if (!document.querySelector('iframe.giscus-frame')) {
                 loadGiscus();
             } else {
