@@ -37,6 +37,12 @@ export default defineMarkdocConfig({
         collection: { type: String, default: 'blog' },
       },
     },
+    Box: {
+      render: component('./src/components/Box.astro'),
+      attributes: {
+        color: { type: String },
+      },
+    },
   },
   nodes: {
     fence: {
