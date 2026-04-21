@@ -227,8 +227,8 @@ w_k = [100, 200, ..., 50]          ← スケールが大きい
 
 という状態でLSTMに渡すと、学習が不安定になってしまいます。そこで、**標準化**を行います。
 
-{% Box color="info" %}
-標準化を少し復習してみましょう。{% InlineMath %}\mu{% /InlineMath %}を平均、{% InlineMath %}\sigma{% /InlineMath %}を標準偏差すると、
+{% Box color="info" title="標準化" %}
+{% InlineMath %}\mu{% /InlineMath %}を平均、{% InlineMath %}\sigma{% /InlineMath %}を標準偏差すると、
 以下の式で標準化できます。
 
 {% Math %}\frac{x-\mu}{\sigma}{% /Math %}
@@ -321,7 +321,7 @@ LSTM層4 ←────────────────┘（足し算）
 
 この{% InlineMath %}z_k{% /InlineMath %}の値はどんな値でもあり得ます。しかし、マスクとして使うには0~1に収める必要があります。そこでSoftmaxを使います。
 
-{% Box color="info" %}
+{% Box color="info" title = "Softmax関数" %}
 Softmax関数は**複数の値を合計が1になる割合に変換する関数**です。
 
 {% Math %}m_{i,j} = \frac{e^{z_{i,j}}}{\sum_{n=1}^{N} e^{z_{n,j}}}{% /Math %}
