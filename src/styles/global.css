@@ -18,6 +18,10 @@ The name should be the same as the theme name below.
     dim;
 }
 
+.katex .mtext {
+  font-family: "KaTeX_Main", "Noto Sans JP", system-ui, sans-serif;
+}
+
 [data-theme="dark"] .prose :is(h1, h2, h3, h4, h5, h6),
 [data-theme="synthwave"] .prose :is(h1, h2, h3, h4, h5, h6),
 [data-theme="dim"] .prose :is(h1, h2, h3, h4, h5, h6) {
