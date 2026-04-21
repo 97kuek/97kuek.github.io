@@ -17,9 +17,10 @@ interface Props {
   image: any;
   tags?: string[];
   headings: { depth: number; slug: string; text: string }[];
+  readingTime: number;
 }
 
-const { id, title, description, publishDate, updatedDate, image, tags, headings } =
+const { id, title, description, publishDate, updatedDate, image, tags, headings, readingTime } =
   Astro.props;
 
 function formatDate(date: Date) {
@@ -29,9 +30,6 @@ function formatDate(date: Date) {
     day: "numeric",
   });
 }
-
-// Reading time is now handled differently or approximated
-const readingTime = 10; // Placeholder for now to test the fix
 ---
 
 <Layout title={title} description={description}>
@@ -117,7 +115,7 @@ const readingTime = 10; // Placeholder for now to test the fix
     <TableOfContents headings={headings} />
 
     <!-- Content Body -->
-    <div class="prose prose-lg max-w-none prose-headings:text-primary">
+    <div class="prose prose-lg max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2">
       <slot />
     </div>
 
