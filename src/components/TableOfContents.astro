@@ -1,72 +1,93 @@
 ---
 interface Props {
   headings: { depth: number; slug: string; text: string }[];
+  sidebar?: boolean;
 }
 
-const { headings } = Astro.props;
+const { headings, sidebar = false } = Astro.props;
 
-// Only show H2 and H3
 const filteredHeadings = headings.filter((h) => h.depth <= 3);
 
 if (filteredHeadings.length === 0) return null;
 ---
 
-<nav class="toc md:mb-12 p-0 bg-base-200/50 rounded-2xl border border-base-300 overflow-hidden transition-all duration-300">
-  <button 
-    id="toc-toggle"
-    class="w-full text-left p-6 flex items-center justify-between group hover:bg-base-200/50 transition-colors duration-200"
-    aria-expanded="false"
-    aria-controls="toc-content"
-  >
-    <div class="flex items-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg>
-      <h2 class="text-lg font-bold">目次</h2>
-    </div>
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width="20" 
-      height="20" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      stroke-width="2" 
-      stroke-linecap="round" 
-      stroke-linejoin="round" 
-      class="chevron transition-transform duration-300 -rotate-90"
+{sidebar ? (
+  <nav class="toc-sidebar" aria-label="目次">
+    <p class="text-xs font-semibold uppercase tracking-widest text-base-content/40 mb-4 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      目次
+    </p>
+    <ul class="space-y-0.5 text-sm">
+      {filteredHeadings.map((h) => (
+        <li class={h.depth === 3 ? "ml-3" : ""}>
+          <a
+            href={`#${h.slug}`}
+            data-toc-link={h.slug}
+            class="toc-link block py-1 px-2 rounded text-base-content/50 hover:text-base-content hover:bg-base-200 transition-colors duration-150 leading-snug line-clamp-2"
+          >
+            {h.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+) : (
+  <nav class="toc md:mb-12 p-0 bg-base-200/50 rounded-2xl border border-base-300 overflow-hidden transition-all duration-300">
+    <button
+      id="toc-toggle"
+      class="w-full text-left p-6 flex items-center justify-between group hover:bg-base-200/50 transition-colors duration-200"
+      aria-expanded="false"
+      aria-controls="toc-content"
     >
-      <polyline points="6 9 12 15 18 9"></polyline>
-    </svg>
-  </button>
-  
-  <div id="toc-content" class="px-6 pb-0 transition-all duration-300 ease-in-out opacity-0 max-h-0">
-    <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
-      {
-        filteredHeadings.map((heading) => (
-          <li class={heading.depth === 3 ? "ml-4" : ""}>
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        <h2 class="text-lg font-bold">目次</h2>
+      </div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="chevron transition-transform duration-300 -rotate-90"
+      >
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+
+    <div id="toc-content" class="px-6 pb-0 transition-all duration-300 ease-in-out opacity-0 max-h-0">
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 mt-2">
+        {filteredHeadings.map((h) => (
+          <li class={h.depth === 3 ? "ml-4" : ""}>
             <a
-              href={`#${heading.slug}`}
+              href={`#${h.slug}`}
               class="block py-1 text-sm hover:text-primary transition-colors duration-200 line-clamp-1"
             >
-              {heading.text}
+              {h.text}
             </a>
           </li>
-        ))
-      }
-    </ul>
-  </div>
-</nav>
+        ))}
+      </ul>
+    </div>
+  </nav>
+)}
 
 <script>
+  // Collapsible TOC toggle
   const initToc = () => {
     const toggle = document.getElementById('toc-toggle');
     const content = document.getElementById('toc-content');
     const chevron = toggle?.querySelector('.chevron');
-    
+
     if (toggle && content && chevron) {
       toggle.addEventListener('click', () => {
         const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
         toggle.setAttribute('aria-expanded', (!isExpanded).toString());
-        
+
         if (isExpanded) {
           content.style.maxHeight = '0px';
           content.style.opacity = '0';
@@ -75,24 +96,69 @@ if (filteredHeadings.length === 0) return null;
         } else {
           content.style.maxHeight = content.scrollHeight + 'px';
           content.style.opacity = '1';
-          content.style.paddingBottom = '1.5rem'; // pb-6
+          content.style.paddingBottom = '1.5rem';
           chevron.classList.remove('-rotate-90');
         }
       });
     }
   };
 
-  // Run on page load
-  initToc();
-  // Run on view transitions
-  document.addEventListener('astro:after-swap', initToc);
+  // Scroll spy for sidebar TOC
+  const initScrollSpy = () => {
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+    if (links.length === 0) return;
+
+    const slugs = Array.from(links).map((l) => l.dataset.tocLink!);
+    const headingEls = slugs
+      .map((slug) => document.getElementById(slug))
+      .filter(Boolean) as HTMLElement[];
+
+    if (headingEls.length === 0) return;
+
+    const setActive = (slug: string) => {
+      links.forEach((link) => {
+        const isActive = link.dataset.tocLink === slug;
+        link.classList.toggle('text-primary', isActive);
+        link.classList.toggle('font-medium', isActive);
+        link.classList.toggle('bg-primary/10', isActive);
+        link.classList.toggle('text-base-content/50', !isActive);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: '-10% 0px -80% 0px', threshold: 0 }
+    );
+
+    headingEls.forEach((el) => observer.observe(el));
+
+    // Initialize first active
+    if (slugs[0]) setActive(slugs[0]);
+
+    return () => observer.disconnect();
+  };
+
+  let cleanup: (() => void) | undefined;
+
+  const init = () => {
+    initToc();
+    cleanup = initScrollSpy();
+  };
+
+  init();
+
+  document.addEventListener('astro:before-swap', () => cleanup?.());
+  document.addEventListener('astro:after-swap', () => { cleanup = undefined; init(); });
 </script>
 
 <style>
-  .toc {
-    max-width: 100%;
-  }
-  #toc-content {
-    overflow: hidden;
-  }
+  .toc { max-width: 100%; }
+  #toc-content { overflow: hidden; }
 </style>

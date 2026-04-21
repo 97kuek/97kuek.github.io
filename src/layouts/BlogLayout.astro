@@ -48,7 +48,7 @@ function formatDate(date: Date) {
 <Layout title={title} description={description} ogImage={ogImage}>
   <ReadingProgress />
   <BackToTop />
-  <article class="max-w-4xl mx-auto px-4 py-20">
+  <div class="max-w-6xl mx-auto px-4 py-20">
     <!-- Back button -->
     <div class="mb-8">
       <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-soft btn-sm">
@@ -89,9 +89,7 @@ function formatDate(date: Date) {
       <h1 class="text-4xl font-bold mb-4">{title}</h1>
       <p class="text-lg text-base-content/70 mb-4">{description}</p>
 
-      <div
-        class="flex flex-wrap items-center gap-4 text-sm text-base-content/60"
-      >
+      <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60">
         <time datetime={publishDate.toISOString()}>
           {formatDate(publishDate)}
         </time>
@@ -124,35 +122,52 @@ function formatDate(date: Date) {
     <!-- Divider -->
     <div class="divider"></div>
 
-    <!-- Table of Contents (Now at top) -->
-    <TableOfContents headings={headings} />
+    <!-- Two-column layout: content + sticky sidebar TOC -->
+    <div class="lg:grid lg:grid-cols-[1fr_240px] lg:gap-12 xl:gap-16 lg:items-start">
 
-    <!-- Content Body -->
-    <div class="prose prose-lg max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3">
-      <slot />
+      <!-- Main content -->
+      <article>
+        <!-- Mobile TOC (collapsed, top of content) -->
+        <div class="lg:hidden mb-8">
+          <TableOfContents headings={headings} />
+        </div>
+
+        <!-- Content Body -->
+        <div class="prose prose-lg max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3">
+          <slot />
+        </div>
+
+        <!-- Prev / Next Navigation -->
+        <PrevNextNav prev={prev} next={next} collection="blog" />
+
+        <!-- Related Content -->
+        <RelatedContent
+          currentId={id}
+          collection="blog"
+          tags={tags || []}
+        />
+
+        <!-- Giscus Comments -->
+        <Giscus />
+
+        <!-- Divider -->
+        <div class="divider mt-12"></div>
+
+        <!-- Back to blog link -->
+        <div class="text-center mt-8">
+          <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary">
+            すべての記事を見る
+          </a>
+        </div>
+      </article>
+
+      <!-- Sticky sidebar TOC (desktop only) -->
+      <aside class="hidden lg:block">
+        <div class="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <TableOfContents headings={headings} sidebar={true} />
+        </div>
+      </aside>
+
     </div>
-
-    <!-- Prev / Next Navigation -->
-    <PrevNextNav prev={prev} next={next} collection="blog" />
-
-    <!-- Related Content -->
-    <RelatedContent
-      currentId={id}
-      collection="blog"
-      tags={tags || []}
-    />
-
-    <!-- Giscus Comments -->
-    <Giscus />
-
-    <!-- Divider -->
-    <div class="divider mt-12"></div>
-
-    <!-- Back to blog link -->
-    <div class="text-center mt-8">
-      <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary">
-        すべての記事を見る
-      </a>
-    </div>
-  </article>
+  </div>
 </Layout>
