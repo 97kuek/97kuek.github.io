@@ -98,7 +98,7 @@ d₂,j = 0.3 × 0.8 = 0.24  ← 話者2の重み
 
 ### エンコーダ（波形 → 重み）
 
-![モデル](@assets/blog/tasnet/tasnet-model.png)
+![モデル](@assets/blog/tasnet/tasnet-models.png)
 
 #### 役割
 
@@ -188,7 +188,7 @@ ReLUだけでは「ある/なし」しか言えませんが、ゲートがある
 
 ### 分離ネットワーク（重み → マスク）
 
-![モデル](@assets/blog/tasnet/tasnet-model.png)
+![モデル](@assets/blog/tasnet/tasnet-models.png)
 
 ここまでで、エンコーダを通して800個の重みベクトルが得られました。
 次に各話者のマスク{% InlineMath %}m_i{% /InlineMath %},{% InlineMath %}m_k{% /InlineMath %}を推定します。
@@ -290,7 +290,7 @@ LSTM層4 ←────────────────┘（足し算）
 
 ### デコーダ（重み → 波形）
 
-![モデル](@assets/blog/tasnet/tasnet-model.png)
+![モデル](@assets/blog/tasnet/tasnet-models.png)
 
 #### 役割
 
