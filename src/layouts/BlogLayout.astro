@@ -122,13 +122,10 @@ function formatDate(date: Date) {
     <!-- Divider -->
     <div class="divider"></div>
 
-    <!-- Two-column layout: content + sticky sidebar TOC -->
-    <div class="lg:grid lg:grid-cols-[1fr_240px] lg:gap-12 xl:gap-16 lg:items-start">
-
-      <!-- Main content -->
+    <div>
       <article>
-        <!-- Mobile TOC (collapsed, top of content) -->
-        <div class="lg:hidden mb-8">
+        <!-- TOC (top of content) -->
+        <div class="mb-8">
           <TableOfContents headings={headings} />
         </div>
 
@@ -160,13 +157,6 @@ function formatDate(date: Date) {
           </a>
         </div>
       </article>
-
-      <!-- Sticky sidebar TOC (desktop only) -->
-      <aside class="hidden lg:block">
-        <div class="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
-          <TableOfContents headings={headings} sidebar={true} />
-        </div>
-      </aside>
 
     </div>
   </div>
