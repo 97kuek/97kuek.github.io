@@ -1,0 +1,316 @@
+---
+title: "Transformer完全解説"
+description: "「Attention Is All You Need」(Vaswani et al., 2017)を一から丁寧に解説します。"
+publishDate: "2026-04-30"
+image: "@assets/blog/transformer/transformer.png"
+tags: ["深層学習"]
+---
+
+## 1. Transformerとは？──なぜ生まれたか
+
+2017年、Googleの研究者たちが「**Attention Is All You Need**」という論文を発表しました。
+これがTransformerの誕生です。
+
+それ以前、自然言語処理（NLP）の主役は**RNN（再帰ニューラルネットワーク）**と、
+それをベースにしたエンコーダ-デコーダモデルでした。
+しかしRNNには、根本的な欠点がありました。
+
+{% Box color="error" title="RNNの問題点" %}
+**逐次処理しかできない。**
+単語を1つずつ順番に処理するため、
+
+1. 文が長いほど**訓練が遅くなる**（GPUの並列計算をほとんど使えない）
+2. 先頭付近の情報が薄れていく**長距離依存問題**が生じる
+
+たとえば100単語の文で先頭の主語を参照しようとすると、RNNは100ステップ分の情報を引き継がなければなりません。
+{% /Box %}
+
+そこでTransformerは「**再帰も畳み込みも使わず、Attentionだけで系列変換を行う**」という大胆な設計を採用しました。
+これにより入力を一度に並列処理でき、学習速度と精度が飛躍的に向上しました。
+
+結果として翻訳タスクで当時の最高精度（BLEU 28.4）を大幅に更新しただけでなく、
+**BERT・GPT・T5・ViT**など現代のほぼすべての大型モデルの基盤となっています。
+Transformerを理解することは、現代AIの基礎を理解することに等しいです。
+
+## 2. 全体アーキテクチャ──大きな流れを掴む
+
+Transformerは**Encoder-Decoder構造**を採用しています。
+まず全体の「データの流れ」を掴んでから、各部品を詳しく見ていきましょう。
+
+「Yo tengo gatos（スペイン語）→ I have cats（英語）」の翻訳を例にとります。
+
+```
+【Encoder側】                          【Decoder側】
+
+"Yo tengo gatos"                       "I have cats" ← 正解出力
+     ↓                                      ↑
+  単語埋め込み                         Linear + Softmax
+  + 位置エンコーディング                      ↑
+     ↓                                  × 6 層
+  × 6 層 ┌─────────────────┐        ┌──────────────────────┐
+         │ Multi-Head      │        │ Masked Multi-Head     │
+         │ Self-Attention  │   →    │ Self-Attention        │
+         │ Add & Norm      │ (出力) │ Cross-Attention       │
+         │ Feed-Forward    │        │ Add & Norm            │
+         │ Add & Norm      │        │ Feed-Forward / Norm   │
+         └─────────────────┘        └──────────────────────┘
+```
+
+![Transformerのアーキテクチャ](@assets/blog/transformer/transformer-arch.png)
+
+- **Encoder**：原文を受け取り、「文脈を考慮した単語ベクトル」に変換する
+- **Decoder**：Encoderの出力を参照しながら、翻訳文を1単語ずつ生成する
+
+各ブロックが6層重なっており、層を通るほど抽象度の高い表現になっていきます。
+では、入力の前処理から順に中身を見ていきましょう。
+
+## 3. 入力の準備──単語をベクトルに変換する
+
+### 3.1 単語埋め込み（Word Embedding）
+
+ニューラルネットが扱えるのは数値だけです。
+まず各単語を**512次元のベクトル**に変換します（この次元数を{% InlineMath %}d_{\text{model}}{% /InlineMath %}と呼びます）。
+この変換は訓練で学習されます。
+
+### 3.2 位置エンコーディング（Positional Encoding）
+
+ここで問題があります。Attentionは単語を「集合」として扱うため、
+**単語の順序を考慮しません**。
+"I love cats" と "cats love I" が同じ入力になってしまいます。
+
+これを解決するため、単語ベクトルに**位置情報のベクトルを加算**します。
+Transformerでは以下の三角関数を使います。
+
+{% Math %}\text{PE}_{(\text{pos},2i)}=\sin\!\left(\frac{\text{pos}}{10000^{2i/d_{\text{model}}}}\right){% /Math %}
+
+{% Math %}\text{PE}_{(\text{pos},2i+1)}=\cos\!\left(\frac{\text{pos}}{10000^{2i/d_{\text{model}}}}\right){% /Math %}
+
+{% InlineMath %}\text{pos}{% /InlineMath %}は文中の位置（0, 1, 2, …）、{% InlineMath %}i{% /InlineMath %}は次元のインデックスです。
+偶数次元にsin、奇数次元にcosを使い、次元ごとに異なる周期の波を割り当てることで、
+各位置に一意なベクトルが生成されます。
+
+{% Box color="info" title="なぜsin/cosなのか" %}
+sin/cosの組み合わせには重要な性質があります。
+任意の相対位置{% InlineMath %}k{% /InlineMath %}に対して、
+{% InlineMath %}\text{PE}_{\text{pos}+k}{% /InlineMath %}が{% InlineMath %}\text{PE}_{\text{pos}}{% /InlineMath %}の**線形変換**で表せます。
+これによりTransformerが相対的な位置関係を学習しやすくなるだけでなく、
+訓練時より長い文章にも外挿できるという利点があります。
+{% /Box %}
+
+この位置エンコーディングを単語ベクトルに加算したものが、Encoderへの最終的な入力です。
+
+## 4. Encoder──文脈を考慮した表現を作る
+
+Encoderブロックは以下の3つのコンポーネントで構成されています。
+
+1. Multi-Head Self-Attention
+2. Position-wise Feed-Forward Network
+3. 残差接続（Add）＆ Layer Normalization（Norm）
+
+順番に見ていきましょう。
+
+### 4.1 Attentionメカニズム──単語間の「関連度」を計算する
+
+**Attentionの動機**から始めます。
+
+> The animal didn't cross the street because **it** was too tired.
+
+この文で"it"が何を指すか理解するには、"animal"に注目する必要があります。
+RNNはこれを「情報を順番に引き継ぐ」ことで解決しようとしましたが、
+文が長いと情報が薄れてしまいます。
+
+Attentionは発想を変えます。**「すべての単語ペアの関連度を一度に計算してしまおう」**という考え方です。
+
+#### Query・Key・Value（Q・K・V）
+
+AttentionはQuery（Q）・Key（K）・Value（V）という3種類のベクトルで計算されます。
+データベース検索の比喩で理解しましょう。
+
+{% Box color="info" title="Q・K・Vの直感" %}
+**Query（Q）**：「私は何を探しているか？」── 注目したい単語が発するクエリ
+
+**Key（K）**：「私はどんな情報を持っているか？」── 各単語が持つ検索キー
+
+**Value（V）**：「実際に渡す情報の中身」── スコアに応じて加重和される実データ
+
+QとKの内積で「どれだけ関連しているか」を計算し、
+そのスコアでVを重み付けして足し合わせると、**文脈を考慮した単語の新しい表現**が得られます。
+{% /Box %}
+
+入力埋め込み行列{% InlineMath %}X{% /InlineMath %}に対して、学習済み重み行列をかけることでQ・K・Vを生成します。
+
+{% Math %}Q = XW^Q,\quad K = XW^K,\quad V = XW^V{% /Math %}
+
+{% InlineMath %}W^Q, W^K, W^V{% /InlineMath %}はいずれも訓練で学習されるパラメータです。
+
+#### Scaled Dot-Product Attention
+
+Q・K・VからAttentionを計算する式は以下のとおりです。
+
+{% Math %}\text{Attention}(Q,K,V)=\text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V{% /Math %}
+
+ステップに分けて読むと理解しやすいです。
+
+1. **{% InlineMath %}QK^\top{% /InlineMath %}**：全単語ペアの内積を一度に計算。形は（単語数 × 単語数）の行列になります。値が大きいほど「関連が強い」
+2. **{% InlineMath %}/\sqrt{d_k}{% /InlineMath %}**：{% InlineMath %}d_k{% /InlineMath %}が大きいと内積の値が爆発的に大きくなり、softmaxが飽和して勾配が消えます。これを防ぐためのスケーリングです
+3. **softmax**：各行を確率分布に変換。これが「どの単語にどれだけ注目するか」の重みになります
+4. **{% InlineMath %}\cdot V{% /InlineMath %}**：その重みでValueを加重和。「文脈を考慮した単語表現」の完成です
+
+たとえば "I have cats" の場合、Attentionスコアは次のようなイメージになります。
+
+|       | I    | have | cats |
+|-------|------|------|------|
+| **I** | 0.88 | 0.10 | 0.02 |
+| **have** | 0.08 | 0.80 | 0.12 |
+| **cats** | 0.03 | 0.14 | 0.83 |
+
+各単語は自分自身に最も高いスコアを付けながら、文脈に応じて他の単語にも注意を向けています。
+
+#### Multi-Head Attention──複数の視点で見る
+
+1組のQ・K・Vだけでは、単語間の「ひとつの側面」しか捉えられません。
+たとえば構文的な関係と意味的な関係を同時に捉えたい場合、1組では不十分です。
+
+そこで**小さなQ・K・Vを複数組（ヘッド）用意して並列に計算し、最後に結合**するのがMulti-Head Attentionです。
+論文ではヘッド数{% InlineMath %}h = 8{% /InlineMath %}を使用。各ヘッドの次元は{% InlineMath %}d_k = d_{\text{model}}/h = 64{% /InlineMath %}です。
+
+{% Math %}\text{MultiHead}(Q,K,V)=\text{Concat}(\text{head}_1,\ldots,\text{head}_h)\,W^O{% /Math %}
+
+{% Math %}\text{head}_i=\text{Attention}(QW_i^Q,\;KW_i^K,\;VW_i^V){% /Math %}
+
+各ヘッドが**異なる種類の依存関係**（構文・意味・照応など）を独立して学習し、
+Concatして重み{% InlineMath %}W^O{% /InlineMath %}で射影することで元の次元（512次元）に戻します。
+
+### 4.2 Position-wise Feed-Forward Network
+
+Attentionが「単語間の関係」を捉えるのに対し、FFNは「各単語の表現を個別に変換・非線形化」する役割を担います。
+
+{% Math %}\text{FFN}(x)=\max(0,\;xW_1+b_1)\,W_2+b_2{% /Math %}
+
+2層の全結合層で、中間層の次元は2048（{% InlineMath %}d_{\text{model}}{% /InlineMath %}の4倍）です。
+"Position-wise"とは、**各単語に対して独立に同じネットワークを適用する**という意味です（重みは共有）。
+他の単語との干渉は一切なく、純粋に各単語の表現を豊かにします。
+
+### 4.3 残差接続（Add）＆ Layer Normalization（Norm）
+
+Encoderの各サブ層（AttentionとFFN）の後には、必ず**Add & Norm**が入ります。
+
+{% Math %}\text{output} = \text{LayerNorm}(x + \text{Sublayer}(x)){% /Math %}
+
+**残差接続（Add）**は、サブ層の入力{% InlineMath %}x{% /InlineMath %}をそのまま出力に加算します。
+深いネットワークで生じる勾配消失を防ぎ、6層ものブロックを安定して訓練可能にします。
+
+**Layer Normalization（Norm）**は、各サンプルの特徴量次元方向に正規化を行います。
+学習を安定させ、収束を速めます。
+
+## 5. Decoder──翻訳文を1単語ずつ生成する
+
+DecoderはEncoderと同様の構造を持ちますが、**2つの重要な違い**があります。
+
+### 5.1 Masked Multi-Head Self-Attention
+
+Decoderの1層目はMasked（マスク付き）Self-Attentionです。
+
+訓練時、Decoderには正解の翻訳文（例："I have cats"）をまとめて渡します。
+しかしこのままでは、"have"を予測するときに"cats"も見えてしまいます——これはカンニングです。
+
+そこで**マスキング**を導入します。現在の予測位置より右側の単語に対するAttentionスコアを
+{% InlineMath %}-\infty{% /InlineMath %}に設定することで、softmax後の重みが0になり、参照できなくなります。
+
+```
+"I" を予測するとき   → "I" だけ参照可
+"have" を予測するとき → "I have" まで参照可
+"cats" を予測するとき → "I have cats" まで参照可
+```
+
+### 5.2 Cross-Attention──EncoderとDecoderをつなぐ
+
+Decoderの2層目は**Cross-Attention**（Encoder-Decoder Attention）です。
+ここがEncoderとDecoderの橋渡し役です。
+
+{% Box color="info" title="Cross-AttentionのQ・K・V" %}
+- **Query（Q）**：Decoderの前層の出力（「今どの単語を生成しようとしているか」）
+- **Key（K）、Value（V）**：Encoderの最終出力（「原文の文脈表現」）
+
+つまり**「訳語の生成に必要な情報を、原文のどこから取ってくるか」**を決めています。
+{% /Box %}
+
+たとえば"cats"を生成しようとしているとき、Encoderの出力のうち"gatos"に対応する部分に
+高いAttentionスコアが付きます。
+
+### 5.3 最終出力
+
+Decoderの最後の出力は**Linear層→ Softmax**を通り、語彙全体に対する確率分布になります。
+確率が最も高い単語をその時刻の出力とし、{% InlineMath %}\langle\text{end}\rangle{% /InlineMath %}トークンが出るまで繰り返します。
+
+なお、出力層のLinear変換の重みは入力の単語埋め込み行列と**共有**されます（パラメータ効率のため）。
+
+## 6. なぜSelf-Attentionなのか──RNN・CNNとの比較
+
+Self-AttentionがRNNやCNNより優れている理由を、計算量の観点で整理します。
+
+| 観点 | Self-Attention | RNN | CNN |
+|---|---|---|---|
+| 1層あたりの計算量 | {% InlineMath %}O(n^2 d){% /InlineMath %} | {% InlineMath %}O(nd^2){% /InlineMath %} | {% InlineMath %}O(knd^2){% /InlineMath %} |
+| 並列計算 | 完全に可能 | 不可（逐次） | 可能 |
+| 長距離の経路長 | {% InlineMath %}O(1){% /InlineMath %} | {% InlineMath %}O(n){% /InlineMath %} | {% InlineMath %}O(\log_k n){% /InlineMath %}〜{% InlineMath %}O(n/k){% /InlineMath %} |
+
+ここで{% InlineMath %}n{% /InlineMath %}は文の長さ、{% InlineMath %}d{% /InlineMath %}は次元数、{% InlineMath %}k{% /InlineMath %}はカーネルサイズです。
+
+NLPの典型的な設定では{% InlineMath %}n \ll d{% /InlineMath %}のため、Self-Attentionの計算量{% InlineMath %}O(n^2 d){% /InlineMath %}が実質的に最小になります。
+
+特に重要なのが**長距離の経路長**です。
+任意の2単語が情報をやり取りするまでに必要なステップ数がSelf-Attentionでは**常に1**です。
+RNNでは文の端から端まで{% InlineMath %}n{% /InlineMath %}ステップかかります。
+これが長距離依存の学習のしやすさに直結します。
+
+## 7. 学習の詳細
+
+### データセット
+
+| データセット | 文ペア数 | 語彙サイズ |
+|---|---|---|
+| WMT 2014 英独 | 4.5M | 37,000 |
+| WMT 2014 英仏 | 36M | 32,000 |
+
+### ハードウェアと訓練時間
+
+NVIDIA P100 GPUを8枚使用。ベースモデルで**12時間**、大型モデルで**3.5日**で訓練が完了しました。
+
+### 最適化
+
+Adamオプティマイザ（{% InlineMath %}\beta_1=0.9, \beta_2=0.98, \varepsilon=10^{-9}{% /InlineMath %}）を使用。
+学習率はウォームアップステップまで線形に増加させ、その後{% InlineMath %}\propto \text{step}^{-0.5}{% /InlineMath %}で減衰させる**スケジューラ**を採用しています。
+
+### 正則化
+
+過学習を防ぐために2つの手法を使っています。
+
+- **Dropout**（{% InlineMath %}P_{\text{drop}}=0.1{% /InlineMath %}）：各サブ層の出力と埋め込み直後に適用
+- **Label Smoothing**（{% InlineMath %}\varepsilon_{ls}=0.1{% /InlineMath %}）：正解ラベルを少し「ぼかす」ことでモデルの過信を抑制し、BLEUスコアと精度を向上
+
+### 実験結果
+
+| モデル | 英独 BLEU | 英仏 BLEU |
+|---|---|---|
+| 従来SoTA（アンサンブル） | 26.4 | 41.0 |
+| Transformer（base） | 27.3 | 38.1 |
+| **Transformer（big）** | **28.4** | **41.0** |
+
+Transformer（big）は英独で従来最高精度を2ポイント以上更新し、英仏では同等の精度を**はるかに短い訓練時間**で達成しました。
+
+## 8. まとめ
+
+Transformerが革命的だった理由を一言で言えば：
+
+**「RNNもCNNも使わず、Attentionだけで、より速く・より精度高く・より汎用的に系列変換を解いた」**
+
+ことです。要点を整理すると：
+
+- **Multi-Head Self-Attention**で単語間の関係を並列に・多角的に捉える
+- **位置エンコーディング**でAttentionの「順序盲点」を補う
+- **残差接続＋Layer Norm**で深いネットワークを安定訓練
+- 任意の2単語間が{% InlineMath %}O(1){% /InlineMath %}ステップで繋がり、長距離依存を学習しやすい
+
+この設計のシンプルさと汎用性が、NLPを超えて画像・音声・マルチモーダルへと広がった理由です。
+BERT・GPT・T5・ViT——現代AIのすべての起点がここにあります。
