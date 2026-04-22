@@ -22,11 +22,34 @@
   </svg>
 </button>
 
+<!-- TOC popup (long-press) -->
+<div
+  id="toc-popup"
+  class="fixed bottom-24 right-8 w-72 max-h-96 overflow-y-auto bg-base-100 border border-base-300 rounded-2xl shadow-xl z-50 opacity-0 scale-95 pointer-events-none transition-all duration-200 origin-bottom-right"
+  role="dialog"
+  aria-label="目次"
+>
+  <div class="p-4">
+    <p class="text-xs font-semibold uppercase tracking-widest text-base-content/40 mb-3 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/>
+      </svg>
+      目次
+    </p>
+    <ul id="toc-popup-list" class="space-y-0.5 text-sm"></ul>
+  </div>
+</div>
+
 <script>
+  const LONG_PRESS_MS = 500;
+
   const initBackToTop = () => {
     const button = document.getElementById('back-to-top');
-    if (!button) return;
+    const popup = document.getElementById('toc-popup');
+    const list = document.getElementById('toc-popup-list');
+    if (!button || !popup || !list) return;
 
+    // --- visibility toggle ---
     const toggleVisible = () => {
       if (window.scrollY > 300) {
         button.classList.remove('translate-y-24', 'opacity-0');
@@ -34,30 +57,95 @@
       } else {
         button.classList.add('translate-y-24', 'opacity-0');
         button.classList.remove('translate-y-0', 'opacity-100');
+        closeToc();
       }
     };
 
-    button.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+    // --- TOC popup ---
+    const buildList = () => {
+      const headings = Array.from(
+        document.querySelectorAll<HTMLElement>('article h2[id], article h3[id]')
+      );
+      if (headings.length === 0) return false;
+
+      list.innerHTML = headings
+        .map((h) => {
+          const indent = h.tagName === 'H3' ? 'ml-3' : '';
+          return `<li class="${indent}">
+            <a href="#${h.id}" class="toc-popup-link block py-1 px-2 rounded text-base-content/60 hover:text-base-content hover:bg-base-200 transition-colors duration-150 leading-snug">
+              ${h.textContent?.trim() ?? ''}
+            </a>
+          </li>`;
+        })
+        .join('');
+
+      list.querySelectorAll('.toc-popup-link').forEach((a) => {
+        a.addEventListener('click', () => closeToc());
       });
+
+      return true;
+    };
+
+    const openToc = () => {
+      if (!buildList()) return;
+      popup.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+      popup.classList.add('opacity-100', 'scale-100');
+    };
+
+    const closeToc = () => {
+      popup.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+      popup.classList.remove('opacity-100', 'scale-100');
+    };
+
+    const isTocOpen = () => popup.classList.contains('opacity-100');
+
+    // --- long-press detection ---
+    let pressTimer: ReturnType<typeof setTimeout> | null = null;
+    let didLongPress = false;
+
+    const startPress = () => {
+      didLongPress = false;
+      pressTimer = setTimeout(() => {
+        didLongPress = true;
+        openToc();
+      }, LONG_PRESS_MS);
+    };
+
+    const cancelPress = () => {
+      if (pressTimer !== null) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+    };
+
+    button.addEventListener('pointerdown', startPress);
+    button.addEventListener('pointerup', cancelPress);
+    button.addEventListener('pointerleave', cancelPress);
+    button.addEventListener('pointermove', cancelPress);
+
+    button.addEventListener('click', () => {
+      if (didLongPress) {
+        didLongPress = false;
+        return;
+      }
+      if (isTocOpen()) {
+        closeToc();
+        return;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // close on outside click
+    document.addEventListener('pointerdown', (e) => {
+      if (isTocOpen() && !popup.contains(e.target as Node) && e.target !== button) {
+        closeToc();
+      }
     });
 
     window.addEventListener('scroll', toggleVisible);
-    
-    // Initial call
     toggleVisible();
   };
 
-  // Run on page load
   initBackToTop();
-  // Run on view transitions
   document.addEventListener('astro:after-swap', initBackToTop);
 </script>
-
-<style>
-  #back-to-top {
-    /* Ensure it doesn't overlap with other fixed elements if necessary */
-  }
-</style>
