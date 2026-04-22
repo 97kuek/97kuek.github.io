@@ -12,7 +12,7 @@ const colorClass = styles[color] ?? 'border-base-content/40 bg-base-200';
 ---
 
 <div class={`not-prose my-8 rounded-2xl border-2 p-6 ${colorClass}`}>
-  {title && <p class="mb-3 text-lg font-black text-black uppercase tracking-widest">{title}</p>}
+  {title && <p class="mb-3 text-lg font-black text-base-content uppercase tracking-widest">{title}</p>}
   <div class="prose max-w-none">
     <slot />
   </div>
