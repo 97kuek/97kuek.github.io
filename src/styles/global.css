@@ -22,6 +22,18 @@ The name should be the same as the theme name below.
   font-family: "KaTeX_Main", "Noto Sans JP", system-ui, sans-serif;
 }
 
+.prose strong {
+  background-color: color-mix(in oklch, var(--color-warning) 28%, transparent);
+  padding: 0.05em 0.3em;
+  border-radius: 0.2em;
+}
+
+[data-theme="dark"] .prose strong,
+[data-theme="synthwave"] .prose strong,
+[data-theme="dim"] .prose strong {
+  background-color: color-mix(in oklch, var(--color-warning) 22%, transparent);
+}
+
 [data-theme="dark"] .prose :is(h1, h2, h3, h4, h5, h6),
 [data-theme="synthwave"] .prose :is(h1, h2, h3, h4, h5, h6),
 [data-theme="dim"] .prose :is(h1, h2, h3, h4, h5, h6) {

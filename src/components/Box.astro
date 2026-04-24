@@ -1,19 +1,36 @@
 ---
 const { color, title } = Astro.props;
 
-const styles: Record<string, string> = {
-  info: 'border-info/70 bg-info/10',
-  warning: 'border-warning/70 bg-warning/10',
-  success: 'border-success/70 bg-success/10',
-  error: 'border-error/70 bg-error/10',
+type BoxConfig = {
+  container: string;
+  header: string;
+  titleColor: string;
+  icon: string;
 };
 
-const colorClass = styles[color] ?? 'border-base-content/40 bg-base-200';
+const configs: Record<string, BoxConfig> = {
+  info:    { container: 'border-info/60 bg-info/10',       header: 'bg-info/20 border-b-2 border-info/40',       titleColor: 'text-info',    icon: '💡' },
+  warning: { container: 'border-warning/60 bg-warning/10', header: 'bg-warning/20 border-b-2 border-warning/40', titleColor: 'text-warning', icon: '⚠️' },
+  success: { container: 'border-success/60 bg-success/10', header: 'bg-success/20 border-b-2 border-success/40', titleColor: 'text-success', icon: '✅' },
+  error:   { container: 'border-error/60 bg-error/10',     header: 'bg-error/20 border-b-2 border-error/40',     titleColor: 'text-error',   icon: '❌' },
+};
+
+const cfg = configs[color] ?? {
+  container: 'border-base-content/30 bg-base-200',
+  header: 'bg-base-300 border-b-2 border-base-content/20',
+  titleColor: 'text-base-content',
+  icon: '📝',
+};
 ---
 
-<div class={`not-prose my-8 rounded-2xl border-2 p-6 ${colorClass}`}>
-  {title && <p class="mb-3 text-lg font-black text-base-content uppercase tracking-widest">{title}</p>}
-  <div class="prose max-w-none">
+<div class={`not-prose my-8 rounded-2xl border-2 overflow-hidden ${cfg.container}`}>
+  {title && (
+    <div class={`flex items-center gap-2.5 px-5 py-3 ${cfg.header}`}>
+      <span class="text-base leading-none">{cfg.icon}</span>
+      <span class={`text-sm font-black uppercase tracking-widest ${cfg.titleColor}`}>{title}</span>
+    </div>
+  )}
+  <div class="prose max-w-none px-6 py-5">
     <slot />
   </div>
 </div>
