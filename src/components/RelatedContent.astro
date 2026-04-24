@@ -31,43 +31,45 @@ const relatedEntries = allEntries
   .slice(0, maxResults);
 
 if (relatedEntries.length === 0) return null;
+
+const mappedEntries = relatedEntries.map(({ entry }) => ({
+  entry,
+  data: entry.data as CollectionEntry<"blog">["data"],
+}));
 ---
 
 <section class="mt-20">
   <div class="divider mb-12"></div>
   <h2 class="text-3xl font-bold mb-8">{collection === "blog" ? "関連記事" : "関連プロジェクト"}</h2>
-  
+
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     {
-      relatedEntries.map(({ entry }) => {
-        const data = entry.data as CollectionEntry<"blog">["data"];
-        return (
-          <a
-            href={`${import.meta.env.BASE_URL}${collection}/${entry.id}`}
-            class="group block card bg-base-200 hover:bg-base-300 transition-all duration-300 overflow-hidden"
-          >
-            {data.image && (
-              <figure class="aspect-video overflow-hidden">
-                <Image
-                  src={data.image}
-                  alt={data.title}
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  width={400}
-                  height={225}
-                />
-              </figure>
-            )}
-            <div class="card-body p-4">
-              <h3 class="card-title text-lg group-hover:text-primary transition-colors">
-                {data.title}
-              </h3>
-              <p class="text-sm text-base-content/70 line-clamp-2">
-                {data.description}
-              </p>
-            </div>
-          </a>
-        );
-      })
+      mappedEntries.map(({ entry, data }) => (
+        <a
+          href={`${import.meta.env.BASE_URL}${collection}/${entry.id}`}
+          class="group block card bg-base-200 hover:bg-base-300 transition-all duration-300 overflow-hidden"
+        >
+          {data.image && (
+            <figure class="aspect-video overflow-hidden">
+              <Image
+                src={data.image}
+                alt={data.title}
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                width={400}
+                height={225}
+              />
+            </figure>
+          )}
+          <div class="card-body p-4">
+            <h3 class="card-title text-lg group-hover:text-primary transition-colors">
+              {data.title}
+            </h3>
+            <p class="text-sm text-base-content/70 line-clamp-2">
+              {data.description}
+            </p>
+          </div>
+        </a>
+      ))
     }
   </div>
 </section>
