@@ -1,5 +1,24 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  line-height: 1.85;
+}
+
+code,
+pre,
+kbd {
+  font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+}
+
+.prose {
+  line-height: 1.9;
+}
+
+.prose p {
+  margin-block: 1.1em;
+}
 /* 
 If you want use the ThemeToggle component,
 and chose the themes to light and dard,
@@ -9,13 +28,7 @@ variables on ThemeToggle component with the new theme names.
 The name should be the same as the theme name below.
 */
 @plugin "daisyui" {
-  themes:
-    light --default,
-    dark --prefersdark,
-    synthwave,
-    retro,
-    valentine,
-    dim;
+  themes: light --default;
 }
 
 .katex .mtext {
@@ -26,25 +39,4 @@ The name should be the same as the theme name below.
   background-color: color-mix(in oklch, var(--color-warning) 28%, transparent);
   padding: 0.05em 0.3em;
   border-radius: 0.2em;
-}
-
-[data-theme="dark"] .prose strong,
-[data-theme="synthwave"] .prose strong,
-[data-theme="dim"] .prose strong {
-  background-color: color-mix(in oklch, var(--color-warning) 22%, transparent);
-}
-
-[data-theme="dark"] .prose :is(h1, h2, h3, h4, h5, h6),
-[data-theme="synthwave"] .prose :is(h1, h2, h3, h4, h5, h6),
-[data-theme="dim"] .prose :is(h1, h2, h3, h4, h5, h6) {
-  color: color-mix(in oklch, var(--color-primary), white 35%);
-}
-
-[data-theme="dark"] .prose h2,
-[data-theme="synthwave"] .prose h2,
-[data-theme="dim"] .prose h2,
-[data-theme="dark"] .prose h3,
-[data-theme="synthwave"] .prose h3,
-[data-theme="dim"] .prose h3 {
-  border-color: color-mix(in oklch, var(--color-primary), white 35%);
 }

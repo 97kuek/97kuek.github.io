@@ -1,7 +1,5 @@
 ---
 import "../styles/global.css";
-import ThemeToggle from "../components/ThemeToggle.astro";
-import ThemeSelector from "../components/ThemeSelector.astro";
 import FabFlower from "../components/FabFlower.astro";
 import Dock from "../components/Dock.astro";
 import { getEntry } from "astro:content";
@@ -27,7 +25,7 @@ const ogImageUrl = ogImage ?? `${origin}/images/og_home.png`;
 ---
 
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,6 +51,14 @@ const ogImageUrl = ogImage ?? `${origin}/images/og_home.png`;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- KaTeX CSS -->
     <link
       rel="stylesheet"
@@ -62,11 +68,6 @@ const ogImageUrl = ogImage ?? `${origin}/images/og_home.png`;
     />
   </head>
   <body class="min-h-screen overflow-x-hidden">
-    <!-- Theme Controls - Fixed Position -->
-    <div class="fixed top-4 right-4 z-50">
-      {general.enableThemeSelector ? <ThemeSelector /> : <ThemeToggle />}
-    </div>
-
     <slot />
 
     {
