@@ -28,7 +28,7 @@ const englishWords = (body.match(/[a-zA-Z]+/g) ?? []).length;
 const readingTime = Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 200));
 
 const allEntries = await getCollection("blog");
-const sorted = allEntries.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+const sorted = [...allEntries].sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 const currentIndex = sorted.findIndex((e) => e.id === entry.id);
 const prevEntry = sorted[currentIndex + 1];
 const nextEntry = sorted[currentIndex - 1];

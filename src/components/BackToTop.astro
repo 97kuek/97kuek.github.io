@@ -144,8 +144,19 @@
 
     window.addEventListener('scroll', toggleVisible);
     toggleVisible();
+
+    return () => {
+      window.removeEventListener('scroll', toggleVisible);
+    };
   };
 
-  initBackToTop();
-  document.addEventListener('astro:after-swap', initBackToTop);
+  let cleanup: (() => void) | undefined;
+
+  const init = () => {
+    cleanup = initBackToTop() ?? undefined;
+  };
+
+  init();
+  document.addEventListener('astro:before-swap', () => cleanup?.());
+  document.addEventListener('astro:after-swap', init);
 </script>

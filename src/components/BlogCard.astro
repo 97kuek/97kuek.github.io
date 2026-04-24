@@ -25,15 +25,15 @@ function formatDate(date: Date) {
     class="card-body rounded-lg justify-end bg-gradient-to-b from-primary/80 to-transparent"
   >
     <h3
-      class="card-title text-base-100-content hover:text-primary-content transition-colors"
+      class="card-title text-white hover:text-primary-content transition-colors"
     >
       <a href={`${import.meta.env.BASE_URL}blog/${post.id}`}
         >{post.data.title}</a
       >
     </h3>
-    <time class="text-sm text-base-100-content/80">
+    <time class="text-sm text-white/80">
       {formatDate(post.data.publishDate)}
     </time>
-    <p class="text-base-100-content/90 line-clamp-2">{post.data.description}</p>
+    <p class="text-white/90 line-clamp-2">{post.data.description}</p>
   </div>
 </div>

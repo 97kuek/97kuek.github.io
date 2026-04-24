@@ -8,7 +8,7 @@ import FilterSection from "../../components/FilterSection.astro";
 const blogPosts = await getCollection("blog");
 
 // Sort by publish date, most recent first
-const sortedPosts = blogPosts.sort(
+const sortedPosts = [...blogPosts].sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime(),
 );
 

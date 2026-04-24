@@ -13,6 +13,9 @@
 </div>
 
 <script>
+  let scrollHandler: (() => void) | undefined;
+  let resizeHandler: (() => void) | undefined;
+
   const initProgress = () => {
     const progressBar = document.getElementById('reading-progress-bar');
     if (!progressBar) return;
@@ -27,16 +30,24 @@
       progressBar.style.width = `${scrollPercent}%`;
     };
 
-    window.addEventListener('scroll', updateProgress);
-    window.addEventListener('resize', updateProgress);
-    
-    // Initial call
+    scrollHandler = updateProgress;
+    resizeHandler = updateProgress;
+
+    window.addEventListener('scroll', scrollHandler);
+    window.addEventListener('resize', resizeHandler);
+
     updateProgress();
   };
 
-  // Run on page load
+  const cleanupProgress = () => {
+    if (scrollHandler) window.removeEventListener('scroll', scrollHandler);
+    if (resizeHandler) window.removeEventListener('resize', resizeHandler);
+    scrollHandler = undefined;
+    resizeHandler = undefined;
+  };
+
   initProgress();
-  // Run on view transitions
+  document.addEventListener('astro:before-swap', cleanupProgress);
   document.addEventListener('astro:after-swap', initProgress);
 </script>
 

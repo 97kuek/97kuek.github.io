@@ -61,7 +61,7 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
 
   <div class="flex items-center justify-between px-2 text-sm text-base-content/60">
     <div id={`results-count-${containerId}`}>
-      {totalCount !== undefined ? `${totalCount} item${totalCount !== 1 ? 's' : ''} found` : ''}
+      {totalCount !== undefined ? `${totalCount}件` : ''}
     </div>
   </div>
 
@@ -69,9 +69,9 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
     id={`no-results-${containerId}`} 
     class="hidden text-center py-20 border-2 border-dashed border-base-300 rounded-xl mt-4"
   >
-    <p class="text-xl text-base-content/50">No items match the selected filters.</p>
+    <p class="text-xl text-base-content/50">該当するアイテムがありません。</p>
     <button class="btn btn-ghost btn-sm mt-4 reset-filters">
-      Clear all filters
+      フィルターをリセット
     </button>
   </div>
 </div>
@@ -151,7 +151,7 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
         });
 
         // Update count and no-results message
-        countDisplay.textContent = `${visibleCount} item${visibleCount !== 1 ? 's' : ''} found`;
+        countDisplay.textContent = `${visibleCount}件`;
         if (visibleCount === 0) {
           noResults.classList.remove('hidden');
           container.classList.add('hidden');
