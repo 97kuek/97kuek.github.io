@@ -1,5 +1,6 @@
 ---
 import { getCollection, getEntry, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import { ExternalLink } from "@lucide/astro";
 import SkillBadge from "./SkillBadge.astro";
@@ -42,38 +43,36 @@ const sortedEntries = entries.sort(
 
 function formatPeriod(startDate: Date, endDate?: Date) {
   const options: Intl.DateTimeFormatOptions = {
-    month: "short",
     year: "numeric",
+    month: "short",
   };
-  const start = startDate.toLocaleDateString("en-US", options);
+  const start = startDate.toLocaleDateString("ja-JP", options);
   const end = endDate
-    ? endDate.toLocaleDateString("en-US", options)
-    : "Present";
+    ? endDate.toLocaleDateString("ja-JP", options)
+    : "現在";
   return `${start} - ${end}`;
 }
 
 function calculateDuration(startDate: Date, endDate?: Date): string | null {
-  if (!endDate) return null; // Don't show for "Present"
+  if (!endDate) return null;
 
   const start = new Date(startDate);
   const end = new Date(endDate);
 
-  // Calculate total months between dates
   const totalMonths =
     (end.getFullYear() - start.getFullYear()) * 12 +
     (end.getMonth() - start.getMonth()) +
-    1; // Add 1 to include both start and end months
+    1;
 
   const years = Math.floor(totalMonths / 12);
   const months = totalMonths % 12;
 
-  // Format the duration string
   if (years === 0) {
-    return `(${months} mo${months !== 1 ? "s" : ""})`;
+    return `(${months}ヶ月)`;
   } else if (months === 0) {
-    return `(${years} yr${years !== 1 ? "s" : ""})`;
+    return `(${years}年)`;
   } else {
-    return `(${years} yr${years !== 1 ? "s" : ""} ${months} mo${months !== 1 ? "s" : ""})`;
+    return `(${years}年${months}ヶ月)`;
   }
 }
 
@@ -86,13 +85,15 @@ const entriesWithContent = await Promise.all(
 );
 
 // Filtering logic for Work Experience (skills only)
-const allSkills = collection === "work" 
-  ? [...new Set(entries.flatMap(e => (e.data as any).skills || []))].sort()
+const workEntries = entries as CollectionEntry<"work">[];
+
+const allSkills = collection === "work"
+  ? [...new Set(workEntries.flatMap(e => e.data.skills || []))].sort()
   : [];
 
 const skillCounts = collection === "work"
-  ? entries.reduce((acc, entry) => {
-      ((entry.data as any).skills || []).forEach((skill: string) => {
+  ? workEntries.reduce((acc, entry) => {
+      (entry.data.skills || []).forEach((skill: string) => {
         acc[skill] = (acc[skill] || 0) + 1;
       });
       return acc;
@@ -126,7 +127,7 @@ const containerId = `${collection}-items`;
         <>
           <ul class="timeline timeline-vertical timeline-snap-icon" id={containerId}>
             {entriesWithContent.map(({ entry, Content }, index) => (
-              <li data-filter-tags={((entry.data as any).skills || []).join(",")}>
+              <li data-filter-tags={(collection === "work" ? ((entry as CollectionEntry<"work">).data.skills || []) : []).join(",")}>
                 {index > 0 && <hr class="bg-base-100" />}
                 <div class="timeline-middle">
                   <IconComponent class="size-5 mx-3 my-1" style={`color: var(--color-${color})`} />
@@ -263,12 +264,12 @@ const containerId = `${collection}-items`;
                       rel="noopener noreferrer"
                       class="btn btn-ghost gap-2"
                     >
-                      View Company
+                      {collection === "work" ? "会社サイトを見る" : "学校サイトを見る"}
                       <ExternalLink class="size-4" />
                     </a>
                   )}
                   <form method="dialog">
-                    <button class="btn">Close</button>
+                    <button class="btn">閉じる</button>
                   </form>
                 </div>
               </div>
@@ -334,11 +335,12 @@ const containerId = `${collection}-items`;
                       <a
                         href={entry.data.link}
                         target="_blank"
+                        rel="noopener noreferrer"
                         class="link link-hover"
                       >
                         {collection === "work"
-                          ? "View Company"
-                          : "View Institution"}
+                          ? "会社サイトを見る"
+                          : "学校サイトを見る"}
                       </a>
                     </div>
                   )}
@@ -359,7 +361,7 @@ const containerId = `${collection}-items`;
             rel="noopener noreferrer"
             class="btn btn-primary btn-outline"
           >
-            More my Work Experience
+            職務経歴をもっと見る
           </a>
         </div>
       )

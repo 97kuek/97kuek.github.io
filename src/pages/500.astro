@@ -23,8 +23,8 @@ if (error instanceof Error) {
 ---
 
 <Layout
-  title="500 - Server Error | Bloomfolio"
-  description="An error occurred while processing your request."
+  title="500 - サーバーエラー"
+  description="リクエストの処理中にエラーが発生しました。"
 >
   <div class="min-h-screen flex items-center justify-center px-4 py-20">
     <div class="text-center max-w-2xl mx-auto">
@@ -32,13 +32,13 @@ if (error instanceof Error) {
       <h1 class="text-9xl font-bold text-error mb-4 animate-pulse">500</h1>
 
       <!-- Error Title -->
-      <h2 class="text-4xl font-bold mb-4">Server Error</h2>
+      <h2 class="text-4xl font-bold mb-4">サーバーエラー</h2>
 
       <!-- Error Description -->
       <p class="text-xl mb-8 text-base-content/70">
-        {displayMessage}
+        予期しないエラーが発生しました。
         <br />
-        Please try again later or contact support if the problem persists.
+        しばらく経ってから再度お試しください。
       </p>
 
       <!-- Divider -->
@@ -48,41 +48,28 @@ if (error instanceof Error) {
       <div class="flex gap-4 justify-center flex-wrap mt-8">
         <a href={import.meta.env.BASE_URL} class="btn btn-primary gap-2">
           <House class="size-5" />
-          Go Home
+          ホームに戻る
         </a>
-        <button onclick="history.back()" class="btn btn-outline gap-2">
+        <button type="button" onclick="history.back()" class="btn btn-outline gap-2">
           <ArrowLeft class="size-5" />
-          Go Back
+          前のページへ
         </button>
       </div>
 
-      <!-- Note about SSR -->
-      <div class="mt-12 p-4 bg-base-200 rounded-lg">
-        <p class="text-sm text-base-content/60">
-          <strong>Note:</strong> This error page is only active when using Server-Side
-          Rendering (SSR). Currently, Bloomfolio is configured for static generation.
-        </p>
-      </div>
-
       <!-- Helpful Links -->
-      <div class="mt-8">
-        <p class="text-sm text-base-content/60 mb-4">Need help?</p>
+      <div class="mt-12">
+        <p class="text-sm text-base-content/60 mb-4">お困りですか？</p>
         <div class="flex gap-3 justify-center flex-wrap text-sm">
           <a
             href={`${import.meta.env.BASE_URL}#contact`}
-            class="link link-hover">Contact</a
+            class="link link-hover">お問い合わせ</a
           >
           <span class="text-base-content/30">&bull;</span>
           <a
-            href={`${import.meta.env.BASE_URL}blog/guides/bloomfolio-complete-guide`}
-            class="link link-hover">Documentation</a
-          >
-          <span class="text-base-content/30">&bull;</span>
-          <a
-            href="https://github.com/lauroguedes/bloomfolio/issues"
+            href="https://github.com/97kuek/97kuek.github.io/issues"
             target="_blank"
             rel="noopener noreferrer"
-            class="link link-hover">Report Issue</a
+            class="link link-hover">問題を報告</a
           >
         </div>
       </div>

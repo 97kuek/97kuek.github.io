@@ -22,10 +22,10 @@ const tagCounts = blogPosts.reduce((acc, post) => {
 }, {} as Record<string, number>);
 
 function formatDate(date: Date) {
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString("ja-JP", {
+    year: "numeric",
     month: "long",
     day: "numeric",
-    year: "numeric",
   });
 }
 ---

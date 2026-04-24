@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 
 interface Props {
@@ -19,7 +20,9 @@ const allEntries = await getCollection(collection);
 const relatedEntries = allEntries
   .filter((entry) => entry.id !== currentId)
   .map((entry) => {
-    const entryTags = (collection === "blog" ? (entry.data as any).tags : (entry.data as any).skills) || [];
+    const entryTags = collection === "blog"
+      ? ((entry as CollectionEntry<"blog">).data.tags ?? [])
+      : ((entry as CollectionEntry<"projects">).data.skills ?? []);
     const intersection = tags.filter((tag) => entryTags.includes(tag));
     return { entry, score: intersection.length };
   })
@@ -36,32 +39,35 @@ if (relatedEntries.length === 0) return null;
   
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     {
-      relatedEntries.map(({ entry }) => (
-        <a 
-          href={`${import.meta.env.BASE_URL}${collection}/${entry.id}`}
-          class="group block card bg-base-200 hover:bg-base-300 transition-all duration-300 overflow-hidden"
-        >
-          {(entry.data as any).image && (
-            <figure class="aspect-video overflow-hidden">
-              <Image
-                src={(entry.data as any).image}
-                alt={(entry.data as any).title}
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                width={400}
-                height={225}
-              />
-            </figure>
-          )}
-          <div class="card-body p-4">
-            <h3 class="card-title text-lg group-hover:text-primary transition-colors">
-              {(entry.data as any).title}
-            </h3>
-            <p class="text-sm text-base-content/70 line-clamp-2">
-              {(entry.data as any).description}
-            </p>
-          </div>
-        </a>
-      ))
+      relatedEntries.map(({ entry }) => {
+        const data = entry.data as CollectionEntry<"blog">["data"];
+        return (
+          <a
+            href={`${import.meta.env.BASE_URL}${collection}/${entry.id}`}
+            class="group block card bg-base-200 hover:bg-base-300 transition-all duration-300 overflow-hidden"
+          >
+            {data.image && (
+              <figure class="aspect-video overflow-hidden">
+                <Image
+                  src={data.image}
+                  alt={data.title}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  width={400}
+                  height={225}
+                />
+              </figure>
+            )}
+            <div class="card-body p-4">
+              <h3 class="card-title text-lg group-hover:text-primary transition-colors">
+                {data.title}
+              </h3>
+              <p class="text-sm text-base-content/70 line-clamp-2">
+                {data.description}
+              </p>
+            </div>
+          </a>
+        );
+      })
     }
   </div>
 </section>
