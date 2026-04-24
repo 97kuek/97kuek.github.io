@@ -11,11 +11,11 @@ const { skill, href } = Astro.props;
   href ? (
     <a
       href={href}
-      class="badge badge-sm badge-soft badge-accent hover:badge-outline transition-colors"
+      class="badge badge-sm badge-outline badge-primary hover:badge-primary hover:text-primary-content transition-colors"
     >
       {skill}
     </a>
   ) : (
-    <span class="badge badge-sm badge-soft badge-accent">{skill}</span>
+    <span class="badge badge-sm badge-outline badge-primary">{skill}</span>
   )
 }
