@@ -11,8 +11,7 @@ tags: ["深層学習"]
 2017年、Googleの研究者たちが「**Attention Is All You Need**」という論文を発表しました。
 これがTransformerの誕生です。
 
-それ以前、自然言語処理（NLP）の主役は**RNN（再帰ニューラルネットワーク）**と、
-それをベースにしたエンコーダ-デコーダモデルでした。
+それ以前、自然言語処理（NLP）の主役は**RNNとそれをベースにしたエンコーダ-デコーダモデル**でした。
 しかしRNNには、根本的な欠点がありました。
 
 {% Box color="error" title="RNNの問題点" %}
@@ -25,36 +24,20 @@ tags: ["深層学習"]
 たとえば100単語の文で先頭の主語を参照しようとすると、RNNは100ステップ分の情報を引き継がなければなりません。
 {% /Box %}
 
-そこでTransformerは「**再帰も畳み込みも使わず、Attentionだけで系列変換を行う**」という大胆な設計を採用しました。
+そこでTransformerは**再帰も畳み込みも使わず、Attentionだけで系列変換を行う**という大胆な設計を採用しました。
 これにより入力を一度に並列処理でき、学習速度と精度が飛躍的に向上しました。
 
 結果として翻訳タスクで当時の最高精度（BLEU 28.4）を大幅に更新しただけでなく、
-**BERT・GPT・T5・ViT**など現代のほぼすべての大型モデルの基盤となっています。
-Transformerを理解することは、現代AIの基礎を理解することに等しいです。
+BERT・GPT・T5・ViTなど現代のほぼすべての大型モデルの基盤となっています。
+
+**Transformerを理解することは、現代AIの基礎を理解することに等しい**のです。
 
 ## 2. 全体アーキテクチャ──大きな流れを掴む
 
 Transformerは**Encoder-Decoder構造**を採用しています。
-まず全体の「データの流れ」を掴んでから、各部品を詳しく見ていきましょう。
+まず全体の流れを掴んでから、各モジュールをを詳しく見ていきましょう。
 
-「Yo tengo gatos（スペイン語）→ I have cats（英語）」の翻訳を例にとります。
-
-```
-【Encoder側】                          【Decoder側】
-
-"Yo tengo gatos"                       "I have cats" ← 正解出力
-     ↓                                      ↑
-  単語埋め込み                         Linear + Softmax
-  + 位置エンコーディング                      ↑
-     ↓                                  × 6 層
-  × 6 層 ┌─────────────────┐        ┌──────────────────────┐
-         │ Multi-Head      │        │ Masked Multi-Head     │
-         │ Self-Attention  │   →    │ Self-Attention        │
-         │ Add & Norm      │ (出力) │ Cross-Attention       │
-         │ Feed-Forward    │        │ Add & Norm            │
-         │ Add & Norm      │        │ Feed-Forward / Norm   │
-         └─────────────────┘        └──────────────────────┘
-```
+ここでは「Yo tengo gatos（スペイン語）→ I have cats（英語）」の翻訳を例にとります。
 
 ![Transformerのアーキテクチャ](@assets/blog/transformer/transformer-arch.png)
 
@@ -69,8 +52,24 @@ Transformerは**Encoder-Decoder構造**を採用しています。
 ### 3.1 単語埋め込み（Word Embedding）
 
 ニューラルネットが扱えるのは数値だけです。
-まず各単語を**512次元のベクトル**に変換します（この次元数を{% InlineMath %}d_{\text{model}}{% /InlineMath %}と呼びます）。
-この変換は訓練で学習されます。
+
+まず「単語」という離散的な記号を、**数値のベクトルに変換する必要**があります。
+
+最もシンプルな方法は、語彙数分の次元を用意してその単語だけ1にするone-hotエンコーディングです。
+しかしこれでは「cat」と「dog」の距離も「cat」と「Tokyo」の距離も同じになってしまい、単語間の意味的な近さが表現できません。
+
+そこで使われるのが**単語埋め込み**です。
+
+各単語を{% InlineMath %}d_{\text{model}} = 512{% /InlineMath %}次元の実数ベクトルにマッピングします。
+
+{% Box color="info" title="なぜベクトルで意味が表現できるのか" %}
+訓練を通じて似た文脈で登場する単語には似たベクトルが割り当てられるようになります。
+つまり、ベクトルの差や和が意味的な関係を反映します。
+"512次元のベクトル"は、各単語が持つ意味・品詞・使われ方などの情報を、512個の実数で圧縮して表現したものです。
+{% /Box %}
+
+この単語埋め込みの重み行列{% InlineMath %}W_e \in \mathbb{R}^{|\mathcal{V}| \times d_{\text{model}}}{% /InlineMath %}は、
+訓練を通じて学習されます（{% InlineMath %}|\mathcal{V}|{% /InlineMath %}は語彙サイズ）。
 
 ### 3.2 位置エンコーディング（Positional Encoding）
 
@@ -78,26 +77,54 @@ Transformerは**Encoder-Decoder構造**を採用しています。
 **単語の順序を考慮しません**。
 "I love cats" と "cats love I" が同じ入力になってしまいます。
 
-これを解決するため、単語ベクトルに**位置情報のベクトルを加算**します。
-Transformerでは以下の三角関数を使います。
+これを解決するため、各単語ベクトルに**位置情報のベクトル（Positional Encoding）を加算**します。
 
-{% Math %}\text{PE}_{(\text{pos},2i)}=\sin\!\left(\frac{\text{pos}}{10000^{2i/d_{\text{model}}}}\right){% /Math %}
+{% Math %}\text{入力}_{\text{pos}} = \text{Embedding}(\text{word}_{\text{pos}}) + \text{PE}_{\text{pos}}{% /Math %}
 
-{% Math %}\text{PE}_{(\text{pos},2i+1)}=\cos\!\left(\frac{\text{pos}}{10000^{2i/d_{\text{model}}}}\right){% /Math %}
+#### 位置エンコーディングの計算式
 
-{% InlineMath %}\text{pos}{% /InlineMath %}は文中の位置（0, 1, 2, …）、{% InlineMath %}i{% /InlineMath %}は次元のインデックスです。
-偶数次元にsin、奇数次元にcosを使い、次元ごとに異なる周期の波を割り当てることで、
-各位置に一意なベクトルが生成されます。
+{% Math %}\text{PE}_{(\text{pos},\;2i)}=\sin\!\left(\frac{\text{pos}}{10000^{2i/d_{\text{model}}}}\right){% /Math %}
 
-{% Box color="info" title="なぜsin/cosなのか" %}
-sin/cosの組み合わせには重要な性質があります。
+{% Math %}\text{PE}_{(\text{pos},\;2i+1)}=\cos\!\left(\frac{\text{pos}}{10000^{2i/d_{\text{model}}}}\right){% /Math %}
+
+変数の意味を確認しましょう。
+
+- **{% InlineMath %}\text{pos}{% /InlineMath %}**：文中の位置。最初の単語が0、次が1、…と続く
+- **{% InlineMath %}i{% /InlineMath %}**：512次元のうち何番目の次元か（0〜255）
+- **{% InlineMath %}d_{\text{model}}{% /InlineMath %}**：ベクトルの次元数（= 512）
+
+ポイントは**次元ごとに異なる周期のsin/cos波を割り当てる**ことです。
+{% InlineMath %}i{% /InlineMath %}が大きくなるほど分母{% InlineMath %}10000^{2i/d_{\text{model}}}{% /InlineMath %}が大きくなり、波の周期が長くなります。
+
+i = 0   → 周期が非常に短い波（隣の位置で大きく変化）
+
+i = 128 → 周期が非常に長い波（隣の位置ではほとんど変化しない）
+
+これは時計のアナログ表示に似ています。
+秒針（i = 0）は1分で一周する短い周期、
+分針（i = 1）は60分で一周する長い周期——
+複数の針を組み合わせることで、どの時刻かを一意に特定できます。
+位置エンコーディングも同じ発想で、**短い周期から長い周期まで複数の波を重ねることで、各位置に一意なベクトル**を生成します。
+
+{% Box color="info" title="なぜsin/cosの組み合わせなのか" %}
+sin/cosには重要な数学的性質があります。
 任意の相対位置{% InlineMath %}k{% /InlineMath %}に対して、
 {% InlineMath %}\text{PE}_{\text{pos}+k}{% /InlineMath %}が{% InlineMath %}\text{PE}_{\text{pos}}{% /InlineMath %}の**線形変換**で表せます。
-これによりTransformerが相対的な位置関係を学習しやすくなるだけでなく、
-訓練時より長い文章にも外挿できるという利点があります。
+
+{% Math %}\text{PE}_{(\text{pos}+k)}=M_k \cdots \text{PE}_{(\text{pos})}{% /Math%}
+
+これは三角関数の和積の公式から導かれます。
+
+{% InlineMath %}A = \text{pos}/10000^{2i/d}{% /InlineMath %}、{% InlineMath %}B = k/10000^{2i/d}{% /InlineMath %}とおくと、
+PE(pos+k)の各次元はPE(pos)の対応する2次元（sinとcos）の線形結合になっています。
+
+このおかげで、Attentionが「2単語間の距離{% InlineMath %}k{% /InlineMath %}」を学習しやすくなります。
+また、sinとcosの値域は常に{% InlineMath %}[-1, 1]{% /InlineMath %}に収まるため、
+訓練時より長い文章が来ても値が爆発せず、**外挿**（未見の長さへの適用）も可能です。
 {% /Box %}
 
-この位置エンコーディングを単語ベクトルに加算したものが、Encoderへの最終的な入力です。
+最終的に、単語埋め込みと位置エンコーディングを足し合わせたベクトルが
+Encoderへの入力として使われます。
 
 ## 4. Encoder──文脈を考慮した表現を作る
 
