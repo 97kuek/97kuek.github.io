@@ -138,7 +138,7 @@ Encoderブロックは以下の3つのコンポーネントで構成されてい
 
 ### 4.1 Attentionメカニズム──単語間の「関連度」を計算する
 
-**Attentionの動機**から始めます。
+Attentionの動機から始めます。
 
 > The animal didn't cross the street because **it** was too tired.
 
@@ -146,29 +146,73 @@ Encoderブロックは以下の3つのコンポーネントで構成されてい
 RNNはこれを「情報を順番に引き継ぐ」ことで解決しようとしましたが、
 文が長いと情報が薄れてしまいます。
 
-Attentionは発想を変えます。**「すべての単語ペアの関連度を一度に計算してしまおう」**という考え方です。
+Attentionは発想を変えます。**すべての単語ペアの関連度を一度に計算してしまおう**という考え方です。
 
 #### Query・Key・Value（Q・K・V）
 
 AttentionはQuery（Q）・Key（K）・Value（V）という3種類のベクトルで計算されます。
-データベース検索の比喩で理解しましょう。
+まず「なぜ3種類も必要なのか」という動機から始めましょう。
 
-{% Box color="info" title="Q・K・Vの直感" %}
-**Query（Q）**：「私は何を探しているか？」── 注目したい単語が発するクエリ
+**素朴なAttentionの問題点**
 
-**Key（K）**：「私はどんな情報を持っているか？」── 各単語が持つ検索キー
+最もシンプルな「単語間の関連度」の測り方は、
+単語ベクトル同士の内積をそのまま使うことです。
 
-**Value（V）**：「実際に渡す情報の中身」── スコアに応じて加重和される実データ
+{% Math %}
+\text{score}(\text{it}, \text{animal}) = \text{vec}(\text{it}) \cdots \text{vec}(\text{animal})
+{% /Math %}
 
-QとKの内積で「どれだけ関連しているか」を計算し、
-そのスコアでVを重み付けして足し合わせると、**文脈を考慮した単語の新しい表現**が得られます。
+しかしこれでは、「関連度の計算に使う側面」と「実際に渡す情報」が同じベクトルになってしまいます。
+
+「"it"が何を指すか調べたい」（検索目的）という側面と、「"it"という単語そのものが持つ意味情報」（渡す情報）は、本来**別々に最適化されるべき**です。
+
+そこでQ・K・Vを分離します。
+
+{% Box color="info" title="Q・K・Vの役割" %}
+**Query（Q）**：「私は何を探しているか」── 検索する側の表現
+
+**Key（K）**：「私はどんな情報を持っているか」── 検索される側の表現
+
+**Value（V）**：「実際に渡す情報の中身」── 検索がヒットしたときに渡すデータ
+
+YouTubeの検索を例に考えると：
+- 検索バーに入力するキーワード → **Query**
+- 各動画に付けられたタグ・タイトル → **Key**
+- 動画の実際のコンテンツ → **Value**
+
+QueryとKeyの一致度でスコアを計算し、スコアが高い動画のValueを多く受け取るイメージです。
 {% /Box %}
 
-入力埋め込み行列{% InlineMath %}X{% /InlineMath %}に対して、学習済み重み行列をかけることでQ・K・Vを生成します。
+#### Q・K・Vの生成
+
+入力埋め込み行列{% InlineMath %}X \in \mathbb{R}^{n \times d_{\text{model}}}{% /InlineMath %}（{% InlineMath %}n{% /InlineMath %}は単語数）に対して、
+学習可能な重み行列をかけることでQ・K・Vを生成します。
 
 {% Math %}Q = XW^Q,\quad K = XW^K,\quad V = XW^V{% /Math %}
 
-{% InlineMath %}W^Q, W^K, W^V{% /InlineMath %}はいずれも訓練で学習されるパラメータです。
+ここで各重み行列の形は{% InlineMath %}W^Q, W^K, W^V \in \mathbb{R}^{d_{\text{model}} \times d_k}{% /InlineMath %}です（{% InlineMath %}d_k = 64{% /InlineMath %}）。
+
+この線形変換が重要な意味を持ちます。
+同じ入力ベクトル{% InlineMath %}x_{\text{it}}{% /InlineMath %}（"it"のベクトル）から出発しても、
+
+- {% InlineMath %}W^Q{% /InlineMath %}をかけると「itが何かを探すときの表現」に変換される
+- {% InlineMath %}W^K{% /InlineMath %}をかけると「itが検索されたときにヒットしやすい表現」に変換される
+- {% InlineMath %}W^V{% /InlineMath %}をかけると「itが実際に渡す情報の表現」に変換される
+
+**3つの重み行列が「同じ単語の3つの異なる役割」を学習する**というわけです。
+
+"I have cats"（3単語）の場合、行列の形を追うと：
+
+```
+X        : (3, 512)   ← 3単語 × 512次元
+W^Q      : (512, 64)
+W^K      : (512, 64)
+W^V      : (512, 64)
+─────────────────────────────
+Q = XW^Q : (3, 64)    ← 3単語分のQueryベクトル
+K = XW^K : (3, 64)    ← 3単語分のKeyベクトル
+V = XW^V : (3, 64)    ← 3単語分のValueベクトル
+```
 
 #### Scaled Dot-Product Attention
 
@@ -176,22 +220,78 @@ Q・K・VからAttentionを計算する式は以下のとおりです。
 
 {% Math %}\text{Attention}(Q,K,V)=\text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V{% /Math %}
 
-ステップに分けて読むと理解しやすいです。
+行列の形を追いながら、4ステップで読み解きましょう。
 
-1. **{% InlineMath %}QK^\top{% /InlineMath %}**：全単語ペアの内積を一度に計算。形は（単語数 × 単語数）の行列になります。値が大きいほど「関連が強い」
-2. **{% InlineMath %}/\sqrt{d_k}{% /InlineMath %}**：{% InlineMath %}d_k{% /InlineMath %}が大きいと内積の値が爆発的に大きくなり、softmaxが飽和して勾配が消えます。これを防ぐためのスケーリングです
-3. **softmax**：各行を確率分布に変換。これが「どの単語にどれだけ注目するか」の重みになります
-4. **{% InlineMath %}\cdot V{% /InlineMath %}**：その重みでValueを加重和。「文脈を考慮した単語表現」の完成です
+**Step 1：スコア行列の計算 {% InlineMath %}QK^\top{% /InlineMath %}**
 
-たとえば "I have cats" の場合、Attentionスコアは次のようなイメージになります。
+{% Math %}S = QK^\top \quad \in \mathbb{R}^{n \times n}{% /Math %}
 
-|       | I    | have | cats |
-|-------|------|------|------|
-| **I** | 0.88 | 0.10 | 0.02 |
-| **have** | 0.08 | 0.80 | 0.12 |
-| **cats** | 0.03 | 0.14 | 0.83 |
+```
+Q  : (3, 64)
+K^T: (64, 3)
+──────────────
+S  : (3, 3)   ← 全単語ペアのスコアが一度に得られる
+```
 
-各単語は自分自身に最も高いスコアを付けながら、文脈に応じて他の単語にも注意を向けています。
+{% InlineMath %}S_{ij}{% /InlineMath %}は「単語{% InlineMath %}i{% /InlineMath %}が単語{% InlineMath %}j{% /InlineMath %}にどれだけ関連しているか」を表すスコアです。
+"I have cats" なら：
+
+```
+        I      have   cats
+I    [ 24.1,   3.2,   0.8 ]
+have [  2.1,  22.4,   3.8 ]
+cats [  0.9,   4.1,  23.7 ]
+```
+
+（値は説明のためのイメージです）
+
+**Step 2：スケーリング {% InlineMath %}/\sqrt{d_k}{% /InlineMath %}**
+
+{% InlineMath %}d_k = 64{% /InlineMath %}次元の内積は、次元数が大きいほど値が大きくなる傾向があります。
+（各次元の寄与が足し合わされるため）
+
+値が大きすぎるとsoftmaxへの入力が極端になり、出力が「0か1か」のような分布に飽和します。
+すると勾配がほぼ0になり、学習が止まってしまいます。
+
+{% InlineMath %}\sqrt{d_k}{% /InlineMath %}で割ることで値のスケールを揃えます。直感的には「内積の期待値の標準偏差で割る」操作です。
+
+{% Math %}S' = \frac{QK^\top}{\sqrt{64}} = \frac{QK^\top}{8}{% /Math %}
+
+**Step 3：Softmaxで注意重みへ変換**
+
+{% Math %}A = \text{softmax}(S') \quad \in \mathbb{R}^{n \times n}{% /Math %}
+
+各**行**に対してsoftmaxを適用します。これにより各行の和が1になり、「確率分布」として解釈できます。
+
+```
+        I      have   cats
+I    [ 0.88,  0.10,  0.02 ]  ← "I" はほぼ自分自身に注目
+have [ 0.08,  0.80,  0.12 ]  ← "have" は自分と "cats" に注目
+cats [ 0.03,  0.14,  0.83 ]  ← "cats" はほぼ自分自身に注目
+```
+
+この行列{% InlineMath %}A{% /InlineMath %}がAttention重み（Attention Map）です。
+各行が「その単語がどの単語にどれだけ注目しているか」を表します。
+
+**Step 4：Valueの加重和 {% InlineMath %}\cdot V{% /InlineMath %}**
+
+{% Math %}\text{Output} = AV \quad \in \mathbb{R}^{n \times d_k}{% /Math %}
+
+```
+A      : (3, 3)
+V      : (3, 64)
+────────────────
+Output : (3, 64)   ← 各単語の「文脈を考慮した新しい表現」
+```
+
+たとえば "have" の出力ベクトルは：
+
+```
+Output["have"] = 0.08 × V["I"] + 0.80 × V["have"] + 0.12 × V["cats"]
+```
+
+"have" は自分自身のValueを80%、"cats"のValueを12%取り込んだ表現になります。
+**「"have"の意味は"cats"との関係によっても少し変わる」**という文脈情報が、この加重和に埋め込まれているわけです。
 
 #### Multi-Head Attention──複数の視点で見る
 
