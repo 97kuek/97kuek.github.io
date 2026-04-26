@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import FabFlower from "../components/FabFlower.astro";
 import Dock from "../components/Dock.astro";
+import Navbar from "../components/Navbar.astro";
 import { getEntry } from "astro:content";
 
 // Load general singleton
@@ -61,6 +62,7 @@ const ogImageUrl = ogImage ?? `${origin}/images/og_home.png`;
     <slot name="head" />
   </head>
   <body class="min-h-screen overflow-x-hidden">
+    <Navbar />
     <slot />
 
     {

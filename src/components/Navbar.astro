@@ -1,0 +1,43 @@
+---
+import { getEntry } from "astro:content";
+
+const heroEntry = await getEntry("hero", "index");
+const name = heroEntry?.data?.name ?? "Portfolio";
+
+const base = import.meta.env.BASE_URL;
+const { pathname } = Astro.url;
+
+const normalizedBase = base.endsWith("/") ? base : `${base}/`;
+const isHome = pathname === base || pathname === normalizedBase || pathname === "/";
+
+const navLinks = isHome
+  ? [
+      { href: "#about", label: "About" },
+      { href: "#projects", label: "Projects" },
+      { href: "#blog", label: "Blog" },
+      { href: "#contact", label: "Contact" },
+    ]
+  : [
+      { href: `${base}blog`, label: "Blog" },
+      { href: `${base}projects`, label: "Projects" },
+    ];
+---
+
+<header
+  id="site-navbar"
+  class="hidden lg:flex fixed top-0 left-0 right-0 z-40 navbar bg-base-100/70 backdrop-blur-md border-b border-base-200/60 transition-all duration-300"
+>
+  <div class="navbar-start">
+    <a href={base} class="btn btn-ghost font-bold text-base">{name}</a>
+  </div>
+  <nav class="navbar-end gap-1">
+    {navLinks.map((link) => (
+      <a
+        href={link.href}
+        class="btn btn-ghost btn-sm text-base-content/70 hover:text-base-content"
+      >
+        {link.label}
+      </a>
+    ))}
+  </nav>
+</header>
