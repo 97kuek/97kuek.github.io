@@ -21,6 +21,12 @@ const tagCounts = blogPosts.reduce((acc, post) => {
   return acc;
 }, {} as Record<string, number>);
 
+function calcReadingTime(body: string): number {
+  const japaneseChars = (body.match(/[　-鿿＀-￯]/g) ?? []).length;
+  const englishWords = (body.match(/[a-zA-Z]+/g) ?? []).length;
+  return Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 200));
+}
+
 function formatDate(date: Date) {
   return date.toLocaleDateString("ja-JP", {
     year: "numeric",
@@ -78,7 +84,7 @@ function formatDate(date: Date) {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="blog-grid">
           {sortedPosts.map((post) => (
             <article
-              class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow"
+              class="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200"
               data-filter-tags={(post.data.tags || []).join(",")}
             >
               <figure class="aspect-video">
@@ -91,9 +97,11 @@ function formatDate(date: Date) {
                 />
               </figure>
               <div class="card-body">
-                <time class="text-sm text-base-content/60">
-                  {formatDate(post.data.publishDate)}
-                </time>
+                <div class="flex items-center gap-2 text-sm text-base-content/60">
+                  <time>{formatDate(post.data.publishDate)}</time>
+                  <span>&bull;</span>
+                  <span>約{calcReadingTime(post.body ?? '')}分</span>
+                </div>
                 <h2 class="card-title hover:text-primary transition-colors">
                   <a href={`${import.meta.env.BASE_URL}blog/${post.id}`}>
                     {post.data.title}
