@@ -25,19 +25,46 @@ const navLinks = isHome
 
 <header
   id="site-navbar"
-  class="hidden lg:flex fixed top-0 left-0 right-0 z-40 navbar bg-base-100/70 backdrop-blur-md border-b border-base-200/60 transition-all duration-300"
+  class="fixed top-0 left-0 right-0 z-40 navbar bg-base-100/70 backdrop-blur-md border-b border-base-200/60"
 >
   <div class="navbar-start">
     <a href={base} class="btn btn-ghost font-bold text-base">{name}</a>
   </div>
-  <nav class="navbar-end gap-1">
-    {navLinks.map((link) => (
-      <a
-        href={link.href}
-        class="btn btn-ghost btn-sm text-base-content/70 hover:text-base-content"
+
+  <div class="navbar-end">
+    <!-- デスクトップ: 横並びリンク -->
+    <nav class="hidden lg:flex gap-1">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="btn btn-ghost btn-sm text-base-content/70 hover:text-base-content"
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- モバイル・タブレット: ハンバーガー -->
+    <div class="dropdown dropdown-end lg:hidden">
+      <button tabindex="0" class="btn btn-ghost btn-square" aria-label="メニューを開く">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="6" x2="20" y2="6"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="18" x2="20" y2="18"/>
+        </svg>
+      </button>
+      <ul
+        tabindex="0"
+        class="dropdown-content menu bg-base-100 rounded-box z-50 w-48 p-2 shadow-lg border border-base-200 mt-2"
       >
-        {link.label}
-      </a>
-    ))}
-  </nav>
+        {navLinks.map((link) => (
+          <li>
+            <a href={link.href} class="text-base-content/80">
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
 </header>
