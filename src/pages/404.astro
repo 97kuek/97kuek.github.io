@@ -4,13 +4,13 @@ import { House, FolderOpen } from "@lucide/astro";
 ---
 
 <Layout
-  title="404 - ページが見つかりません | Bloomfolio"
+  title="404 - ページが見つかりません | 97kuek"
   description="お探しのページは存在しません。"
 >
   <div class="min-h-screen flex items-center justify-center px-4 py-20">
     <div class="text-center max-w-2xl mx-auto">
       <!-- Large 404 Number -->
-      <h1 class="text-9xl font-bold text-primary mb-4 animate-pulse">404</h1>
+      <h1 class="text-9xl font-bold text-primary mb-4 animate-bounce">404</h1>
 
       <!-- Error Title -->
       <h2 class="text-4xl font-bold mb-4">ページが見つかりません</h2>
@@ -39,22 +39,16 @@ import { House, FolderOpen } from "@lucide/astro";
       </div>
 
       <!-- Helpful Links -->
-      <div class="flex justify-center gap-2 mt-12">
-        <p class="text-sm text-base-content/60 mb-4">
+      <div class="flex flex-col items-center gap-3 mt-12">
+        <p class="text-sm text-base-content/60">
           こちらのリンクもお探しですか？
         </p>
         <div class="flex gap-3 justify-center flex-wrap text-sm">
-          <a href={`${import.meta.env.BASE_URL}blog`} class="link link-hover"
-            >ブログ</a
-          >
+          <a href={`${import.meta.env.BASE_URL}blog`} class="link link-hover">ブログ</a>
           <span class="text-base-content/30">&bull;</span>
-          <a href={`${import.meta.env.BASE_URL}#about`} class="link link-hover"
-            >プロフィール</a
-          >
+          <a href={`${import.meta.env.BASE_URL}#about`} class="link link-hover">プロフィール</a>
           <span class="text-base-content/30">&bull;</span>
-          <a href={`${import.meta.env.BASE_URL}#contact`} class="link link-hover"
-            >お問い合わせ</a
-          >
+          <a href={`${import.meta.env.BASE_URL}#contact`} class="link link-hover">お問い合わせ</a>
         </div>
       </div>
     </div>

@@ -8,6 +8,7 @@ import RelatedContent from "../components/RelatedContent.astro";
 import PrevNextNav from "../components/PrevNextNav.astro";
 import ReadingProgress from "../components/ReadingProgress.astro";
 import BackToTop from "../components/BackToTop.astro";
+import TableOfContents from "../components/TableOfContents.astro";
 
 interface NavEntry {
   title: string;
@@ -26,6 +27,7 @@ interface Props {
   demoLink?: string;
   sourceLink?: string;
   updatedDate?: Date;
+  headings?: { depth: number; slug: string; text: string }[];
   prev?: NavEntry;
   next?: NavEntry;
 }
@@ -41,6 +43,7 @@ const {
   demoLink,
   sourceLink,
   updatedDate,
+  headings = [],
   prev,
   next,
 } = Astro.props;
@@ -219,32 +222,45 @@ const ogImage = image
     <!-- Divider -->
     <div class="divider"></div>
 
-    <!-- Project Content -->
-    <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3">
-      <slot />
-    </div>
+    <div class="lg:grid lg:grid-cols-[1fr_16rem] lg:gap-12 lg:items-start">
+      <div>
+        <!-- Project Content -->
+        <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3">
+          <slot />
+        </div>
 
-    <!-- Prev / Next Navigation -->
-    <PrevNextNav prev={prev} next={next} collection="projects" />
+        <!-- Prev / Next Navigation -->
+        <PrevNextNav prev={prev} next={next} collection="projects" />
 
-    <!-- Related Content -->
-    <RelatedContent
-      currentId={id}
-      collection="projects"
-      tags={skills}
-    />
+        <!-- Related Content -->
+        <RelatedContent
+          currentId={id}
+          collection="projects"
+          tags={skills}
+        />
 
-    <!-- Giscus Comments -->
-    <Giscus />
+        <!-- Giscus Comments -->
+        <Giscus />
 
-    <!-- Divider -->
-    <div class="divider mt-12"></div>
+        <!-- Divider -->
+        <div class="divider mt-12"></div>
 
-    <!-- Back to projects link -->
-    <div class="text-center mt-8">
-      <a href={`${import.meta.env.BASE_URL}projects`} class="btn btn-primary">
-        すべてのプロジェクトを見る
-      </a>
+        <!-- Back to projects link -->
+        <div class="text-center mt-8">
+          <a href={`${import.meta.env.BASE_URL}projects`} class="btn btn-primary">
+            すべてのプロジェクトを見る
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar TOC (desktop only, sticky) -->
+      {headings.length > 0 && (
+        <aside class="hidden lg:block">
+          <div class="sticky top-8">
+            <TableOfContents headings={headings} sidebar={true} />
+          </div>
+        </aside>
+      )}
     </div>
   </article>
 </Layout>
