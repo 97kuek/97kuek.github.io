@@ -2,9 +2,10 @@
 // BackToTop.astro
 ---
 
+<div class="tooltip tooltip-left fixed bottom-8 right-8 z-50 translate-y-24 opacity-0 transition-all duration-300" id="back-to-top-wrapper" data-tip="長押しで目次を表示">
 <button
   id="back-to-top"
-  class="fixed bottom-8 right-8 btn btn-circle btn-primary shadow-lg translate-y-24 opacity-0 transition-all duration-300 z-50 hover:scale-110 active:scale-95"
+  class="btn btn-circle btn-primary shadow-lg hover:scale-110 active:scale-95"
   aria-label="トップへ戻る"
 >
   <svg
@@ -21,6 +22,7 @@
     <path d="m18 15-6-6-6 6"></path>
   </svg>
 </button>
+</div>
 
 <!-- TOC popup (long-press) -->
 <div
@@ -44,19 +46,20 @@
   const LONG_PRESS_MS = 500;
 
   const initBackToTop = () => {
+    const wrapper = document.getElementById('back-to-top-wrapper');
     const button = document.getElementById('back-to-top');
     const popup = document.getElementById('toc-popup');
     const list = document.getElementById('toc-popup-list');
-    if (!button || !popup || !list) return;
+    if (!wrapper || !button || !popup || !list) return;
 
     // --- visibility toggle ---
     const toggleVisible = () => {
       if (window.scrollY > 300) {
-        button.classList.remove('translate-y-24', 'opacity-0');
-        button.classList.add('translate-y-0', 'opacity-100');
+        wrapper.classList.remove('translate-y-24', 'opacity-0');
+        wrapper.classList.add('translate-y-0', 'opacity-100');
       } else {
-        button.classList.add('translate-y-24', 'opacity-0');
-        button.classList.remove('translate-y-0', 'opacity-100');
+        wrapper.classList.add('translate-y-24', 'opacity-0');
+        wrapper.classList.remove('translate-y-0', 'opacity-100');
         closeToc();
       }
     };

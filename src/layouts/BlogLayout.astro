@@ -130,10 +130,10 @@ function formatDate(date: Date) {
     <!-- Divider -->
     <div class="divider"></div>
 
-    <div>
+    <div class="lg:grid lg:grid-cols-[1fr_16rem] lg:gap-12 lg:items-start">
       <article>
-        <!-- TOC (top of content) -->
-        <div class="mb-8">
+        <!-- TOC (mobile/tablet: collapsible at top) -->
+        <div class="mb-8 lg:hidden">
           <TableOfContents headings={headings} />
         </div>
 
@@ -166,6 +166,12 @@ function formatDate(date: Date) {
         </div>
       </article>
 
+      <!-- Sidebar TOC (desktop only, sticky) -->
+      <aside class="hidden lg:block">
+        <div class="sticky top-8">
+          <TableOfContents headings={headings} sidebar={true} />
+        </div>
+      </aside>
     </div>
   </div>
 </Layout>
