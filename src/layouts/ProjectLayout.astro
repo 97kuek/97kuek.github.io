@@ -93,7 +93,7 @@ const ogImage = image
 <Layout title={title} description={description} ogImage={ogImage}>
   <ReadingProgress />
   <BackToTop />
-  <article class="max-w-4xl mx-auto px-4 py-20">
+  <article class="max-w-6xl mx-auto px-4 py-20">
     <!-- Back button -->
     <div class="mb-8">
       <a
@@ -224,6 +224,13 @@ const ogImage = image
 
     <div class="lg:grid lg:grid-cols-[1fr_16rem] lg:gap-12 lg:items-start">
       <div>
+        <!-- TOC (mobile/tablet: collapsible at top) -->
+        {headings.length > 0 && (
+          <div class="mb-8 lg:hidden">
+            <TableOfContents headings={headings} />
+          </div>
+        )}
+
         <!-- Project Content -->
         <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3">
           <slot />

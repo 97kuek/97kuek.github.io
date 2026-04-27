@@ -1,7 +1,12 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+html {
+  overflow-x: hidden;
+}
+
 body {
+  overflow-x: hidden;
   font-family: "BIZ UDPGothic", "BIZ UDGothic", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
   line-height: 1.85;
 }

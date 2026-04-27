@@ -21,14 +21,12 @@ const cfg = configs[color] ?? {
 };
 ---
 
-<div class={`not-prose my-8 rounded-r-xl px-6 py-5 ${cfg.wrapper}`}>
+<div class={`my-8 rounded-r-xl px-6 py-5 ${cfg.wrapper}`}>
   {title && (
-    <div class={`flex items-center gap-1.5 mb-3 ${cfg.titleColor}`}>
+    <div class={`not-prose flex items-center gap-1.5 mb-3 ${cfg.titleColor}`}>
       <span class="text-sm leading-none">{cfg.icon}</span>
       <span class="text-sm font-semibold">{title}</span>
     </div>
   )}
-  <div class="prose max-w-none">
-    <slot />
-  </div>
+  <slot />
 </div>
