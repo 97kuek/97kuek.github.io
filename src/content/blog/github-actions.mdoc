@@ -1,0 +1,217 @@
+---
+title: "【初心者向け】GitHub Actions で自動デプロイを始めよう！GitHub Pages への CI/CD 入門"
+description: "背景差分法を用いた動体検知の基本的な理論とOpenCVによる実装手法について解説します。"
+publishDate: "2026-05-11"
+image: "@assets/blog/motion-detection-app/OpenCV.jpg"
+tags: ["GitHub"]
+---
+
+## はじめに
+
+「コードを push したら自動でサイトが公開される」――そんな便利な仕組みを **CI/CD** といいます。
+
+このブログでは、**GitHub Actions** を使って **GitHub Pages** へ自動デプロイする方法を、概念から実践まで丁寧に解説します。
+
+## CI/CD って何？
+
+| 用語 | 意味 |
+|------|------|
+| **CI**（継続的インテグレーション） | コードの変更を自動でテスト・ビルドする仕組み |
+| **CD**（継続的デリバリー/デプロイ） | ビルド済みのコードを自動で本番環境へ反映する仕組み |
+
+手動でやると…
+1. コードを書く
+2. ビルドする（`npm run build` など）
+3. 生成されたファイルをサーバーにアップロードする
+4. 動作確認する
+
+これを **毎回手作業でやるのは大変**。CI/CD を使えば、`git push` するだけで 2〜4 が自動で完了します！
+
+---
+
+## GitHub Actions とは？
+
+GitHub に組み込まれた **自動化ツール**です。
+
+- リポジトリの `.github/workflows/` フォルダに YAML ファイルを置くだけで動作
+- push・PR・スケジュールなど、様々なタイミングで処理を実行できる
+- 無料枠あり（パブリックリポジトリは無制限）
+
+---
+
+## GitHub Pages とは？
+
+GitHub が提供する **静的サイトホスティングサービス**です。
+
+- `https://ユーザー名.github.io/リポジトリ名/` という URL で公開できる
+- 静的ファイル（HTML / CSS / JS）であれば無料でホスティング可能
+- React・Vue・Next.js などのビルド成果物も公開できる
+
+---
+
+## 実践：自動デプロイを設定してみよう
+
+### 前提条件
+
+- GitHub アカウントがある
+- デプロイしたいリポジトリがある（今回は Vite + React を例に説明）
+
+---
+
+### Step 1：GitHub Pages の設定
+
+1. リポジトリの **Settings** → **Pages** を開く
+2. **Source** を `GitHub Actions` に変更する
+
+> ※ 以前は `gh-pages` ブランチを使う方法が一般的でしたが、現在は `GitHub Actions` から直接デプロイする方法が推奨されています。
+
+---
+
+### Step 2：ワークフローファイルを作成する
+
+リポジトリのルートに以下のファイルを作成します。
+
+```
+.github/
+  workflows/
+    deploy.yml   ← このファイルを作る
+```
+
+`deploy.yml` の中身：
+
+```yaml
+name: Deploy to GitHub Pages
+
+# mainブランチにpushされたときに実行
+on:
+  push:
+    branches:
+      - main
+
+# ジョブの定義
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # 実行環境（Ubuntu の最新版）
+
+    # GitHub Pages へのデプロイに必要な権限
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # 1. コードをチェックアウト（リポジトリの内容を取得）
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Node.js のセットアップ
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. 依存パッケージのインストール
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. ビルド
+      - name: Build
+        run: npm run build
+
+      # 5. GitHub Pages 用の設定
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # 6. ビルド成果物をアップロード
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'  # ビルド成果物のフォルダ（Vite の場合は dist）
+
+      # 7. デプロイ
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+---
+
+### Step 3：vite.config の base を設定する（Vite の場合）
+
+GitHub Pages では URL に `/リポジトリ名/` がつくため、`vite.config.ts` に `base` の設定が必要です。
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  base: '/リポジトリ名/',  // ← ここを追加
+})
+```
+
+---
+
+### Step 4：push してみよう！
+
+```bash
+git add .
+git commit -m "GitHub Actions でデプロイ設定"
+git push origin main
+```
+
+push 後、GitHub のリポジトリ画面で **Actions タブ** を開くと、ワークフローが実行されているのが確認できます。
+
+✅ 緑のチェックマークが出れば成功！
+
+`https://ユーザー名.github.io/リポジトリ名/` にアクセスしてみてください。
+
+---
+
+## ワークフローの読み方まとめ
+
+```
+on:        → いつ実行するか（トリガー）
+jobs:      → 何をするか（処理のまとまり）
+  steps:   → 具体的な手順（上から順に実行）
+    uses:  → 既製の Action を使う
+    run:   → シェルコマンドを実行する
+```
+
+---
+
+## よくあるエラーと対処法
+
+| エラー | 原因 | 対処 |
+|--------|------|------|
+| `404 Not Found` | `base` の設定漏れ | `vite.config.ts` に `base` を追加 |
+| `Permission denied` | GitHub Pages の権限不足 | `permissions` ブロックを確認 |
+| ビルドが失敗する | パッケージのバージョン違い | `npm ci` を使う（`npm install` より厳密） |
+| Actions タブに何も出ない | ブランチ名が違う | `branches: [main]` をリポジトリのデフォルトブランチ名に合わせる |
+
+---
+
+## まとめ
+
+| ステップ | やること |
+|----------|----------|
+| ① | GitHub Pages のソースを `GitHub Actions` に変更 |
+| ② | `.github/workflows/deploy.yml` を作成 |
+| ③ | `vite.config.ts` に `base` を設定 |
+| ④ | `git push` → 自動でデプロイ完了🎉 |
+
+一度設定してしまえば、あとは **push するだけ**で最新のサイトが公開されます。手動デプロイから卒業して、快適な開発体験を楽しんでください！
+
+---
+
+## 参考リンク
+
+- [GitHub Actions 公式ドキュメント](https://docs.github.com/ja/actions)
+- [GitHub Pages 公式ドキュメント](https://docs.github.com/ja/pages)
+- [actions/deploy-pages](https://github.com/actions/deploy-pages)

@@ -38,7 +38,7 @@ const navLinks = isHome
       {navLinks.map((link) => (
         <a
           href={link.href}
-          class="btn btn-ghost btn-sm text-base-content/70 hover:text-base-content"
+          class="btn btn-ghost btn-sm text-base-content/70 hover:text-base-content data-[active]:text-primary data-[active]:font-semibold"
         >
           {link.label}
         </a>
@@ -69,3 +69,30 @@ const navLinks = isHome
     </div>
   </div>
 </header>
+
+<script>
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>('#site-navbar nav a[href^="#"]');
+
+  if (navLinks.length > 0) {
+    const ids = [...navLinks].map(l => l.getAttribute('href')!.slice(1));
+
+    const update = () => {
+      const y = window.scrollY + 120;
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= y) current = id;
+      }
+      navLinks.forEach(l => {
+        if (l.getAttribute('href') === `#${current}`) {
+          l.setAttribute('data-active', '');
+        } else {
+          l.removeAttribute('data-active');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+</script>
