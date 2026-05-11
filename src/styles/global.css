@@ -26,7 +26,7 @@ kbd {
 }
 /* 
 If you want use the ThemeToggle component,
-and chose the themes to light and dard,
+and chose the themes to light and dark,
 move the --default and --prefersdark to the themes you want
 and then update the the darkThemeName and lightThemeName
 variables on ThemeToggle component with the new theme names.

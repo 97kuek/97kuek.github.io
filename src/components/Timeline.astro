@@ -214,7 +214,7 @@ const containerId = `${collection}-items`;
                   )}
                   <div>
                     <h3 class="font-bold text-xl">{entry.data.title}</h3>
-                    <p class={`text-${color} font-semibold`}>
+                    <p style={`color: var(--color-${color})`} class="font-semibold">
                       {entry.data.subtitle}
                     </p>
                     {"location" in entry.data && entry.data.location && (
@@ -303,7 +303,7 @@ const containerId = `${collection}-items`;
                         <h3 class="font-bold text-lg leading-tight mb-1">
                           {entry.data.title}
                         </h3>
-                        <p class={`text-${color} font-semibold text-sm`}>
+                        <p style={`color: var(--color-${color})`} class="font-semibold text-sm">
                           {entry.data.subtitle}
                         </p>
                       </div>
