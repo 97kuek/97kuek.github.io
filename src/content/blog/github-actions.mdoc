@@ -1,217 +1,311 @@
 ---
-title: "【初心者向け】GitHub Actions で自動デプロイを始めよう！GitHub Pages への CI/CD 入門"
-description: "背景差分法を用いた動体検知の基本的な理論とOpenCVによる実装手法について解説します。"
-publishDate: "2026-05-11"
+title: "GitHub Actions で GitHub Pages に自動デプロイする"
+description: "Astro 製のポートフォリオサイトを、GitHub Actions を使って GitHub Pages に自動デプロイする方法を解説します。push するだけで本番に反映される CI/CD パイプラインを丁寧に説明します。"
+publishDate: "2025-11-2"
 image: "@assets/blog/motion-detection-app/OpenCV.jpg"
-tags: ["GitHub"]
+tags: ["GitHub Actions", "GitHub Pages", "Astro", "CI/CD"]
 ---
 
 ## はじめに
 
-「コードを push したら自動でサイトが公開される」――そんな便利な仕組みを **CI/CD** といいます。
+このポートフォリオサイトは **Astro** で構築しており、GitHub Pages でホスティングしています。
 
-このブログでは、**GitHub Actions** を使って **GitHub Pages** へ自動デプロイする方法を、概念から実践まで丁寧に解説します。
+最初は `astro build` でビルドしたファイルを手動でアップロードしていましたが、毎回の手作業は手間がかかります。そこで **GitHub Actions** を導入し、`main` ブランチに push するだけで自動的にビルド・デプロイが走る仕組みを構築しました。
 
-## CI/CD って何？
+本記事では、実際に使用しているワークフローファイルを1行ずつ丁寧に解説します。
 
-| 用語 | 意味 |
+---
+
+## このサイトの構成
+
+| 項目 | 内容 |
 |------|------|
-| **CI**（継続的インテグレーション） | コードの変更を自動でテスト・ビルドする仕組み |
-| **CD**（継続的デリバリー/デプロイ） | ビルド済みのコードを自動で本番環境へ反映する仕組み |
-
-手動でやると…
-1. コードを書く
-2. ビルドする（`npm run build` など）
-3. 生成されたファイルをサーバーにアップロードする
-4. 動作確認する
-
-これを **毎回手作業でやるのは大変**。CI/CD を使えば、`git push` するだけで 2〜4 が自動で完了します！
+| フレームワーク | Astro 5 |
+| スタイリング | Tailwind CSS v4 / DaisyUI |
+| ホスティング | GitHub Pages |
+| デプロイ | GitHub Actions |
+| Node.js | 20.x |
 
 ---
 
-## GitHub Actions とは？
-
-GitHub に組み込まれた **自動化ツール**です。
-
-- リポジトリの `.github/workflows/` フォルダに YAML ファイルを置くだけで動作
-- push・PR・スケジュールなど、様々なタイミングで処理を実行できる
-- 無料枠あり（パブリックリポジトリは無制限）
-
----
-
-## GitHub Pages とは？
-
-GitHub が提供する **静的サイトホスティングサービス**です。
-
-- `https://ユーザー名.github.io/リポジトリ名/` という URL で公開できる
-- 静的ファイル（HTML / CSS / JS）であれば無料でホスティング可能
-- React・Vue・Next.js などのビルド成果物も公開できる
-
----
-
-## 実践：自動デプロイを設定してみよう
-
-### 前提条件
-
-- GitHub アカウントがある
-- デプロイしたいリポジトリがある（今回は Vite + React を例に説明）
-
----
-
-### Step 1：GitHub Pages の設定
-
-1. リポジトリの **Settings** → **Pages** を開く
-2. **Source** を `GitHub Actions` に変更する
-
-> ※ 以前は `gh-pages` ブランチを使う方法が一般的でしたが、現在は `GitHub Actions` から直接デプロイする方法が推奨されています。
-
----
-
-### Step 2：ワークフローファイルを作成する
-
-リポジトリのルートに以下のファイルを作成します。
+## 全体の流れ
 
 ```
-.github/
-  workflows/
-    deploy.yml   ← このファイルを作る
+main ブランチへ push（または手動実行）
+    │
+    ▼
+┌──────────────── build ジョブ ────────────────┐
+│  1. リポジトリをチェックアウト               │
+│  2. Node.js 20 をセットアップ               │
+│  3. GitHub Pages 用に環境を設定             │
+│  4. npm install（依存関係インストール）       │
+│  5. npm run build（Astro ビルド）           │
+│  6. dist/ をアーティファクトとしてアップロード │
+└──────────────────────────────────────────────┘
+    │
+    ▼
+┌──────────────── deploy ジョブ ───────────────┐
+│  7. アーティファクトを GitHub Pages にデプロイ │
+└──────────────────────────────────────────────┘
+    │
+    ▼
+https://username.github.io/
 ```
 
-`deploy.yml` の中身：
+ポイントは **ビルドとデプロイを別々のジョブに分離している**点です。ビルドに失敗した場合はデプロイジョブが実行されないため、壊れたコードが公開されることを防げます。
+
+---
+
+## 手順
+
+### 1. GitHub Pages の設定を変更する
+
+リポジトリの **Settings → Pages → Build and deployment → Source** を **「GitHub Actions」** に変更します。
+
+> 以前は `gh-pages` という専用ブランチを管理する方式が主流でしたが、現在は GitHub Actions から直接デプロイする方法が公式推奨です。専用ブランチが不要になり、リポジトリがすっきりします。
+
+---
+
+### 2. ワークフローファイルを作成する
+
+`.github/workflows/deploy.yml` を以下の内容で作成します。これがこのポートフォリオで実際に使用しているワークフローです。
 
 ```yaml
 name: Deploy to GitHub Pages
 
-# mainブランチにpushされたときに実行
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
 
-# ジョブの定義
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - uses: actions/configure-pages@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Build with Astro
+        run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
   deploy:
-    runs-on: ubuntu-latest  # 実行環境（Ubuntu の最新版）
-
-    # GitHub Pages へのデプロイに必要な権限
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
-      # 1. コードをチェックアウト（リポジトリの内容を取得）
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # 2. Node.js のセットアップ
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      # 3. 依存パッケージのインストール
-      - name: Install dependencies
-        run: npm ci
-
-      # 4. ビルド
-      - name: Build
-        run: npm run build
-
-      # 5. GitHub Pages 用の設定
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      # 6. ビルド成果物をアップロード
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'  # ビルド成果物のフォルダ（Vite の場合は dist）
-
-      # 7. デプロイ
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
 ```
 
+以下で各セクションを順番に解説します。
+
 ---
 
-### Step 3：vite.config の base を設定する（Vite の場合）
+#### `on`：ワークフローのトリガー
 
-GitHub Pages では URL に `/リポジトリ名/` がつくため、`vite.config.ts` に `base` の設定が必要です。
+```yaml
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+```
 
-```typescript
-// vite.config.ts
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+ワークフローをいつ実行するかを定義します。
 
+- **`push: branches: [main]`**：`main` ブランチに push されたときに自動で実行します。
+- **`workflow_dispatch:`**：GitHub の Actions タブからボタン1つで手動実行できるようにします。設定を変えたときの動作確認や、緊急でデプロイしたいときに重宝します。
+
+---
+
+#### `permissions`：権限の設定
+
+```yaml
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+```
+
+GitHub Pages へのデプロイには、デフォルトより広い権限が必要です。
+
+| 権限 | 用途 |
+|------|------|
+| `contents: read` | リポジトリのコードを読み取る |
+| `pages: write` | GitHub Pages にファイルをアップロードする |
+| `id-token: write` | OIDC トークンを発行してデプロイを認証する |
+
+`pages: write` と `id-token: write` の2つは**省略するとデプロイが `Permission denied` で失敗**します。必ずセットで記述してください。
+
+---
+
+#### `concurrency`：同時実行の制御
+
+```yaml
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+```
+
+短時間に複数の push があったとき、デプロイが重複して走らないよう制御します。
+
+- **`group: "pages"`**：同じグループ内では1つのワークフローしか走りません。
+- **`cancel-in-progress: false`**：実行中のデプロイはキャンセルせず、完了を待ちます。`true` にすると新しい push が来たとき実行中のデプロイを中断します。
+
+---
+
+#### `build` ジョブ：ビルド処理
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+```
+
+`ubuntu-latest` は GitHub が無料で提供する Linux 仮想環境です。ここでビルドを実行します。
+
+```yaml
+    steps:
+      - uses: actions/checkout@v4
+```
+
+リポジトリのコードをランナー（仮想環境）に取得します。これがないとファイルが存在しないためビルドできません。
+
+```yaml
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+```
+
+Node.js 20 をセットアップします。`cache: "npm"` を指定すると `node_modules` がジョブ間でキャッシュされ、2回目以降の `npm install` が大幅に高速化されます。
+
+```yaml
+      - uses: actions/configure-pages@v4
+```
+
+GitHub Pages 向けの環境変数を設定します。Astro はこのステップで設定された情報をもとに、ビルド時のパスやサイト URL を自動調整します。そのため、**`npm install` や `npm run build` よりも前に実行する必要があります**。
+
+```yaml
+      - name: Install dependencies
+        run: npm install
+      - name: Build with Astro
+        run: npm run build
+```
+
+依存パッケージをインストールし、`astro build` を実行します。ビルドが成功すると成果物が `dist/` フォルダに出力されます。
+
+```yaml
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+```
+
+`dist/` フォルダをアーティファクト（ジョブ間で受け渡せる一時ファイル）としてアップロードします。これで `build` ジョブは完了です。
+
+---
+
+#### `deploy` ジョブ：デプロイ処理
+
+```yaml
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+- **`needs: build`**：`build` ジョブが成功した場合にのみ実行されます。ビルドが失敗した状態でデプロイが走ることを防ぎます。
+- **`environment`**：GitHub の Environments 機能と連携し、デプロイの履歴や公開 URL が GitHub UI 上に表示されるようになります。
+- **`actions/deploy-pages@v4`**：`build` ジョブがアップロードしたアーティファクトを GitHub Pages に展開します。
+
+---
+
+### 3. `astro.config.mjs` に `site` を設定する
+
+Astro では `astro.config.mjs` の `site` プロパティに公開 URL を設定します。これによりサイトマップや OGP タグのパス解決が正しく動作します。
+
+```js
+// astro.config.mjs
 export default defineConfig({
-  plugins: [react()],
-  base: '/リポジトリ名/',  // ← ここを追加
+  site: "https://username.github.io",
+  // ...
 })
 ```
 
+> **ユーザーページ vs プロジェクトページ**
+>
+> このサイトは `username.github.io` というユーザーページとして公開しているため、URL にサブパスが入りません。
+> もし `username.github.io/my-portfolio/` のようなプロジェクトページとして公開する場合は、`base: '/my-portfolio/'` を追加で設定する必要があります。設定しないと、CSS・画像のパスが壊れてデプロイ後に画面が真っ白になります。
+
 ---
 
-### Step 4：push してみよう！
+### 4. push して確認する
 
 ```bash
-git add .
-git commit -m "GitHub Actions でデプロイ設定"
+git add .github/workflows/deploy.yml
+git commit -m "ci: add GitHub Actions deploy workflow"
 git push origin main
 ```
 
-push 後、GitHub のリポジトリ画面で **Actions タブ** を開くと、ワークフローが実行されているのが確認できます。
+push 後、リポジトリの **Actions タブ**でワークフローの進行状況をリアルタイムで確認できます。
 
-✅ 緑のチェックマークが出れば成功！
+1. `build` ジョブが黄色（実行中）→ 緑（完了）になることを確認します
+2. `deploy` ジョブが完了したら、表示されるURLにアクセスします
 
-`https://ユーザー名.github.io/リポジトリ名/` にアクセスしてみてください。
-
----
-
-## ワークフローの読み方まとめ
-
-```
-on:        → いつ実行するか（トリガー）
-jobs:      → 何をするか（処理のまとまり）
-  steps:   → 具体的な手順（上から順に実行）
-    uses:  → 既製の Action を使う
-    run:   → シェルコマンドを実行する
-```
+✅ 両ジョブが緑になれば、デプロイ成功です。
 
 ---
 
-## よくあるエラーと対処法
+## トラブルシューティング
 
-| エラー | 原因 | 対処 |
-|--------|------|------|
-| `404 Not Found` | `base` の設定漏れ | `vite.config.ts` に `base` を追加 |
-| `Permission denied` | GitHub Pages の権限不足 | `permissions` ブロックを確認 |
-| ビルドが失敗する | パッケージのバージョン違い | `npm ci` を使う（`npm install` より厳密） |
-| Actions タブに何も出ない | ブランチ名が違う | `branches: [main]` をリポジトリのデフォルトブランチ名に合わせる |
-
----
-
-## まとめ
-
-| ステップ | やること |
-|----------|----------|
-| ① | GitHub Pages のソースを `GitHub Actions` に変更 |
-| ② | `.github/workflows/deploy.yml` を作成 |
-| ③ | `vite.config.ts` に `base` を設定 |
-| ④ | `git push` → 自動でデプロイ完了🎉 |
-
-一度設定してしまえば、あとは **push するだけ**で最新のサイトが公開されます。手動デプロイから卒業して、快適な開発体験を楽しんでください！
+| 症状 | 原因 | 対処 |
+|------|------|------|
+| `Permission denied` で失敗する | `permissions` の設定漏れ | `pages: write` と `id-token: write` を追加する |
+| Actions タブにワークフローが表示されない | ブランチ名の不一致 | `branches: [main]` をデフォルトブランチ名に合わせる |
+| CSS・画像が読み込まれない | `base` の設定漏れ（プロジェクトページの場合） | `astro.config.mjs` に `base: '/repo-name/'` を追加する |
+| ビルドは成功するがデプロイが動かない | `needs: build` の記述漏れ | `deploy` ジョブに `needs: build` を追加する |
+| 古いコンテンツが表示される | ブラウザのキャッシュ | ハードリロード（Ctrl+Shift+R / Cmd+Shift+R）を試す |
+| `configure-pages` でエラーが出る | ステップの順序が誤っている | `configure-pages` を `npm install` より前に移動する |
 
 ---
 
-## 参考リンク
+## おわりに
 
-- [GitHub Actions 公式ドキュメント](https://docs.github.com/ja/actions)
-- [GitHub Pages 公式ドキュメント](https://docs.github.com/ja/pages)
+`.github/workflows/deploy.yml` を1ファイル追加するだけで、`git push` のたびに自動でビルド・デプロイが行われる環境が完成します。
+
+さらに発展させる場合は、以下を検討してみてください。
+
+- **品質チェックの追加**：デプロイ前に TypeScript の型チェック（`astro check`）や Lint を挟む
+- **プレビュー環境の自動生成**：Pull Request ごとにプレビュー URL を発行する
+- **通知の設定**：デプロイの成否を Slack / Discord に通知する
+- **スケジュール実行**：`schedule: cron` で毎日定時に自動デプロイする
+
+## 参考
+
+- [GitHub Actions ドキュメント](https://docs.github.com/ja/actions)
+- [GitHub Pages ドキュメント](https://docs.github.com/ja/pages)
+- [Astro × GitHub Pages 公式ガイド](https://docs.astro.build/ja/guides/deploy/github/)
 - [actions/deploy-pages](https://github.com/actions/deploy-pages)

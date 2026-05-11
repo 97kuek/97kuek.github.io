@@ -26,9 +26,9 @@ const readingTime = Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 2
   href={`${import.meta.env.BASE_URL}blog/${post.id}`}
   class="block group"
 >
-  <div class="card image-full shadow-xl hover:shadow-2xl transition-shadow">
-    <figure class="aspect-video">
-      <Image src={post.data.image} alt={post.data.title} />
+  <div class="card image-full shadow-xl hover:shadow-2xl transition-shadow h-64 overflow-hidden">
+    <figure>
+      <Image src={post.data.image} alt={post.data.title} class="w-full h-full object-cover" />
     </figure>
     <div
       class="card-body rounded-lg justify-end bg-gradient-to-t from-primary/90 via-primary/50 to-transparent"
@@ -45,7 +45,7 @@ const readingTime = Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 2
         post.data.tags && post.data.tags.length > 0 && (
           <div class="flex flex-wrap gap-1 mt-1">
             {post.data.tags.slice(0, 3).map((tag) => (
-              <span class="badge badge-sm badge-ghost text-white/80 border-white/30">
+              <span class="text-[0.65rem] leading-none px-1.5 py-0.5 rounded-full bg-white/20 text-white/80 border border-white/25">
                 {tag}
               </span>
             ))}
