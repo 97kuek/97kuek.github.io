@@ -45,3 +45,58 @@ The name should be the same as the theme name below.
   padding: 0.05em 0.3em;
   border-radius: 0.2em;
 }
+
+/* ── ExpressiveCode: macOS ウィンドウ風フレーム ─────────────────── */
+
+/* 1. タイトル付き / terminal フレーム（figcaption あり）へのドット追加 */
+.expressive-code .frame figcaption.header {
+  display: flex;
+  align-items: center;
+}
+
+.expressive-code .frame figcaption.header::before {
+  content: '';
+  display: inline-block;
+  flex-shrink: 0;
+  width: 52px;
+  height: 12px;
+  margin-right: 8px;
+  background-image:
+    radial-gradient(circle at 6px  6px, #ff5f57 4.5px, transparent 5px),
+    radial-gradient(circle at 24px 6px, #febc2e 4.5px, transparent 5px),
+    radial-gradient(circle at 42px 6px, #28c840 4.5px, transparent 5px);
+  background-repeat: no-repeat;
+  background-size: 52px 12px;
+}
+
+/* 2. タイトルなしの plain コードブロック（figcaption なし）へのドット追加 */
+.expressive-code .frame:not(:has(figcaption)) {
+  position: relative;
+  padding-top: 32px;
+}
+
+.expressive-code .frame:not(:has(figcaption))::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 32px;
+  background-color: var(--ec-frm-tabBarBg, rgba(128, 128, 128, 0.12));
+  border-radius: inherit;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.expressive-code .frame:not(:has(figcaption))::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  width: 52px;
+  height: 12px;
+  background-image:
+    radial-gradient(circle at 6px  6px, #ff5f57 4.5px, transparent 5px),
+    radial-gradient(circle at 24px 6px, #febc2e 4.5px, transparent 5px),
+    radial-gradient(circle at 42px 6px, #28c840 4.5px, transparent 5px);
+  background-repeat: no-repeat;
+  background-size: 52px 12px;
+}
