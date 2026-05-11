@@ -1,9 +1,9 @@
 ---
-title: "TechHacks 2023"
-location: "San Francisco, CA"
-description: "Built a machine learning-powered chatbot that helps students find relevant study resources. Won Best Use of AI award."
-startDate: "2023-11-23"
-endDate: "2023-11-25"
-skills: ["Python", "Machine Learning", "OpenAI"]
-sourceLink: "https://github.com/yourusername/techhacks-project"
+title: "ハッカソン名"
+location: "開催地"
+description: "概要を記入してください。"
+startDate: "2024-01-01"
+endDate: "2024-01-02"
+skills: []
+sourceLink: ""
 ---

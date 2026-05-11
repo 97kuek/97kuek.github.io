@@ -24,6 +24,16 @@
 </button>
 </div>
 
+<!-- 長押しヒント (初回表示時のみ) -->
+<div
+  id="toc-hint"
+  class="fixed bottom-9 right-20 z-50 opacity-0 translate-x-2 transition-all duration-300 pointer-events-none"
+>
+  <div class="bg-base-100 border border-base-300 text-base-content/70 text-xs rounded-full px-3 py-1.5 shadow-lg whitespace-nowrap">
+    長押しで目次
+  </div>
+</div>
+
 <!-- TOC popup (long-press) -->
 <div
   id="toc-popup"
@@ -50,13 +60,28 @@
     const button = document.getElementById('back-to-top');
     const popup = document.getElementById('toc-popup');
     const list = document.getElementById('toc-popup-list');
+    const hint = document.getElementById('toc-hint');
     if (!wrapper || !button || !popup || !list) return;
+
+    let hintShown = false;
+
+    const showHint = () => {
+      if (hintShown || !hint) return;
+      hintShown = true;
+      hint.classList.remove('opacity-0', 'translate-x-2');
+      hint.classList.add('opacity-100', 'translate-x-0');
+      setTimeout(() => {
+        hint.classList.add('opacity-0', 'translate-x-2');
+        hint.classList.remove('opacity-100', 'translate-x-0');
+      }, 2500);
+    };
 
     // --- visibility toggle ---
     const toggleVisible = () => {
       if (window.scrollY > 300) {
         wrapper.classList.remove('translate-y-24', 'opacity-0');
         wrapper.classList.add('translate-y-0', 'opacity-100');
+        showHint();
       } else {
         wrapper.classList.add('translate-y-24', 'opacity-0');
         wrapper.classList.remove('translate-y-0', 'opacity-100');
