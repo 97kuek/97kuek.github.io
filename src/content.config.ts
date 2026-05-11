@@ -74,7 +74,7 @@ const projects = defineCollection({
       featured: z.boolean().optional().default(false),
       title: z.string(),
       description: z.string(),
-      image: image(),
+      image: image().optional(),
       startDate: z.coerce.date(),
       endDate: z.coerce.date().optional(),
       updatedDate: z.coerce.date().optional(),
@@ -110,7 +110,7 @@ const blog = defineCollection({
     z.object({
       title: z.string(),
       description: z.string(),
-      image: image(),
+      image: image().optional(),
       publishDate: z.coerce.date(),
       updatedDate: z.coerce.date().optional(),
       tags: z.array(z.string()).optional(),

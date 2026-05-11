@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import OgPlaceholder from "./OgPlaceholder.astro";
 
 interface Props {
   post: CollectionEntry<"blog">;
@@ -28,7 +29,11 @@ const readingTime = Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 2
 >
   <div class="card image-full shadow-xl hover:shadow-2xl transition-shadow h-64 overflow-hidden">
     <figure>
-      <Image src={post.data.image} alt={post.data.title} class="w-full h-full object-cover" />
+      {post.data.image ? (
+        <Image src={post.data.image} alt={post.data.title} class="w-full h-full object-cover" />
+      ) : (
+        <OgPlaceholder id={post.id} title={post.data.title} tags={post.data.tags} showText={false} />
+      )}
     </figure>
     <div
       class="card-body rounded-lg justify-end bg-gradient-to-t from-primary/90 via-primary/50 to-transparent"

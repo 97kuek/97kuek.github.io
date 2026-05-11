@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import SkillBadge from "./SkillBadge.astro";
+import OgPlaceholder from "./OgPlaceholder.astro";
 import { ExternalLink } from "@lucide/astro";
 import type { CollectionEntry } from "astro:content";
 
@@ -31,14 +32,18 @@ function formatPeriod(startDate: Date, endDate?: Date) {
     class="hover:opacity-80 transition-opacity"
     href={`${import.meta.env.BASE_URL}projects/${project.id}`}
   >
-    <figure class="aspect-video">
-      <Image
-        src={project.data.image}
-        alt={project.data.title}
-        class="w-full h-full object-cover"
-        width={600}
-        height={400}
-      />
+    <figure class="aspect-video overflow-hidden">
+      {project.data.image ? (
+        <Image
+          src={project.data.image}
+          alt={project.data.title}
+          class="w-full h-full object-cover"
+          width={600}
+          height={400}
+        />
+      ) : (
+        <OgPlaceholder id={project.id} title={project.data.title} tags={project.data.skills} showText={false} />
+      )}
     </figure>
   </a>
   <div class="card-body">
