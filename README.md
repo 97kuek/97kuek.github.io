@@ -1,39 +1,71 @@
-# my-portfolio
+# my-portfolio — 97kuek.github.io
 
-Astroベースのポートフォリオ管理・公開システム。コンテンツ管理にKeystaticを採用している。
-- [ポートフォリオサイト](https://97kuek.github.io/)
+Keitaro Ueki のポートフォリオサイト。Astro + Markdoc ベースの静的サイト。
 
-## 開発環境の起動
+**URL**: <https://97kuek.github.io>
 
-1.  依存関係のインストール: `npm install`
-2.  開発サーバーの起動: `npm run dev`
-3.  管理画面 (Keystatic) へのアクセス: `http://localhost:4321/keystatic`
+## 技術スタック
 
-## デプロイについて
+| カテゴリ | 技術 |
+| --- | --- |
+| フレームワーク | Astro 5（静的出力） |
+| コンテンツ形式 | Markdoc（`.mdoc`） / Markdown / YAML |
+| スタイル | TailwindCSS 4 + daisyUI 5 |
+| コードハイライト | astro-expressive-code（Shiki ベース） |
+| 数式 | KaTeX（remark-math + rehype-katex） |
+| CMS | Keystatic（管理画面: `localhost:4321/keystatic`） |
+| ホスティング | GitHub Pages / GitHub Actions |
 
-GitHub Actions を利用した自動デプロイを構成している。`main` ブランチにファイルをプッシュ（またはマージ）すると、自動的にビルドが実行され、GitHub Pages に成果物が反映される。
+## セットアップ
 
-## 技術仕様
+```bash
+npm install       # 依存関係のインストール
+npm run dev       # 開発サーバー起動（localhost:4321）
+npm run build     # 本番ビルド
+npm run preview   # ビルド結果のプレビュー
+```
 
--   **Framework**: Astro v5
--   **CMS**: Keystatic (Local/GitHub Mode)
--   **Styling**: Tailwind CSS & daisyUI
--   **Utilities**: Expressive Code, KaTeX
--   **Deployment**: GitHub Pages
+## デプロイ
+
+`main` ブランチへのプッシュで GitHub Actions が自動ビルド & GitHub Pages にデプロイされる。
 
 ## ディレクトリ構成
-
-主要なディレクトリとファイルの役割は以下の通り。
 
 ```text
 .
 ├── src/
-│   ├── content/        # Markdown/Markdocコンテンツ (blog, projects, about等)
-│   ├── layouts/        # 共通レイアウトコンポーネント
-│   ├── components/     # 再利用可能なUIコンポーネント
-│   └── pages/          # ルーティング定義 (.astro)
-├── public/             # 静的資産 (画像、favicon等)
-├── keystatic.config.ts # Keystaticのスキーマ・管理画面設定
-├── astro.config.mjs    # Astroのビルド・統合設定
-└── markdoc.config.mjs  # Markdocのレンダリング設定
+│   ├── content/        # コンテンツ（Astro Content Collections）
+│   │   ├── blog/       # ブログ記事（.mdoc）
+│   │   ├── projects/   # プロジェクト（.md）
+│   │   ├── work/       # 職務経歴（.md）
+│   │   ├── education/  # 経歴（.md）
+│   │   └── hero/       # ヒーロー情報（.yaml）
+│   ├── layouts/        # ページレイアウト
+│   ├── components/     # UI コンポーネント
+│   ├── pages/          # ルーティング（.astro）
+│   └── assets/         # 最適化対象の画像
+├── public/             # 静的ファイル（そのままコピー）
+├── docs/               # 開発ドキュメント
+│   ├── spec.md         # プロジェクト仕様
+│   └── git-conventions.md # Git 運用ルール
+├── CLAUDE.md           # AI アシスタント向けガイド
+├── keystatic.config.ts # Keystatic 設定
+└── astro.config.mjs    # Astro 設定
 ```
+
+## コンテンツの追加
+
+### ブログ記事
+
+`src/content/blog/記事名.mdoc` を作成：
+
+```yaml
+---
+title: "記事タイトル"
+description: "説明文"
+publishDate: "YYYY-MM-DD"
+tags: ["tag1", "tag2"]
+---
+```
+
+詳細は [docs/spec.md](docs/spec.md)、Git 運用は [docs/git-conventions.md](docs/git-conventions.md) を参照。
