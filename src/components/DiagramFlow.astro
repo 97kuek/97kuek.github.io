@@ -1,0 +1,53 @@
+---
+const { direction = 'row', title } = Astro.props;
+---
+
+<figure class="not-prose my-8">
+  {title && (
+    <figcaption class="text-center text-sm font-medium text-base-content/55 mb-3">
+      {title}
+    </figcaption>
+  )}
+  <div
+    class="diagram-flow-inner flex flex-wrap gap-y-2 p-5 rounded-xl bg-base-200/60 border border-base-300"
+    data-direction={direction}
+  >
+    <slot />
+  </div>
+</figure>
+
+<style is:global>
+  .diagram-flow-inner {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .diagram-flow-inner[data-direction="col"] {
+    flex-direction: column;
+  }
+
+  .diagram-node-outer {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* 行方向：ノード間に → を挿入 */
+  .diagram-flow-inner:not([data-direction="col"]) > .diagram-node-outer:not(:last-child)::after {
+    content: '→';
+    padding: 0 0.5rem;
+    opacity: 0.4;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  /* 列方向：ノード間に ↓ を挿入 */
+  .diagram-flow-inner[data-direction="col"] > .diagram-node-outer {
+    flex-direction: column;
+  }
+  .diagram-flow-inner[data-direction="col"] > .diagram-node-outer:not(:last-child)::after {
+    content: '↓';
+    padding: 0.3rem 0;
+    opacity: 0.4;
+    font-size: 1.1rem;
+  }
+</style>

@@ -44,6 +44,21 @@ export default defineMarkdocConfig({
         title: { type: String },
       },
     },
+    DiagramFlow: {
+      render: component('./src/components/DiagramFlow.astro'),
+      attributes: {
+        direction: { type: String, default: 'row' },
+        title: { type: String },
+      },
+    },
+    DiagramNode: {
+      render: component('./src/components/DiagramNode.astro'),
+      attributes: {
+        label: { type: String, required: true },
+        sublabel: { type: String },
+        color: { type: String },
+      },
+    },
   },
   nodes: {
     fence: {

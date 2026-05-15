@@ -1,0 +1,21 @@
+---
+const { label, sublabel, color = 'default' } = Astro.props;
+
+const colorMap: Record<string, string> = {
+  primary:   'bg-primary/12 border-primary/40 text-primary',
+  secondary: 'bg-secondary/12 border-secondary/40 text-secondary',
+  accent:    'bg-accent/12 border-accent/40 text-accent',
+  success:   'bg-success/12 border-success/40 text-success',
+  warning:   'bg-warning/12 border-warning/40 text-warning',
+  error:     'bg-error/12 border-error/40 text-error',
+};
+const boxClass = colorMap[color] ?? 'bg-base-100 border-base-content/25 text-base-content';
+---
+
+<span class="diagram-node-outer">
+  <span class={`diagram-node-box inline-block px-4 py-2.5 rounded-lg border-2 text-center min-w-[6rem] ${boxClass}`}>
+    <span class="block font-semibold text-sm leading-tight">{label}</span>
+    {sublabel && <span class="block text-xs opacity-60 mt-0.5">{sublabel}</span>}
+    <slot />
+  </span>
+</span>

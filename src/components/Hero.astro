@@ -28,25 +28,22 @@ const projectCount = (await getCollection("projects")).length;
 <section class="hero min-h-screen">
   <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl w-full gap-12 lg:gap-24 py-24">
 
-    <!-- Avatar with gradient ring -->
-    <div class="relative shrink-0">
-      <div class="w-52 lg:w-72 p-[3px] rounded-full bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] shadow-2xl shadow-primary/25">
-        <div class="rounded-full overflow-hidden bg-base-100">
-          {
-            typeof hero.avatar === "string" ? (
-              <img src={hero.avatar} alt={hero.name} class="w-full h-full object-cover" />
-            ) : (
-              <Image src={hero.avatar} alt={hero.name} class="w-full h-full object-cover" />
-            )
-          }
-        </div>
+    <!-- Avatar -->
+    <div class="shrink-0">
+      <div class="w-52 lg:w-72 rounded-full overflow-hidden">
+        {
+          typeof hero.avatar === "string" ? (
+            <img src={hero.avatar} alt={hero.name} class="w-full h-full object-cover" />
+          ) : (
+            <Image src={hero.avatar} alt={hero.name} class="w-full h-full object-cover" />
+          )
+        }
       </div>
     </div>
 
     <!-- Text content -->
     <div class="max-w-2xl text-center lg:text-left">
-      <!-- Name with gradient -->
-      <h1 class="text-4xl lg:text-5xl font-bold mb-3 leading-tight bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] bg-clip-text text-transparent">
+      <h1 class="text-4xl lg:text-5xl font-bold mb-3 leading-tight text-base-content">
         {hero.name}
       </h1>
 

@@ -36,9 +36,9 @@ The name should be the same as the theme name below.
   themes: light --default;
 }
 
-/* Primary = indigo-600 (#4f46e5), matching OgPlaceholder */
+/* Primary = indigo-700 (#4338ca), matching OgPlaceholder */
 [data-theme="light"] {
-  --color-primary: oklch(52.2% 0.2512 263.83);
+  --color-primary: oklch(46% 0.248 263.83);
   --color-primary-content: oklch(98% 0.01 264);
 }
 

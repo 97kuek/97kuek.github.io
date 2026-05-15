@@ -4,23 +4,25 @@
 
 Keitaro Ueki のポートフォリオサイト。Astro + Markdoc ベースの静的サイトで GitHub Pages にホストされている。
 
-- **URL**: https://97kuek.github.io
-- **フレームワーク**: Astro 5（静的出力）
-- **コンテンツ形式**: Markdoc (`.mdoc`) / Markdown (`.md`) / YAML
-- **スタイル**: TailwindCSS 4 + daisyUI 5
-- **コードハイライト**: astro-expressive-code（Shiki ベース）
+| 項目             | 詳細                                           |
+| ---------------- | ---------------------------------------------- |
+| URL              | <https://97kuek.github.io>                     |
+| フレームワーク   | Astro 5（静的出力）                            |
+| コンテンツ形式   | Markdoc (`.mdoc`) / Markdown (`.md`) / YAML    |
+| スタイル         | TailwindCSS 4 + daisyUI 5                      |
+| コードハイライト | astro-expressive-code（Shiki ベース）          |
 
 ---
 
 ## ディレクトリ構成
 
-```
+```text
 src/
 ├── content/          ← コンテンツ（Astro Content Collections）
 │   ├── blog/         ← ブログ記事（.mdoc）
 │   ├── projects/     ← プロジェクト（.md）
 │   ├── work/         ← 職務経歴（.md）
-│   ├── education/    ← 経歴（.md）
+│   ├── education/    ← 学歴（.md）
 │   ├── hackathons/   ← ハッカソン（.md）
 │   ├── hero/         ← ヒーロー情報（.yaml）
 │   ├── about/        ← 自己紹介（.md）
@@ -49,7 +51,9 @@ npm run preview  # ビルド結果のプレビュー
 
 ### ブログ記事（src/content/blog/*.mdoc）
 
-```mdoc
+フロントマターの必須フィールドは `title`、`description`、`publishDate` の 3 つ。
+
+```yaml
 ---
 title: "記事タイトル"
 description: "説明文（OGP にも使われる）"
@@ -57,19 +61,83 @@ publishDate: "YYYY-MM-DD"
 tags: ["tag1", "tag2"]
 image: "@assets/blog/記事名/thumbnail.png"  # 省略可
 ---
-
-本文（Markdoc 記法）
 ```
 
 ### コードブロックの注意点
 
 - `astro-expressive-code` を使用しているため、**コードブロックに空の内容は不可**
 - サポートされていない言語指定はビルドエラーになる（例: `dataview` → `sql` を使う）
-- ````markdown のように Markdoc コードブロック内にさらに ` ``` ` を含める場合は、**外側を 4 バッククォートで囲む**こと
+- Markdoc コードブロック内にさらに ` ``` ` を含める場合は、**外側を 4 バッククォートで囲む**
 
-  ````markdown  ← 外側は 4 バッククォート
+  ````markdown
   内容（内部の ``` はそのまま使える）
   ````
+
+---
+
+## 図解の書き方
+
+### 基本方針
+
+**ASCII アートで図解しない。** 代わりに `DiagramFlow` + `DiagramNode` の Markdoc タグを使う。
+HTML+CSS で描画するため、サイトのテーマカラーと一貫したデザインになる。
+
+### DiagramFlow — フロー図のコンテナ
+
+| 属性        | 型                    | 既定値  | 説明                   |
+| ----------- | --------------------- | ------- | ---------------------- |
+| `direction` | `"row"` / `"col"`     | `"row"` | ノードの並び方向       |
+| `title`     | `string`              | —       | 図のキャプション       |
+
+### DiagramNode — 個々のノード（ボックス）
+
+| 属性       | 型       | 既定値 | 説明                         |
+| ---------- | -------- | ------ | ---------------------------- |
+| `label`    | `string` | 必須   | ノードのメインラベル         |
+| `sublabel` | `string` | —      | 補足テキスト（薄字で表示）   |
+| `color`    | `string` | —      | カラースキーム（下記参照）   |
+
+`color` に指定できる値: `primary` / `secondary` / `accent` / `success` / `warning` / `error`
+
+### 使用例
+
+#### 水平フロー（デフォルト）
+
+```markdoc
+{% DiagramFlow title="認証フロー" %}
+  {% DiagramNode label="クライアント" color="primary" %}{% /DiagramNode %}
+  {% DiagramNode label="サーバー" sublabel="JWT 検証" color="secondary" %}{% /DiagramNode %}
+  {% DiagramNode label="DB" color="accent" %}{% /DiagramNode %}
+{% /DiagramFlow %}
+```
+
+#### 垂直フロー
+
+```markdoc
+{% DiagramFlow direction="col" title="ビルドパイプライン" %}
+  {% DiagramNode label="ソースコード" %}{% /DiagramNode %}
+  {% DiagramNode label="Astro Build" color="primary" %}{% /DiagramNode %}
+  {% DiagramNode label="GitHub Pages" color="success" %}{% /DiagramNode %}
+{% /DiagramFlow %}
+```
+
+ノード間の矢印（→ / ↓）は CSS で自動挿入されるため、明示的に記述不要。
+
+---
+
+## Markdoc カスタムタグ一覧
+
+| タグ | 用途 |
+| --- | --- |
+| `{% Box color="..." title="..." %}` | 情報・警告・成功・エラーの強調ボックス |
+| `{% DiagramFlow %}` | フロー図コンテナ |
+| `{% DiagramNode label="..." %}` | フロー図のノード |
+| `{% LinkCard url="..." %}` | ブログ内リンクカード |
+| `{% Math %}` | TeX 数式（ブロック） |
+| `{% InlineMath %}` | TeX 数式（インライン） |
+| `{% YouTube id="..." %}` | YouTube 埋め込み |
+| `{% Spotify url="..." %}` | Spotify 埋め込み |
+| `{% Twitter url="..." %}` | ツイート埋め込み |
 
 ---
 
@@ -88,3 +156,4 @@ image: "@assets/blog/記事名/thumbnail.png"  # 省略可
 - `public/` 以下のファイルはそのままコピーされる（最適化なし）
 - `keystatic.config.ts` は Keystatic CMS の設定ファイル。現在は手動編集がメイン
 - `backup/` は旧コンテンツのバックアップ。編集不要
+- Primary カラー（indigo-700 相当）は `src/styles/global.css` と `src/components/OgPlaceholder.astro` の両方に定義されているため、変更時は両方更新する
