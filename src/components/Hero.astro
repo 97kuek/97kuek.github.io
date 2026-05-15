@@ -25,14 +25,8 @@ const blogCount = (await getCollection("blog")).length;
 const projectCount = (await getCollection("projects")).length;
 ---
 
-<section class="hero min-h-screen relative overflow-hidden">
-  <!-- Dot pattern background -->
-  <div class="absolute inset-0 hero-dot-bg opacity-70 pointer-events-none" aria-hidden="true"></div>
-  <!-- Gradient blobs -->
-  <div class="absolute -top-48 -right-48 w-[36rem] h-[36rem] bg-primary/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
-  <div class="absolute -bottom-48 -left-48 w-[28rem] h-[28rem] bg-violet-500/8 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
-
-  <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl w-full gap-12 lg:gap-24 py-24 z-10">
+<section class="hero min-h-screen">
+  <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl w-full gap-12 lg:gap-24 py-24">
 
     <!-- Avatar with gradient ring -->
     <div class="relative shrink-0">
@@ -51,14 +45,8 @@ const projectCount = (await getCollection("projects")).length;
 
     <!-- Text content -->
     <div class="max-w-2xl text-center lg:text-left">
-      <!-- Badge -->
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 text-primary text-sm font-semibold mb-5">
-        <span class="w-2 h-2 bg-primary rounded-full animate-pulse" aria-hidden="true"></span>
-        ポートフォリオ
-      </div>
-
       <!-- Name with gradient -->
-      <h1 class="text-5xl lg:text-6xl font-bold mb-3 leading-tight bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] bg-clip-text text-transparent">
+      <h1 class="text-4xl lg:text-5xl font-bold mb-3 leading-tight bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] bg-clip-text text-transparent">
         {hero.name}
       </h1>
 
