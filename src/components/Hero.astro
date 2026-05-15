@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import { getIcon } from "../utils/iconMapper";
+import { getCollection } from "astro:content";
 
 interface Props {
   hero: {
@@ -19,39 +20,65 @@ interface Props {
 }
 
 const { hero } = Astro.props;
+
+const blogCount = (await getCollection("blog")).length;
+const projectCount = (await getCollection("projects")).length;
 ---
 
 <section class="hero min-h-screen relative overflow-hidden">
-  <div class="absolute -top-40 -right-40 w-[30rem] h-[30rem] bg-primary/8 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
-  <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
-  <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl">
-    <figure class="max-w-full w-48 lg:w-64 mask mask-squircle">
-      {
-        typeof hero.avatar === "string" ? (
-          <img src={hero.avatar} alt={hero.name} />
-        ) : (
-          <Image src={hero.avatar} alt={hero.name} />
-        )
-      }
-    </figure>
+  <!-- Dot pattern background -->
+  <div class="absolute inset-0 hero-dot-bg opacity-70 pointer-events-none" aria-hidden="true"></div>
+  <!-- Gradient blobs -->
+  <div class="absolute -top-48 -right-48 w-[36rem] h-[36rem] bg-primary/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute -bottom-48 -left-48 w-[28rem] h-[28rem] bg-violet-500/8 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+  <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl w-full gap-12 lg:gap-24 py-24 z-10">
+
+    <!-- Avatar with gradient ring -->
+    <div class="relative shrink-0">
+      <div class="w-52 lg:w-72 p-[3px] rounded-full bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] shadow-2xl shadow-primary/25">
+        <div class="rounded-full overflow-hidden bg-base-100">
+          {
+            typeof hero.avatar === "string" ? (
+              <img src={hero.avatar} alt={hero.name} class="w-full h-full object-cover" />
+            ) : (
+              <Image src={hero.avatar} alt={hero.name} class="w-full h-full object-cover" />
+            )
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Text content -->
     <div class="max-w-2xl text-center lg:text-left">
-      <h1 class="text-4xl lg:text-5xl font-bold mb-4">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 text-primary text-sm font-semibold mb-5">
+        <span class="w-2 h-2 bg-primary rounded-full animate-pulse" aria-hidden="true"></span>
+        ポートフォリオ
+      </div>
+
+      <!-- Name with gradient -->
+      <h1 class="text-5xl lg:text-6xl font-bold mb-3 leading-tight bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] bg-clip-text text-transparent">
         {hero.name}
       </h1>
-      <p class="text-xl text-base-content/80 mb-2">
-        {hero.title}
-      </p>
+
+      <p class="text-xl text-base-content/70 mb-2 font-medium">{hero.title}</p>
+
       {
         hero.location && (
-          <p class="text-base-content/60 mb-4">{hero.location}</p>
+          <p class="text-base-content/50 mb-5 flex items-center gap-1.5 justify-center lg:justify-start text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            {hero.location}
+          </p>
         )
       }
-      <p class="text-lg leading-relaxed mb-6 whitespace-pre-line">
+
+      <p class="text-base leading-relaxed mb-8 text-base-content/75 whitespace-pre-line">
         {hero.description}
       </p>
-      <div
-        class="flex flex-wrap gap-3 justify-center lg:justify-start"
-      >
+
+      <!-- Social links -->
+      <div class="flex flex-wrap gap-3 justify-center lg:justify-start mb-8">
         {
           hero.socialLinks.map((link) => {
             const IconComponent = getIcon(link.icon as any);
@@ -61,7 +88,7 @@ const { hero } = Astro.props;
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="btn btn-circle btn-ghost hover:btn-primary"
+                  class="btn btn-circle btn-ghost hover:btn-primary hover:scale-110 transition-all duration-200"
                   aria-label={link.label}
                 >
                   <IconComponent class="size-6" />
@@ -71,12 +98,26 @@ const { hero } = Astro.props;
           })
         }
       </div>
+
+      <!-- Stats -->
+      <div class="flex gap-8 justify-center lg:justify-start">
+        <div class="text-center lg:text-left">
+          <div class="text-3xl font-bold text-primary">{blogCount}</div>
+          <div class="text-xs text-base-content/55 mt-0.5 tracking-wide uppercase">記事</div>
+        </div>
+        <div class="w-px bg-base-content/15 self-stretch"></div>
+        <div class="text-center lg:text-left">
+          <div class="text-3xl font-bold text-primary">{projectCount}</div>
+          <div class="text-xs text-base-content/55 mt-0.5 tracking-wide uppercase">プロジェクト</div>
+        </div>
+      </div>
     </div>
   </div>
-  <!-- Scroll down indicator -->
+
+  <!-- Scroll indicator -->
   <div
     id="scroll-indicator"
-    class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-base-content/40 transition-opacity duration-500"
+    class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-base-content/30 transition-opacity duration-500"
   >
     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="m6 9 6 6 6-6"/>

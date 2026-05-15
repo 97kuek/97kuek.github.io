@@ -1,22 +1,26 @@
 ---
 import { getCollection } from "astro:content";
 import ProjectCard from "./ProjectCard.astro";
+import { ArrowRight, FolderGit2 } from "@lucide/astro";
 
 const projectEntries = await getCollection("projects");
 
-// Filter featured projects, sort by start date (most recent first), limit to 3
 const featuredProjects = projectEntries
   .filter((project) => project.data.featured === true)
   .sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime())
   .slice(0, 3);
 ---
 
-<section id="projects" class="py-20 px-4 bg-base-100">
+<section id="projects" class="py-24 px-4 bg-base-100">
   <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold">制作実績</h2>
-      <div class="w-16 h-1 bg-primary rounded-full mx-auto mt-3 mb-4"></div>
-      <p class="text-lg text-base-content/70">
+    <div class="text-center mb-14">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold mb-4">
+        <FolderGit2 class="size-3.5" />
+        PROJECTS
+      </div>
+      <h2 class="text-4xl font-bold mb-3">制作実績</h2>
+      <div class="w-16 h-1 bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] rounded-full mx-auto mb-4"></div>
+      <p class="text-lg text-base-content/65">
         Webアプリから画像処理プログラムまで、これまで取り組んできたプロジェクトの一部をご紹介します。
       </p>
     </div>
@@ -38,11 +42,9 @@ const featuredProjects = projectEntries
     }
 
     <div class="text-center mt-10">
-      <a
-        href={`${import.meta.env.BASE_URL}projects`}
-        class="btn btn-primary btn-outline"
-      >
+      <a href={`${import.meta.env.BASE_URL}projects`} class="btn btn-primary btn-outline gap-2">
         すべてのプロジェクトを見る
+        <ArrowRight class="size-4" />
       </a>
     </div>
   </div>

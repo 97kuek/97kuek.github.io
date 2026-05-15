@@ -36,6 +36,22 @@ The name should be the same as the theme name below.
   themes: light --default;
 }
 
+/* Primary = indigo-600 (#4f46e5), matching OgPlaceholder */
+[data-theme="light"] {
+  --color-primary: oklch(52.2% 0.2512 263.83);
+  --color-primary-content: oklch(98% 0.01 264);
+}
+
+/* Subtle dot pattern for hero background */
+.hero-dot-bg {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklch, var(--color-primary) 18%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+}
+
 .katex .mtext {
   font-family: "KaTeX_Main", "Noto Sans JP", system-ui, sans-serif;
 }
