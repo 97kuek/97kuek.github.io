@@ -27,25 +27,29 @@ const readingTime = Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 2
   href={`${import.meta.env.BASE_URL}blog/${post.id}`}
   class="block group"
 >
-  <div class="card image-full shadow-xl hover:shadow-2xl transition-shadow h-64 overflow-hidden">
-    <figure>
+  <div class="relative h-64 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow">
+    <!-- Background image / placeholder -->
+    <div class="absolute inset-0">
       {post.data.image ? (
         <Image src={post.data.image} alt={post.data.title} class="w-full h-full object-cover" />
       ) : (
         <OgPlaceholder id={post.id} title={post.data.title} tags={post.data.tags} showText={false} />
       )}
-    </figure>
-    <div
-      class="card-body rounded-lg justify-end bg-gradient-to-t from-primary/90 via-primary/50 to-transparent"
-    >
-      <h3 class="card-title text-white group-hover:text-primary-content transition-colors">
+    </div>
+
+    <!-- Gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/50 to-transparent" />
+
+    <!-- Content -->
+    <div class="absolute inset-0 flex flex-col justify-end p-4 gap-1">
+      <h3 class="text-base font-bold leading-snug text-white group-hover:text-primary-content transition-colors line-clamp-2">
         {post.data.title}
       </h3>
       <div class="flex items-center gap-3 text-xs text-white/70">
         <time>{formatDate(post.data.publishDate)}</time>
         <span>約{readingTime}分</span>
       </div>
-      <p class="text-white/90 line-clamp-2">{post.data.description}</p>
+      <p class="text-white/90 text-sm line-clamp-2">{post.data.description}</p>
       {
         post.data.tags && post.data.tags.length > 0 && (
           <div class="flex flex-wrap gap-1 mt-1">

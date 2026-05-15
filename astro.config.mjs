@@ -17,6 +17,7 @@ export default defineConfig({
     react(),
     markdoc(),
     astroExpressiveCode({
+      themes: ["github-dark"],
       emitExternalStylesheet: false,
     }),
   ],
