@@ -11,20 +11,29 @@ const { id, title, tags = [], label, showText = true } = Astro.props;
 
 const gradId = `og-grad-${id.replace(/[^a-zA-Z0-9]/g, "-")}`;
 
-// Word-wrap: target ~22 chars per line at font-size 36
-const words = title.split(/\s+/);
-const lines: string[] = [];
-let cur = "";
-for (const word of words) {
-  const next = cur ? `${cur} ${word}` : word;
-  if (next.length > 22 && cur.length > 0) {
-    lines.push(cur);
-    cur = word;
-  } else {
-    cur = next;
+// CJK文字は1unit、ASCII等は0.55unitとして視覚的な幅で折り返す
+function wrapTitle(text: string, maxWidth = 16): string[] {
+  const isCJK = (ch: string) =>
+    /[⺀-鿿豈-﫿︰-﹏！-｠￠-￦]/.test(ch);
+  const lines: string[] = [];
+  let cur = "";
+  let curW = 0;
+  for (const ch of text) {
+    const w = isCJK(ch) ? 1 : 0.55;
+    if (curW + w > maxWidth && cur.length > 0) {
+      lines.push(cur);
+      cur = ch;
+      curW = w;
+    } else {
+      cur += ch;
+      curW += w;
+    }
   }
+  if (cur) lines.push(cur);
+  return lines;
 }
-if (cur) lines.push(cur);
+
+const lines = wrapTitle(title);
 
 const maxLines = 4;
 const capped = lines.slice(0, maxLines);
