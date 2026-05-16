@@ -4,7 +4,7 @@ import { Image } from "astro:assets";
 import OgPlaceholder from "../components/OgPlaceholder.astro";
 import SkillBadge from "../components/SkillBadge.astro";
 import { ExternalLink } from "@lucide/astro";
-import { formatDate } from "../utils/formatDate";
+import { formatDate, formatPeriod } from "../utils/formatDate";
 import Giscus from "../components/Giscus.astro";
 import RelatedContent from "../components/RelatedContent.astro";
 import PrevNextNav from "../components/PrevNextNav.astro";
@@ -49,18 +49,6 @@ const {
   prev,
   next,
 } = Astro.props;
-
-function formatPeriod(startDate: Date, endDate?: Date) {
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "short",
-  };
-  const start = startDate.toLocaleDateString("ja-JP", options);
-  const end = endDate
-    ? endDate.toLocaleDateString("ja-JP", options)
-    : "現在";
-  return `${start} - ${end}`;
-}
 
 // Calculate project duration in Japanese
 function calculateDuration(startDate: Date, endDate?: Date) {

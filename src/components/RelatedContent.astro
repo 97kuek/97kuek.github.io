@@ -39,22 +39,21 @@ const mappedEntries = relatedEntries.map(({ entry }) => ({
 ---
 
 <section class="mt-20">
-  <div class="divider mb-12"></div>
-  <h2 class="text-3xl font-bold mb-8">{collection === "blog" ? "関連記事" : "関連プロジェクト"}</h2>
+  <p class="text-xs font-bold tracking-widest text-primary uppercase mb-6">{collection === "blog" ? "RELATED POSTS" : "RELATED PROJECTS"}</p>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     {
       mappedEntries.map(({ entry, data }) => (
         <a
           href={`${import.meta.env.BASE_URL}${collection}/${entry.id}`}
-          class="group block card bg-base-200 hover:bg-base-300 transition-all duration-300 overflow-hidden"
+          class="group block card bg-base-100 border border-base-200 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
         >
           {data.image && (
             <figure class="aspect-video overflow-hidden">
               <Image
                 src={data.image}
                 alt={data.title}
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                class="w-full h-full object-cover"
                 width={400}
                 height={225}
               />

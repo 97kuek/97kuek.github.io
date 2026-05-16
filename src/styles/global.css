@@ -48,8 +48,6 @@ The name should be the same as the theme name below.
 }
 
 .prose strong {
-  background-color: color-mix(in oklch, var(--color-warning) 28%, transparent);
-  padding: 0.05em 0.3em;
-  border-radius: 0.2em;
+  color: var(--color-primary);
 }
 

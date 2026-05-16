@@ -4,24 +4,13 @@ import SkillBadge from "./SkillBadge.astro";
 import OgPlaceholder from "./OgPlaceholder.astro";
 import { ExternalLink } from "@lucide/astro";
 import type { CollectionEntry } from "astro:content";
+import { formatPeriod } from "../utils/formatDate";
 
 interface Props {
   project: CollectionEntry<"projects">;
 }
 
 const { project } = Astro.props;
-
-function formatPeriod(startDate: Date, endDate?: Date) {
-  const options: Intl.DateTimeFormatOptions = {
-    month: "short",
-    year: "numeric",
-  };
-  const start = startDate.toLocaleDateString("ja-JP", options);
-  const end = endDate
-    ? endDate.toLocaleDateString("ja-JP", options)
-    : "現在";
-  return `${start} - ${end}`;
-}
 ---
 
 <article

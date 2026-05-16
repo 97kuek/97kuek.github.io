@@ -2,20 +2,13 @@
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import OgPlaceholder from "./OgPlaceholder.astro";
+import { formatDate } from "../utils/formatDate";
 
 interface Props {
   post: CollectionEntry<"blog">;
 }
 
 const { post } = Astro.props;
-
-function formatDate(date: Date) {
-  return date.toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
 
 const body = post.body ?? '';
 const japaneseChars = (body.match(/[　-鿿＀-￯]/g) ?? []).length;
