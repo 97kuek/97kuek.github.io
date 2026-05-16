@@ -36,10 +36,12 @@ The name should be the same as the theme name below.
   themes: light --default;
 }
 
-/* Primary = slate-600/700 (#4a5568), matching OgPlaceholder */
+/* Primary = slate-blue (#3d5fa5), Accent = amber (#b5832a) */
 [data-theme="light"] {
-  --color-primary: oklch(39% 0.025 252);
-  --color-primary-content: oklch(98% 0.01 252);
+  --color-primary: oklch(44% 0.13 240);
+  --color-primary-content: oklch(98% 0.01 240);
+  --color-accent: oklch(64% 0.15 75);
+  --color-accent-content: oklch(20% 0.05 75);
 }
 
 
