@@ -46,7 +46,7 @@ const mappedEntries = relatedEntries.map(({ entry }) => ({
       mappedEntries.map(({ entry, data }) => (
         <a
           href={`${import.meta.env.BASE_URL}${collection}/${entry.id}`}
-          class="group block card bg-base-100 border border-base-200 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
+          class="group block card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 overflow-hidden"
         >
           {data.image && (
             <figure class="aspect-video overflow-hidden">

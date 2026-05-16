@@ -52,7 +52,7 @@ function formatPeriod(startDate: Date, endDate?: Date) {
       {
         sortedHackathons.map((hackathon) => (
           <div
-            class="card bg-base-100 border border-base-200 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-200"
+            class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200"
             data-filter-tags={(hackathon.data.skills || []).join(",")}
           >
             <div class="card-body">

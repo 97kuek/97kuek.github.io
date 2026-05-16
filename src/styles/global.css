@@ -36,10 +36,10 @@ The name should be the same as the theme name below.
   themes: light --default;
 }
 
-/* Primary = indigo-700 (#4338ca), matching OgPlaceholder */
+/* Primary = slate-600/700 (#4a5568), matching OgPlaceholder */
 [data-theme="light"] {
-  --color-primary: oklch(46% 0.248 263.83);
-  --color-primary-content: oklch(98% 0.01 264);
+  --color-primary: oklch(39% 0.025 252);
+  --color-primary-content: oklch(98% 0.01 252);
 }
 
 

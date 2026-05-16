@@ -2,7 +2,6 @@
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import { getIcon } from "../utils/iconMapper";
-import { getCollection } from "astro:content";
 
 interface Props {
   hero: {
@@ -20,9 +19,6 @@ interface Props {
 }
 
 const { hero } = Astro.props;
-
-const blogCount = (await getCollection("blog")).length;
-const projectCount = (await getCollection("projects")).length;
 ---
 
 <section class="hero min-h-[72vh]">
@@ -84,43 +80,6 @@ const projectCount = (await getCollection("projects")).length;
         }
       </div>
 
-      <!-- Stats -->
-      <div class="flex gap-8 justify-center lg:justify-start">
-        <div class="text-center lg:text-left">
-          <div class="text-3xl font-bold text-primary">{blogCount}</div>
-          <div class="text-xs text-base-content/55 mt-0.5 tracking-wide uppercase">記事</div>
-        </div>
-        <div class="w-px bg-base-content/15 self-stretch"></div>
-        <div class="text-center lg:text-left">
-          <div class="text-3xl font-bold text-primary">{projectCount}</div>
-          <div class="text-xs text-base-content/55 mt-0.5 tracking-wide uppercase">プロジェクト</div>
-        </div>
-      </div>
     </div>
   </div>
-
-  <!-- Scroll indicator -->
-  <div
-    id="scroll-indicator"
-    class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-base-content/30 transition-opacity duration-500"
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="m6 9 6 6 6-6"/>
-    </svg>
-  </div>
 </section>
-
-<script>
-  const indicator = document.getElementById('scroll-indicator');
-  if (indicator) {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 80) {
-        indicator.style.opacity = '0';
-        indicator.style.pointerEvents = 'none';
-      } else {
-        indicator.style.opacity = '';
-        indicator.style.pointerEvents = '';
-      }
-    }, { passive: true });
-  }
-</script>
