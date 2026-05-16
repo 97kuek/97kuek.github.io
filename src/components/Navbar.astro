@@ -26,7 +26,7 @@ const navLinks = isHome
 
 <header
   id="site-navbar"
-  class="fixed top-0 left-0 right-0 z-40 navbar bg-base-100/70 backdrop-blur-md border-b border-base-200/60"
+  class="fixed top-0 left-0 right-0 z-40 navbar bg-base-100/70 backdrop-blur-md border-b border-base-200/60 transition-shadow duration-200"
 >
   <div class="navbar-start">
     <a href={base} class="btn btn-ghost font-bold text-base">{name}</a>
@@ -71,6 +71,21 @@ const navLinks = isHome
 </header>
 
 <script>
+  const navbar = document.getElementById('site-navbar');
+  if (navbar) {
+    const onScroll = () => {
+      if (window.scrollY > 10) {
+        navbar.classList.add('bg-base-100/95', 'shadow-sm');
+        navbar.classList.remove('bg-base-100/70');
+      } else {
+        navbar.classList.remove('bg-base-100/95', 'shadow-sm');
+        navbar.classList.add('bg-base-100/70');
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
   const navLinks = document.querySelectorAll<HTMLAnchorElement>('#site-navbar nav a[href^="#"]');
 
   if (navLinks.length > 0) {

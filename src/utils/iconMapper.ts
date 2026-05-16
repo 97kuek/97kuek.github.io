@@ -100,6 +100,6 @@ export const iconMap: Record<IconName, any> = {
   Email: Mail,
 };
 
-export function getIcon(iconName: IconName) {
-  return iconMap[iconName];
+export function getIcon(iconName: string) {
+  return (iconMap as Record<string, unknown>)[iconName] ?? iconMap.Link;
 }

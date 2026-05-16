@@ -16,7 +16,7 @@ const { extraLinks } = Astro.props;
 <div class="dock dock-lg bg-neutral text-neutral-content lg:hidden z-50">
   {
     extraLinks.map((link) => {
-      const IconComponent = getIcon(link.icon as any);
+      const IconComponent = getIcon(link.icon);
       return (
         <a href={link.link} class="dock-item" aria-label={link.label}>
           <IconComponent class="size-6" />

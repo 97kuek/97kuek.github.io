@@ -30,7 +30,7 @@ const { extraLinks } = Astro.props;
   <!-- buttons that show up when FAB is open -->
   {
     extraLinks.map((link) => {
-      const IconComponent = getIcon(link.icon as any);
+      const IconComponent = getIcon(link.icon);
       return (
         <div class="tooltip tooltip-left" data-tip={link.label}>
           <a href={link.link} class="btn btn-lg btn-circle">

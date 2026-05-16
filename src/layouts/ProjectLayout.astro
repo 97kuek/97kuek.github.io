@@ -4,6 +4,7 @@ import { Image } from "astro:assets";
 import OgPlaceholder from "../components/OgPlaceholder.astro";
 import SkillBadge from "../components/SkillBadge.astro";
 import { ExternalLink } from "@lucide/astro";
+import { formatDate } from "../utils/formatDate";
 import Giscus from "../components/Giscus.astro";
 import RelatedContent from "../components/RelatedContent.astro";
 import PrevNextNav from "../components/PrevNextNav.astro";
@@ -49,14 +50,6 @@ const {
   next,
 } = Astro.props;
 
-function formatDate(date: Date) {
-  return date.toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 function formatPeriod(startDate: Date, endDate?: Date) {
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -87,11 +80,11 @@ function calculateDuration(startDate: Date, endDate?: Date) {
 }
 
 const ogImage = image
-  ? `${Astro.url.origin}${typeof image === 'object' && 'src' in image ? image.src : image}`
-  : undefined;
+  ? `${Astro.url.origin}${typeof image === "object" && "src" in image ? image.src : image}`
+  : `${Astro.url.origin}${import.meta.env.BASE_URL}og/projects/${id}.png`;
 ---
 
-<Layout title={title} description={description} ogImage={ogImage}>
+<Layout title={title} description={description} ogImage={ogImage} ogImageWidth={800} ogImageHeight={450}>
   <ReadingProgress />
   <BackToTop />
   <article class="max-w-6xl mx-auto px-4 py-20">

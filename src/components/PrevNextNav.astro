@@ -18,7 +18,7 @@ const label = collection === "blog" ? "記事" : "プロジェクト";
 {
   (prev || next) && (
     <nav class="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4" aria-label="前後ナビゲーション">
-      {prev ? (
+      {prev && (
         <a
           href={prev.url}
           class="group flex flex-col gap-1 card bg-base-200 hover:bg-base-300 transition-all duration-200 p-5"
@@ -32,14 +32,12 @@ const label = collection === "blog" ? "記事" : "プロジェクト";
           </span>
           <span class="text-xs text-base-content/50 line-clamp-1">{prev.description}</span>
         </a>
-      ) : (
-        <div />
       )}
 
-      {next ? (
+      {next && (
         <a
           href={next.url}
-          class="group flex flex-col gap-1 card bg-base-200 hover:bg-base-300 transition-all duration-200 p-5 sm:text-right sm:items-end"
+          class={`group flex flex-col gap-1 card bg-base-200 hover:bg-base-300 transition-all duration-200 p-5 sm:text-right sm:items-end${!prev ? " sm:col-start-2" : ""}`}
         >
           <span class="text-xs text-base-content/50 flex items-center gap-1 sm:flex-row-reverse">
             次の{label}
@@ -50,8 +48,6 @@ const label = collection === "blog" ? "記事" : "プロジェクト";
           </span>
           <span class="text-xs text-base-content/50 line-clamp-1">{next.description}</span>
         </a>
-      ) : (
-        <div />
       )}
     </nav>
   )

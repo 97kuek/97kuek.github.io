@@ -6,8 +6,8 @@ const contactEntry = (await getEntry("contact", "index"))!;
 const contact = contactEntry.data;
 const { Content } = await render(contactEntry);
 
-const SectionIcon = getIcon(contact.icon as any);
-const FooterIcon = getIcon(contact.footerIcon as any);
+const SectionIcon = getIcon(contact.icon);
+const FooterIcon = getIcon(contact.footerIcon);
 ---
 
 <footer id="contact" class="footer footer-horizontal footer-center bg-base-200 py-10">
