@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BlogCard from "./BlogCard.astro";
-import { ArrowRight, BookOpen } from "@lucide/astro";
+import { ArrowRight } from "@lucide/astro";
 
 const blogEntries = await getCollection("blog");
 
@@ -15,12 +15,8 @@ const latestPosts = sortedPosts.slice(0, 3);
 <section id="blog" class="py-24 px-4 bg-base-200">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-14">
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold mb-4">
-        <BookOpen class="size-3.5" />
-        BLOG
-      </div>
-      <div class="w-16 h-1 bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] rounded-full mx-auto mb-4"></div>
-      <p class="text-lg text-base-content/65">
+      <p class="text-xs font-bold tracking-widest text-primary uppercase mb-3">BLOG</p>
+      <p class="text-base text-base-content/60">
         技術的な知見や開発の裏側、日々の学びを記録しています。
       </p>
     </div>

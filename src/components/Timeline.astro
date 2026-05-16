@@ -106,11 +106,10 @@ const containerId = `${collection}-items`;
 <section id={collection} class={`py-20 px-4 bg-${backgroundColor}`}>
   <div class="max-w-4xl mx-auto">
     <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold">{sectionTitle}</h2>
-      <div class="w-16 h-1 rounded-full mx-auto mt-3" style={`background-color: var(--color-${color})`}></div>
+      <p class="text-xs font-bold tracking-widest text-primary uppercase mb-2">{sectionTitle}</p>
       {
         sectionSubtitle && (
-          <p class="text-base-content/70 mt-2">{sectionSubtitle}</p>
+          <p class="text-base text-base-content/60 mt-1">{sectionSubtitle}</p>
         )
       }
     </div>
@@ -152,7 +151,7 @@ const containerId = `${collection}-items`;
                       </span>
                     )}
                   </time>
-                  <div class="card bg-base-100 shadow-xl mt-2">
+                  <div class="card bg-base-100 border border-base-200 shadow-sm mt-2">
                     <div class="card-body">
                       <div class="flex items-center gap-4">
                         {entry.data.logo && (
@@ -281,7 +280,7 @@ const containerId = `${collection}-items`;
           ))}
         </>
       ) : (
-        <ul class="list bg-base-100 rounded-box shadow-lg">
+        <ul class="list bg-base-100 rounded-box border border-base-200 shadow-sm">
           {entriesWithContent.map(({ entry, Content }, index) => (
             <li class="border-b hover:opacity-85 transition-opacity border-base-300 last:border-b-0">
               <details class="collapse">

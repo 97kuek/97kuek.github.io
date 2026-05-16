@@ -40,9 +40,8 @@ function formatPeriod(startDate: Date, endDate?: Date) {
 <section id="hackathons" class="py-20 px-4">
   <div class="max-w-4xl mx-auto">
     <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold">ハッカソン</h2>
-      <div class="w-16 h-1 bg-primary rounded-full mx-auto mt-3 mb-4"></div>
-      <p class="text-lg text-base-content/70">
+      <p class="text-xs font-bold tracking-widest text-primary uppercase mb-3">HACKATHONS</p>
+      <p class="text-base text-base-content/60">
         大学在学中に複数のハッカソンに参加しました。短い期間でチームとともにプロダクトを作り上げる経験を通じて、技術の可能性と協働の大切さを学びました。
       </p>
     </div>
@@ -53,7 +52,7 @@ function formatPeriod(startDate: Date, endDate?: Date) {
       {
         sortedHackathons.map((hackathon) => (
           <div
-            class="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200"
+            class="card bg-base-100 border border-base-200 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-200"
             data-filter-tags={(hackathon.data.skills || []).join(",")}
           >
             <div class="card-body">

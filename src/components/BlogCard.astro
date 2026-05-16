@@ -27,7 +27,7 @@ const readingTime = Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 2
   href={`${import.meta.env.BASE_URL}blog/${post.id}`}
   class="block group"
 >
-  <article class="card bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200">
+  <article class="card bg-base-100 border border-base-200 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-200">
     <figure class="aspect-video overflow-hidden">
       {post.data.image ? (
         <Image src={post.data.image} alt={post.data.title} class="w-full h-full object-cover" />
