@@ -70,9 +70,25 @@ function calculateDuration(startDate: Date, endDate?: Date) {
 const ogImage = image
   ? `${Astro.url.origin}${typeof image === "object" && "src" in image ? image.src : image}`
   : `${Astro.url.origin}${import.meta.env.BASE_URL}og/projects/${id}.png`;
+
+const projectSchema = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": title,
+  "description": description,
+  "dateCreated": startDate.toISOString(),
+  ...(endDate ? { "dateModified": endDate.toISOString() } : {}),
+  "author": { "@type": "Person", "name": "Keitaro Ueki", "url": Astro.url.origin },
+  "url": Astro.url.href,
+  "image": ogImage,
+  ...(skills && skills.length > 0 ? { "keywords": skills.join(", ") } : {}),
+};
 ---
 
 <Layout title={title} description={description} ogImage={ogImage} ogImageWidth={800} ogImageHeight={450}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(projectSchema)} />
+  </Fragment>
   <ReadingProgress />
   <BackToTop />
   <article class="max-w-6xl mx-auto px-4 py-20">

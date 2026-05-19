@@ -20,12 +20,28 @@ const { Content: AboutContent } = await render(aboutEntry);
 // Load General singleton
 const generalEntry = (await getEntry("general", "index"))!;
 const general = generalEntry.data;
+
+const sameAs = heroEntry.data.socialLinks
+  .filter((l: { url: string }) => !l.url.startsWith("mailto:"))
+  .map((l: { url: string }) => l.url);
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": heroEntry.data.name,
+  "url": Astro.url.origin,
+  "sameAs": sameAs,
+  "description": heroEntry.data.description.trim(),
+};
 ---
 
 <Layout
   title={`${heroEntry.data.name} - Portfolio`}
   description={heroEntry.data.description}
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  </Fragment>
   <main class="bg-base-200">
     <!-- Hero Section (Always visible) -->
     <Hero hero={heroEntry.data} />
