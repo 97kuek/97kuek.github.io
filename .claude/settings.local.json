@@ -25,7 +25,12 @@
       "PowerShell([Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-ChildItem \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\src\\\\assets\\\\projects\\\\katekyo\" | Select-Object Name)",
       "Bash(mkdir -p \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\.claude\\\\commands\")",
       "Bash(git check-ignore *)",
-      "Bash(git commit -m 'fix: load pagefind-ui.js as script tag instead of ES module import *)"
+      "Bash(git commit -m 'fix: load pagefind-ui.js as script tag instead of ES module import *)",
+      "Bash(git commit -m 'feat: add sitemap and robots.txt for SEO *)",
+      "Bash(git commit -m 'feat: add Google Search Console verification meta tag *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://97kuek.github.io/sitemap-index.xml)",
+      "Bash(git commit -m 'feat: add JSON-LD structured data for SEO *)",
+      "Bash(git commit -m 'docs: split CLAUDE.md into focused docs, update spec *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",
