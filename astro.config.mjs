@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
 import markdoc from "@astrojs/markdoc";
 import astroExpressiveCode from "astro-expressive-code";
+import sitemap from "@astrojs/sitemap";
 
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -14,6 +15,7 @@ export default defineConfig({
   site: "https://97kuek.github.io",
 
   integrations: [
+    sitemap(),
     react(),
     markdoc(),
     astroExpressiveCode({
