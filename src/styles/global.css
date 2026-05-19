@@ -53,3 +53,14 @@ The name should be the same as the theme name below.
   color: var(--color-primary);
 }
 
+/* Prevent @tailwindcss/typography from overriding expressive-code dark theme */
+.prose .expressive-code pre,
+.prose .expressive-code pre code {
+  background-color: unset;
+  color: unset;
+  font-size: unset;
+  padding: unset;
+  border-radius: unset;
+  margin: unset;
+}
+

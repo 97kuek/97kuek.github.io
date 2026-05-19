@@ -20,6 +20,7 @@ export default defineConfig({
     markdoc(),
     astroExpressiveCode({
       themes: ["github-dark"],
+      useDarkModeMediaQuery: false,
       emitExternalStylesheet: false,
     }),
   ],
