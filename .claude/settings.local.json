@@ -30,7 +30,11 @@
       "Bash(git commit -m 'feat: add Google Search Console verification meta tag *)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://97kuek.github.io/sitemap-index.xml)",
       "Bash(git commit -m 'feat: add JSON-LD structured data for SEO *)",
-      "Bash(git commit -m 'docs: split CLAUDE.md into focused docs, update spec *)"
+      "Bash(git commit -m 'docs: split CLAUDE.md into focused docs, update spec *)",
+      "Bash(git commit -m 'style: hero section fills full viewport height on tablet/PC *)",
+      "Bash(git commit -m 'style: remove white bg from Projects and Education sections *)",
+      "Bash(git commit -m 'style: remove sidebar TOC, tighten section spacing, redesign Box *)",
+      "Bash(git commit -m 'style: force dark code blocks, prevent typography override *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",
