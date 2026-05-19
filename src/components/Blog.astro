@@ -16,18 +16,18 @@ const latestPosts = sortedPosts.slice(0, 3);
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-14">
       <p class="text-xs font-bold tracking-widest text-primary uppercase mb-3">BLOG</p>
-      <p class="text-base text-base-content/60">
-        技術的な知見や開発の裏側、日々の学びを記録しています。
+      <p class="text-lg text-base-content/60">
+        Documenting technical insights, behind-the-scenes of development, and daily learnings.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {latestPosts.map((post) => <BlogCard post={post} />)}
     </div>
 
     <div class="text-center mt-12">
       <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary btn-outline gap-2">
-        すべての記事を見る
+        View all posts
         <ArrowRight class="size-4" />
       </a>
     </div>

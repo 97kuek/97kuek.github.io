@@ -67,12 +67,12 @@ const ogImage = image
         >
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        ブログ一覧へ
+        Back to Blog
       </a>
     </div>
 
     <!-- Featured Image -->
-    <figure class="mb-8 rounded-2xl overflow-hidden">
+    <figure class="mb-8 max-w-3xl mx-auto rounded-2xl overflow-hidden">
       {image ? (
         <Image
           src={image}
@@ -88,20 +88,20 @@ const ogImage = image
 
     <!-- Post Header -->
     <header class="mb-8">
-      <h1 class="text-4xl font-bold mb-4">{title}</h1>
-      <p class="text-lg text-base-content/70 mb-4">{description}</p>
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">{title}</h1>
+      <p class="text-base sm:text-lg text-base-content/70 mb-4">{description}</p>
 
       <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60">
         <time datetime={publishDate.toISOString()}>
           {formatDate(publishDate)}
         </time>
         <span>&bull;</span>
-        <span>読了目安: 約{readingTime}分</span>
+        <span>~{readingTime} min read</span>
         {
           updatedDate && (
             <>
               <span>&bull;</span>
-              <span>最終更新日: {formatDate(updatedDate)}</span>
+              <span>Updated: {formatDate(updatedDate)}</span>
             </>
           )
         }
@@ -132,7 +132,7 @@ const ogImage = image
         </div>
 
         <!-- Content Body -->
-        <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3">
+        <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3 prose-img:mx-auto prose-img:block">
           <slot />
         </div>
 
@@ -155,7 +155,7 @@ const ogImage = image
         <!-- Back to blog link -->
         <div class="text-center mt-8">
           <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary">
-            すべての記事を見る
+            View all posts
           </a>
         </div>
       </article>

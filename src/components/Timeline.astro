@@ -46,11 +46,11 @@ function formatPeriod(startDate: Date, endDate?: Date) {
     year: "numeric",
     month: "short",
   };
-  const start = startDate.toLocaleDateString("ja-JP", options);
+  const start = startDate.toLocaleDateString("en-US", options);
   const end = endDate
-    ? endDate.toLocaleDateString("ja-JP", options)
-    : "現在";
-  return `${start} - ${end}`;
+    ? endDate.toLocaleDateString("en-US", options)
+    : "Present";
+  return `${start} – ${end}`;
 }
 
 function calculateDuration(startDate: Date, endDate?: Date): string | null {
@@ -68,11 +68,11 @@ function calculateDuration(startDate: Date, endDate?: Date): string | null {
   const months = totalMonths % 12;
 
   if (years === 0) {
-    return `(${months}ヶ月)`;
+    return `(${months} mo)`;
   } else if (months === 0) {
-    return `(${years}年)`;
+    return `(${years} yr)`;
   } else {
-    return `(${years}年${months}ヶ月)`;
+    return `(${years} yr ${months} mo)`;
   }
 }
 
@@ -125,19 +125,15 @@ const containerId = `${collection}-items`;
     {
       variant === "timeline" ? (
         <>
-          <ul class="timeline timeline-vertical timeline-snap-icon" id={containerId}>
+          <ul class="timeline timeline-vertical timeline-snap-icon timeline-compact" id={containerId}>
             {entriesWithContent.map(({ entry, Content }, index) => (
               <li data-filter-tags={(collection === "work" ? ((entry as CollectionEntry<"work">).data.skills || []) : []).join(",")}>
                 {index > 0 && <hr class="bg-base-100" />}
                 <div class="timeline-middle">
                   <IconComponent class="size-5 mx-3 my-1" style={`color: var(--color-${color})`} />
                 </div>
-                <div
-                  class={`timeline-${index % 2 === 0 ? "start" : "end"} max-w-sm pt-3 mb-10`}
-                >
-                  <time
-                    class={`font-mono text-sm text-base-content/70 block italic ${index % 2 === 0 ? "text-end" : ""}`}
-                  >
+                <div class="timeline-end max-w-lg pt-3 mb-10">
+                  <time class="font-mono text-sm text-base-content/70 block italic">
                     {formatPeriod(entry.data.startDate, entry.data.endDate)}
                     {calculateDuration(
                       entry.data.startDate,
@@ -182,7 +178,7 @@ const containerId = `${collection}-items`;
                           class="btn btn-ghost btn-sm"
                           onclick={`document.getElementById('modal-${entry.id}').showModal()`}
                         >
-                          続きを読む
+                          Read more
                         </button>
                       </div>
                     </div>
@@ -264,12 +260,12 @@ const containerId = `${collection}-items`;
                       rel="noopener noreferrer"
                       class="btn btn-ghost gap-2"
                     >
-                      {collection === "work" ? "会社サイトを見る" : "学校サイトを見る"}
+                      {collection === "work" ? "Visit website" : "Visit website"}
                       <ExternalLink class="size-4" />
                     </a>
                   )}
                   <form method="dialog">
-                    <button class="btn">閉じる</button>
+                    <button class="btn">Close</button>
                   </form>
                 </div>
               </div>
@@ -338,9 +334,7 @@ const containerId = `${collection}-items`;
                         rel="noopener noreferrer"
                         class="link link-hover"
                       >
-                        {collection === "work"
-                          ? "会社サイトを見る"
-                          : "学校サイトを見る"}
+                        Visit website
                       </a>
                     </div>
                   )}
@@ -361,7 +355,7 @@ const containerId = `${collection}-items`;
             rel="noopener noreferrer"
             class="btn btn-primary btn-outline"
           >
-            職務経歴をもっと見る
+            View full work history
           </a>
         </div>
       )
