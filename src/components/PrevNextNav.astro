@@ -12,8 +12,7 @@ interface Props {
 }
 
 const { prev, next, collection } = Astro.props;
-const prevLabel = collection === "blog" ? "Previous post" : "Previous project";
-const nextLabel = collection === "blog" ? "Next post" : "Next project";
+const label = collection === "blog" ? "記事" : "プロジェクト";
 ---
 
 {
@@ -26,7 +25,7 @@ const nextLabel = collection === "blog" ? "Next post" : "Next project";
         >
           <span class="text-xs text-base-content/50 flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            {prevLabel}
+            前の{label}
           </span>
           <span class="font-semibold text-sm leading-snug group-hover:text-primary transition-colors line-clamp-2">
             {prev.title}
@@ -41,7 +40,7 @@ const nextLabel = collection === "blog" ? "Next post" : "Next project";
           class={`group flex flex-col gap-1 card bg-base-200 hover:bg-base-300 transition-all duration-200 p-5 sm:text-right sm:items-end${!prev ? " sm:col-start-2" : ""}`}
         >
           <span class="text-xs text-base-content/50 flex items-center gap-1 sm:flex-row-reverse">
-            {nextLabel}
+            次の{label}
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
           </span>
           <span class="font-semibold text-sm leading-snug group-hover:text-primary transition-colors line-clamp-2">

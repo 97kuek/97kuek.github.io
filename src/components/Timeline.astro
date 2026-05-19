@@ -46,11 +46,11 @@ function formatPeriod(startDate: Date, endDate?: Date) {
     year: "numeric",
     month: "short",
   };
-  const start = startDate.toLocaleDateString("en-US", options);
+  const start = startDate.toLocaleDateString("ja-JP", options);
   const end = endDate
-    ? endDate.toLocaleDateString("en-US", options)
-    : "Present";
-  return `${start} – ${end}`;
+    ? endDate.toLocaleDateString("ja-JP", options)
+    : "現在";
+  return `${start} - ${end}`;
 }
 
 function calculateDuration(startDate: Date, endDate?: Date): string | null {
@@ -68,11 +68,11 @@ function calculateDuration(startDate: Date, endDate?: Date): string | null {
   const months = totalMonths % 12;
 
   if (years === 0) {
-    return `(${months} mo)`;
+    return `(${months}ヶ月)`;
   } else if (months === 0) {
-    return `(${years} yr)`;
+    return `(${years}年)`;
   } else {
-    return `(${years} yr ${months} mo)`;
+    return `(${years}年${months}ヶ月)`;
   }
 }
 
@@ -106,7 +106,7 @@ const containerId = `${collection}-items`;
 <section id={collection} class={`py-20 px-4 bg-${backgroundColor}`}>
   <div class="max-w-4xl mx-auto">
     <div class="text-center mb-12">
-      <p class="text-xs font-bold tracking-widest text-primary uppercase mb-2">{sectionTitle}</p>
+      <p class="text-sm font-bold tracking-widest text-primary uppercase mb-2">{sectionTitle}</p>
       {
         sectionSubtitle && (
           <p class="text-base text-base-content/60 mt-1">{sectionSubtitle}</p>
@@ -178,7 +178,7 @@ const containerId = `${collection}-items`;
                           class="btn btn-ghost btn-sm"
                           onclick={`document.getElementById('modal-${entry.id}').showModal()`}
                         >
-                          Read more
+                          続きを読む
                         </button>
                       </div>
                     </div>
@@ -260,12 +260,12 @@ const containerId = `${collection}-items`;
                       rel="noopener noreferrer"
                       class="btn btn-ghost gap-2"
                     >
-                      {collection === "work" ? "Visit website" : "Visit website"}
+                      {collection === "work" ? "会社サイトを見る" : "学校サイトを見る"}
                       <ExternalLink class="size-4" />
                     </a>
                   )}
                   <form method="dialog">
-                    <button class="btn">Close</button>
+                    <button class="btn">閉じる</button>
                   </form>
                 </div>
               </div>
@@ -334,7 +334,7 @@ const containerId = `${collection}-items`;
                         rel="noopener noreferrer"
                         class="link link-hover"
                       >
-                        Visit website
+                        {collection === "work" ? "会社サイトを見る" : "学校サイトを見る"}
                       </a>
                     </div>
                   )}
@@ -355,7 +355,7 @@ const containerId = `${collection}-items`;
             rel="noopener noreferrer"
             class="btn btn-primary btn-outline"
           >
-            View full work history
+            職務経歴をもっと見る
           </a>
         </div>
       )
