@@ -31,20 +31,23 @@ import Layout from "../layouts/Layout.astro";
 </style>
 
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', async function () {
-    try {
-      const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+  document.addEventListener('DOMContentLoaded', function () {
+    var script = document.createElement('script');
+    script.src = '/pagefind/pagefind-ui.js';
+    script.onload = function () {
       new PagefindUI({
         element: '#search',
         showImages: false,
         showEmptyFilters: false,
       });
-    } catch {
-      const el = document.getElementById('search');
+    };
+    script.onerror = function () {
+      var el = document.getElementById('search');
       if (el) {
         el.innerHTML =
           '<p style="text-align:center;color:#718096;padding:3rem 0">開発環境では検索を使用できません。<br><code style="font-size:0.875rem">npm run build &amp;&amp; npm run preview</code> をお試しください。</p>';
       }
-    }
+    };
+    document.head.appendChild(script);
   });
 </script>
