@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -13,6 +13,7 @@
     "@astrojs/mdx": "^4.3.9",
     "@astrojs/node": "^9.5.1",
     "@astrojs/react": "^4.4.2",
+    "@astrojs/rss": "^4.0.18",
     "@astrojs/vercel": "^8.0.4",
     "@keystatic/astro": "^5.0.6",
     "@keystatic/core": "^0.5.48",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",
+    "pagefind": "^1.5.2",
     "typescript": "^5.9.3"
   }
 }

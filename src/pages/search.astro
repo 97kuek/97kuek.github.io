@@ -1,0 +1,50 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="検索 - 97kuek"
+  description="ブログ記事・プロジェクトを検索"
+>
+  <Fragment slot="head">
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  </Fragment>
+
+  <main class="max-w-3xl mx-auto px-4 py-20">
+    <div class="text-center mb-12">
+      <p class="text-sm font-bold tracking-widest text-primary uppercase mb-3">SEARCH</p>
+      <h1 class="text-3xl font-bold mb-4">検索</h1>
+      <p class="text-base text-base-content/60">ブログ記事やプロジェクトを検索できます</p>
+    </div>
+
+    <div id="search"></div>
+  </main>
+</Layout>
+
+<style>
+  #search {
+    --pagefind-ui-primary: #4a5568;
+    --pagefind-ui-font: inherit;
+    --pagefind-ui-border-radius: 0.5rem;
+    --pagefind-ui-border-width: 1px;
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', async function () {
+    try {
+      const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+      new PagefindUI({
+        element: '#search',
+        showImages: false,
+        showEmptyFilters: false,
+      });
+    } catch {
+      const el = document.getElementById('search');
+      if (el) {
+        el.innerHTML =
+          '<p style="text-align:center;color:#718096;padding:3rem 0">開発環境では検索を使用できません。<br><code style="font-size:0.875rem">npm run build &amp;&amp; npm run preview</code> をお試しください。</p>';
+      }
+    }
+  });
+</script>
