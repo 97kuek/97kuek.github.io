@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:www.themoonlight.io)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:merl.com)",
+      "Bash(xargs ls *)",
+      "Bash(sort -k5 -rh)",
+      "Bash(git -C \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\" log --oneline -10)",
+      "Bash(Test-Path \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\README.md\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'ci: Astroキャッシュ追加とnpm ciに変更してビルドを高速化 *)",
+      "Bash(git commit -m 'ci: cancel-in-progressをtrueに変更して連続プッシュ時の待機を解消 *)",
+      "Bash(git commit -m 'style: コードブロックをdarkテーマに変更、BlogCardのレイアウトバグを修正 *)",
+      "Bash(git commit -m 'fix: OgPlaceholderの日本語折り返しを修正、KaTeXをセルフホストに変更 *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(git commit -m 'feat: ホームページをリッチなインディゴ/バイオレット系デザインに刷新 *)",
+      "Bash(npm install *)",
+      "Bash(dir \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\src\\\\assets\\\\projects\\\\katekyo\")",
+      "PowerShell([Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-ChildItem \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\src\\\\assets\\\\projects\\\\katekyo\" | ForEach-Object { $_.Name })",
+      "PowerShell([Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-ChildItem \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\src\\\\assets\\\\projects\\\\katekyo\" | Select-Object Name)",
+      "Bash(mkdir -p \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\.claude\\\\commands\")",
+      "Bash(git check-ignore *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",
+      "c:\\Users\\yamashita\\Documents\\my-portfolio\\.claude"
+    ]
+  }
+}

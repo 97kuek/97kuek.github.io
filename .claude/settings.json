@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")",
+      "Bash(npm run *)",
+      "Bash(xargs grep *)",
+      "Bash(python3 -c ' *)",
+      "Bash(powershell -Command \"Get-Content 'c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\src\\\\pages\\\\404.astro' | Select-Object -Index 15 | Format-Hex\")",
+      "Bash(python -c ' *)",
+      "WebSearch"
+    ]
+  }
+}
