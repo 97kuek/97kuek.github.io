@@ -4,27 +4,54 @@ const { color, title } = Astro.props;
 type BoxConfig = {
   wrapper: string;
   titleColor: string;
-  icon: string;
+  iconPath: string;
 };
 
 const configs: Record<string, BoxConfig> = {
-  info:    { wrapper: 'border-l-4 border-info bg-info/5',       titleColor: 'text-info',    icon: '💡' },
-  warning: { wrapper: 'border-l-4 border-warning bg-warning/5', titleColor: 'text-warning', icon: '⚠️' },
-  success: { wrapper: 'border-l-4 border-success bg-success/5', titleColor: 'text-success', icon: '✅' },
-  error:   { wrapper: 'border-l-4 border-error bg-error/5',     titleColor: 'text-error',   icon: '❌' },
+  info: {
+    wrapper: 'border-l-[3px] border-info/60 bg-info/5',
+    titleColor: 'text-info',
+    iconPath: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  },
+  warning: {
+    wrapper: 'border-l-[3px] border-warning/60 bg-warning/5',
+    titleColor: 'text-warning',
+    iconPath: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  },
+  success: {
+    wrapper: 'border-l-[3px] border-success/60 bg-success/5',
+    titleColor: 'text-success',
+    iconPath: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/>',
+  },
+  error: {
+    wrapper: 'border-l-[3px] border-error/60 bg-error/5',
+    titleColor: 'text-error',
+    iconPath: '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+  },
 };
 
 const cfg = configs[color] ?? {
-  wrapper: 'border-l-4 border-base-content/25 bg-base-200/50',
+  wrapper: 'border-l-[3px] border-base-content/20 bg-base-200/60',
   titleColor: 'text-base-content/60',
-  icon: '📝',
+  iconPath: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
 };
 ---
 
-<div class={`my-8 rounded-r-xl px-6 py-5 ${cfg.wrapper}`}>
+<div class={`my-6 rounded-r-lg px-5 py-4 ${cfg.wrapper}`}>
   {title && (
-    <div class={`not-prose flex items-center gap-1.5 mb-3 ${cfg.titleColor}`}>
-      <span class="text-sm leading-none">{cfg.icon}</span>
+    <div class={`not-prose flex items-center gap-1.5 mb-2 ${cfg.titleColor}`}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        set:html={cfg.iconPath}
+      />
       <span class="text-sm font-semibold">{title}</span>
     </div>
   )}

@@ -138,48 +138,39 @@ const blogSchema = {
     <!-- Divider -->
     <div class="divider"></div>
 
-    <div class="lg:grid lg:grid-cols-[1fr_16rem] lg:gap-12 lg:items-start">
-      <article>
-        <!-- TOC (mobile/tablet: collapsible at top) -->
-        <div class="mb-8 lg:hidden">
-          <TableOfContents headings={headings} />
-        </div>
+    <article>
+      <!-- TOC (collapsible at top) -->
+      <div class="mb-8">
+        <TableOfContents headings={headings} />
+      </div>
 
-        <!-- Content Body -->
-        <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3 prose-img:mx-auto prose-img:block">
-          <slot />
-        </div>
+      <!-- Content Body -->
+      <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3 prose-img:mx-auto prose-img:block">
+        <slot />
+      </div>
 
-        <!-- Prev / Next Navigation -->
-        <PrevNextNav prev={prev} next={next} collection="blog" />
+      <!-- Prev / Next Navigation -->
+      <PrevNextNav prev={prev} next={next} collection="blog" />
 
-        <!-- Related Content -->
-        <RelatedContent
-          currentId={id}
-          collection="blog"
-          tags={tags || []}
-        />
+      <!-- Related Content -->
+      <RelatedContent
+        currentId={id}
+        collection="blog"
+        tags={tags || []}
+      />
 
-        <!-- Giscus Comments -->
-        <Giscus />
+      <!-- Giscus Comments -->
+      <Giscus />
 
-        <!-- Divider -->
-        <div class="divider mt-12"></div>
+      <!-- Divider -->
+      <div class="divider mt-12"></div>
 
-        <!-- Back to blog link -->
-        <div class="text-center mt-8">
-          <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary">
-            すべての記事を見る
-          </a>
-        </div>
-      </article>
-
-      <!-- Sidebar TOC (desktop only, sticky) -->
-      <aside class="hidden lg:block">
-        <div class="sticky top-8">
-          <TableOfContents headings={headings} sidebar={true} />
-        </div>
-      </aside>
-    </div>
+      <!-- Back to blog link -->
+      <div class="text-center mt-8">
+        <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary">
+          すべての記事を見る
+        </a>
+      </div>
+    </article>
   </div>
 </Layout>
