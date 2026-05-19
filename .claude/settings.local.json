@@ -24,7 +24,8 @@
       "PowerShell([Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-ChildItem \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\src\\\\assets\\\\projects\\\\katekyo\" | ForEach-Object { $_.Name })",
       "PowerShell([Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-ChildItem \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\src\\\\assets\\\\projects\\\\katekyo\" | Select-Object Name)",
       "Bash(mkdir -p \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\.claude\\\\commands\")",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(git commit -m 'fix: load pagefind-ui.js as script tag instead of ES module import *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",
