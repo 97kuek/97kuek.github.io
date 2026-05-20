@@ -53,9 +53,10 @@ The name should be the same as the theme name below.
   color: var(--color-primary);
 }
 
-/* Prevent @tailwindcss/typography from overriding expressive-code dark theme */
-.prose .expressive-code pre,
-.prose .expressive-code pre code {
+/* Prevent @tailwindcss/typography from overriding expressive-code dark theme.
+   Use :where() to keep specificity at (0,0,1) so EC's own styles always win. */
+:where(.prose) :where(.expressive-code) pre,
+:where(.prose) :where(.expressive-code) pre code {
   background-color: unset;
   color: unset;
   font-size: unset;

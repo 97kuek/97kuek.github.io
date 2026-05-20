@@ -7,7 +7,11 @@ const projectEntries = await getCollection("projects");
 
 const featuredProjects = projectEntries
   .filter((project) => project.data.featured === true)
-  .sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime())
+  .sort((a, b) => {
+    const aTime = a.data.endDate ? a.data.endDate.getTime() : Number.MAX_SAFE_INTEGER;
+    const bTime = b.data.endDate ? b.data.endDate.getTime() : Number.MAX_SAFE_INTEGER;
+    return bTime - aTime;
+  })
   .slice(0, 3);
 ---
 
