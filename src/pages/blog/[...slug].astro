@@ -1,6 +1,7 @@
 ---
 import { getEntry, getCollection, render } from "astro:content";
 import BlogLayout from "../../layouts/BlogLayout.astro";
+import { calcReadingTime } from "../../utils/formatDate";
 
 export async function getStaticPaths() {
   const entries = await getCollection("blog");
@@ -22,10 +23,7 @@ if (!entry) {
 
 const { Content, headings } = await render(entry);
 
-const body = entry.body ?? '';
-const japaneseChars = (body.match(/[　-鿿＀-￯]/g) ?? []).length;
-const englishWords = (body.match(/[a-zA-Z]+/g) ?? []).length;
-const readingTime = Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 200));
+const readingTime = calcReadingTime(entry.body ?? '');
 
 const allEntries = await getCollection("blog");
 const sorted = [...allEntries].sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());

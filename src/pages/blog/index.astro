@@ -4,6 +4,7 @@ import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import OgPlaceholder from "../../components/OgPlaceholder.astro";
 import FilterSection from "../../components/FilterSection.astro";
+import { formatDate, calcReadingTime } from "../../utils/formatDate";
 
 const blogPosts = await getCollection("blog");
 
@@ -21,19 +22,6 @@ const tagCounts = blogPosts.reduce((acc, post) => {
   return acc;
 }, {} as Record<string, number>);
 
-function calcReadingTime(body: string): number {
-  const japaneseChars = (body.match(/[　-鿿＀-￯]/g) ?? []).length;
-  const englishWords = (body.match(/[a-zA-Z]+/g) ?? []).length;
-  return Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 200));
-}
-
-function formatDate(date: Date) {
-  return date.toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
 ---
 
 <Layout
@@ -88,7 +76,7 @@ function formatDate(date: Date) {
               class="block group"
               data-filter-tags={(post.data.tags || []).join(",")}
             >
-              <article class="card bg-base-100 border border-base-200 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-200 h-full">
+              <article class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 h-full">
                 <figure class="aspect-video overflow-hidden">
                   {post.data.image ? (
                     <Image
