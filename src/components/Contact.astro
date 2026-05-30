@@ -2,7 +2,9 @@
 import { getEntry, render } from "astro:content";
 import { getIcon } from "../utils/iconMapper";
 
-const contactEntry = (await getEntry("contact", "index"))!;
+const locale = Astro.currentLocale ?? "ja";
+const contactId = locale === "en" ? "en" : "index";
+const contactEntry = (await getEntry("contact", contactId as any))!;
 const contact = contactEntry.data;
 const { Content } = await render(contactEntry);
 

@@ -1,0 +1,21 @@
+name: Keitaro Ueki
+title: Welcome to My Portfolio
+description: |
+  3rd-year B.E. student at Waseda University
+  Dept. of Communications & Computer Engineering
+  Project Manager, WASA Birdman Project
+avatar: '@assets/hero/avatar.jpg'
+location: 🇯🇵 Japan
+socialLinks:
+  - url: mailto:keitaro.ueki@asagi.waseda.jp
+    icon: Email
+    label: Email
+  - url: https://github.com/97kuek
+    icon: GitHub
+    label: GitHub
+  - url: https://twitter.com/97kuek_
+    icon: Twitter
+    label: X (Twitter)
+  - url: https://youtube.com/97kuek
+    icon: YouTube
+    label: YouTube

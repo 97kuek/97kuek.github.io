@@ -14,6 +14,14 @@ import rehypeKatex from "rehype-katex";
 export default defineConfig({
   site: "https://97kuek.github.io",
 
+  i18n: {
+    defaultLocale: "ja",
+    locales: ["ja", "en"],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
+
   integrations: [
     sitemap(),
     react(),

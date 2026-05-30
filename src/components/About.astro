@@ -2,6 +2,7 @@
 import { Plus } from "@lucide/astro";
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
+import { useTranslations, type Lang } from "../i18n/ui";
 
 interface Props {
   title: string;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const { title, photo, Content, link } = Astro.props;
+const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 ---
 
 <section id="about" class="py-16 px-4">
@@ -62,7 +64,7 @@ const { title, photo, Content, link } = Astro.props;
                 class="btn btn-primary"
               >
                 <Plus class="size-5" />
-                詳細を見る
+                {t("about.seeMore")}
               </a>
             </div>
           )

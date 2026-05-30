@@ -5,13 +5,14 @@ import { Image } from "astro:assets";
 import { ExternalLink } from "@lucide/astro";
 import SkillBadge from "./SkillBadge.astro";
 import FilterSection from "./FilterSection.astro";
+import { useTranslations, type Lang } from "../i18n/ui";
 
 interface Props {
   collection: "work" | "education";
   variant: "timeline" | "list";
   color?: string;
   backgroundColor?: string;
-  icon: any; // Pass the icon component directly
+  icon: any;
   sectionTitle: string;
   sectionSubtitle?: string;
 }
@@ -26,30 +27,33 @@ const {
   sectionSubtitle,
 } = Astro.props;
 
-// Dynamic component - must be capitalized
 const IconComponent = icon;
+const locale = (Astro.currentLocale ?? "ja") as Lang;
+const t = useTranslations(locale);
 
-// Load collection entries
-const entries = await getCollection(collection);
+// Locale-specific filtering: English entries have -en suffix
+const allEntries = await getCollection(collection);
+const entries = allEntries.filter((entry) =>
+  locale === "en" ? entry.id.endsWith("-en") : !entry.id.endsWith("-en")
+);
 
 // Load about content to get the link (for work section button)
-const aboutEntry = (await getEntry("about", "index"))!;
+const aboutId = locale === "en" ? "en" : "index";
+const aboutEntry = (await getEntry("about", aboutId as any))!;
 const aboutLink = aboutEntry?.data?.link;
 
 // Sort by start date, most recent first
 const sortedEntries = entries.sort(
-  (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime(),
+  (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime()
 );
 
 function formatPeriod(startDate: Date, endDate?: Date) {
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "short",
-  };
-  const start = startDate.toLocaleDateString("ja-JP", options);
+  const dateLocale = t("timeline.dateLocale");
+  const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" };
+  const start = startDate.toLocaleDateString(dateLocale, options);
   const end = endDate
-    ? endDate.toLocaleDateString("ja-JP", options)
-    : "現在";
+    ? endDate.toLocaleDateString(dateLocale, options)
+    : t("timeline.present");
   return `${start} - ${end}`;
 }
 
@@ -67,38 +71,40 @@ function calculateDuration(startDate: Date, endDate?: Date): string | null {
   const years = Math.floor(totalMonths / 12);
   const months = totalMonths % 12;
 
-  if (years === 0) {
-    return `(${months}ヶ月)`;
-  } else if (months === 0) {
-    return `(${years}年)`;
-  } else {
-    return `(${years}年${months}ヶ月)`;
-  }
+  const mo = t("timeline.months");
+  const yr = t("timeline.years");
+
+  if (years === 0) return `(${months}${mo})`;
+  else if (months === 0) return `(${years}${yr})`;
+  else return `(${years}${yr}${months}${mo})`;
 }
 
-// Render markdown content for each entry
 const entriesWithContent = await Promise.all(
   sortedEntries.map(async (entry) => {
     const { Content } = await render(entry);
     return { entry, Content };
-  }),
+  })
 );
 
-// Filtering logic for Work Experience (skills only)
 const workEntries = entries as CollectionEntry<"work">[];
 
-const allSkills = collection === "work"
-  ? [...new Set(workEntries.flatMap(e => e.data.skills || []))].sort()
-  : [];
+const allSkills =
+  collection === "work"
+    ? [...new Set(workEntries.flatMap((e) => e.data.skills || []))].sort()
+    : [];
 
-const skillCounts = collection === "work"
-  ? workEntries.reduce((acc, entry) => {
-      (entry.data.skills || []).forEach((skill: string) => {
-        acc[skill] = (acc[skill] || 0) + 1;
-      });
-      return acc;
-    }, {} as Record<string, number>)
-  : {};
+const skillCounts =
+  collection === "work"
+    ? workEntries.reduce(
+        (acc, entry) => {
+          (entry.data.skills || []).forEach((skill: string) => {
+            acc[skill] = (acc[skill] || 0) + 1;
+          });
+          return acc;
+        },
+        {} as Record<string, number>
+      )
+    : {};
 
 const containerId = `${collection}-items`;
 ---
@@ -107,258 +113,202 @@ const containerId = `${collection}-items`;
   <div class="max-w-4xl mx-auto">
     <div class="text-center mb-12">
       <p class="text-sm font-bold tracking-widest text-primary uppercase mb-2">{sectionTitle}</p>
-      {
-        sectionSubtitle && (
-          <p class="text-base text-base-content/60 mt-1">{sectionSubtitle}</p>
-        )
-      }
+      {sectionSubtitle && (
+        <p class="text-base text-base-content/60 mt-1">{sectionSubtitle}</p>
+      )}
     </div>
 
-    {
-      collection === "work" && allSkills.length > 0 && (
-        <div class="flex justify-center">
-          <FilterSection tags={allSkills} tagCounts={skillCounts} totalCount={entries.length} containerId={containerId} />
-        </div>
-      )
-    }
+    {collection === "work" && allSkills.length > 0 && (
+      <div class="flex justify-center">
+        <FilterSection tags={allSkills} tagCounts={skillCounts} totalCount={entries.length} containerId={containerId} />
+      </div>
+    )}
 
-    {
-      variant === "timeline" ? (
-        <>
-          <ul class="timeline timeline-vertical timeline-snap-icon timeline-compact" id={containerId}>
-            {entriesWithContent.map(({ entry, Content }, index) => (
-              <li data-filter-tags={(collection === "work" ? ((entry as CollectionEntry<"work">).data.skills || []) : []).join(",")}>
-                {index > 0 && <hr class="bg-base-100" />}
-                <div class="timeline-middle">
-                  <IconComponent class="size-5 mx-3 my-1" style={`color: var(--color-${color})`} />
-                </div>
-                <div class="timeline-end max-w-lg pt-3 mb-10">
-                  <time class="font-mono text-sm text-base-content/70 block italic">
-                    {formatPeriod(entry.data.startDate, entry.data.endDate)}
-                    {calculateDuration(
-                      entry.data.startDate,
-                      entry.data.endDate,
-                    ) && (
-                      <span class="ml-1 text-base-content/50">
-                        {calculateDuration(
-                          entry.data.startDate,
-                          entry.data.endDate,
+    {variant === "timeline" ? (
+      <>
+        <ul class="timeline timeline-vertical timeline-snap-icon timeline-compact" id={containerId}>
+          {entriesWithContent.map(({ entry, Content }, index) => (
+            <li data-filter-tags={(collection === "work" ? ((entry as CollectionEntry<"work">).data.skills || []) : []).join(",")}>
+              {index > 0 && <hr class="bg-base-100" />}
+              <div class="timeline-middle">
+                <IconComponent class="size-5 mx-3 my-1" style={`color: var(--color-${color})`} />
+              </div>
+              <div class="timeline-end max-w-lg pt-3 mb-10">
+                <time class="font-mono text-sm text-base-content/70 block italic">
+                  {formatPeriod(entry.data.startDate, entry.data.endDate)}
+                  {calculateDuration(entry.data.startDate, entry.data.endDate) && (
+                    <span class="ml-1 text-base-content/50">
+                      {calculateDuration(entry.data.startDate, entry.data.endDate)}
+                    </span>
+                  )}
+                </time>
+                <div class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 mt-2">
+                  <div class="card-body">
+                    <div class="flex items-center gap-4">
+                      {entry.data.logo && (
+                        <div class="avatar">
+                          <div class="w-12 mask mask-squircle">
+                            <Image src={entry.data.logo} alt={entry.data.title} inferSize={true} />
+                          </div>
+                        </div>
+                      )}
+                      <div class="flex-1">
+                        <h3 class="card-title">{entry.data.title}</h3>
+                        <p class="font-semibold" style={`color: var(--color-${color})`}>
+                          {entry.data.subtitle}
+                        </p>
+                        {"location" in entry.data && entry.data.location && (
+                          <p class="text-sm text-base-content/60">{entry.data.location}</p>
                         )}
+                      </div>
+                    </div>
+                    <div class="card-actions justify-end mt-2">
+                      <button
+                        class="btn btn-ghost btn-sm"
+                        onclick={`document.getElementById('modal-${entry.id}').showModal()`}
+                      >
+                        {t("timeline.readMore")}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {index < entriesWithContent.length - 1 && <hr class="bg-base-100" />}
+            </li>
+          ))}
+        </ul>
+
+        {entriesWithContent.map(({ entry, Content }) => (
+          <dialog id={`modal-${entry.id}`} class="modal">
+            <div class="modal-box max-w-2xl">
+              <div class="flex items-center gap-4 mb-4">
+                {entry.data.logo && (
+                  <div class="avatar">
+                    <div class="w-16 mask mask-squircle">
+                      <Image src={entry.data.logo} alt={entry.data.title} inferSize={true} />
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <h3 class="font-bold text-xl">{entry.data.title}</h3>
+                  <p style={`color: var(--color-${color})`} class="font-semibold">
+                    {entry.data.subtitle}
+                  </p>
+                  {"location" in entry.data && entry.data.location && (
+                    <p class="text-sm text-base-content/60">{entry.data.location}</p>
+                  )}
+                  <p class="text-sm text-base-content/70 font-mono italic mt-1">
+                    {formatPeriod(entry.data.startDate, entry.data.endDate)}
+                    {calculateDuration(entry.data.startDate, entry.data.endDate) && (
+                      <span class="ml-1 text-base-content/50">
+                        {calculateDuration(entry.data.startDate, entry.data.endDate)}
                       </span>
                     )}
-                  </time>
-                  <div class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 mt-2">
-                    <div class="card-body">
-                      <div class="flex items-center gap-4">
-                        {entry.data.logo && (
-                          <div class="avatar">
-                            <div class="w-12 mask mask-squircle">
-                              <Image
-                                src={entry.data.logo}
-                                alt={entry.data.title}
-                                inferSize={true}
-                              />
-                            </div>
-                          </div>
-                        )}
-                        <div class="flex-1">
-                          <h3 class="card-title">{entry.data.title}</h3>
-                          <p class="font-semibold" style={`color: var(--color-${color})`}>
-                            {entry.data.subtitle}
-                          </p>
-                          {"location" in entry.data && entry.data.location && (
-                            <p class="text-sm text-base-content/60">
-                              {entry.data.location}
-                            </p>
-                          )}
+                  </p>
+                </div>
+              </div>
+
+              {"skills" in entry.data && entry.data.skills && entry.data.skills.length > 0 && (
+                <div class="flex flex-wrap gap-2 mb-4">
+                  {(entry.data.skills as string[]).map((skill: string) => (
+                    <SkillBadge skill={skill} />
+                  ))}
+                </div>
+              )}
+
+              <div class="prose prose-sm max-w-none text-base-content/80">
+                <Content />
+              </div>
+
+              <div class="modal-action">
+                {entry.data.link && (
+                  <a
+                    href={entry.data.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-ghost gap-2"
+                  >
+                    {collection === "work" ? t("timeline.companySite") : t("timeline.schoolSite")}
+                    <ExternalLink class="size-4" />
+                  </a>
+                )}
+                <form method="dialog">
+                  <button class="btn">{t("timeline.close")}</button>
+                </form>
+              </div>
+            </div>
+            <form method="dialog" class="modal-backdrop">
+              <button>close</button>
+            </form>
+          </dialog>
+        ))}
+      </>
+    ) : (
+      <ul class="list bg-base-100 rounded-box border border-base-200 shadow-sm">
+        {entriesWithContent.map(({ entry, Content }, index) => (
+          <li class="border-b hover:opacity-85 transition-opacity border-base-300 last:border-b-0">
+            <details class="collapse">
+              <summary class="collapse-title pe-2 sm:pe-5">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 w-full">
+                  <div class="flex items-center gap-3 sm:gap-4 flex-1">
+                    {entry.data.logo && (
+                      <div class="avatar shrink-0">
+                        <div class="w-10 mask mask-squircle">
+                          <Image src={entry.data.logo} alt={entry.data.title} inferSize={true} />
                         </div>
                       </div>
-                      <div class="card-actions justify-end mt-2">
-                        <button
-                          class="btn btn-ghost btn-sm"
-                          onclick={`document.getElementById('modal-${entry.id}').showModal()`}
-                        >
-                          続きを読む
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {index < entriesWithContent.length - 1 && (
-                  <hr class="bg-base-100" />
-                )}
-              </li>
-            ))}
-          </ul>
-
-          {/* Modals for timeline entries */}
-          {entriesWithContent.map(({ entry, Content }) => (
-            <dialog id={`modal-${entry.id}`} class="modal">
-              <div class="modal-box max-w-2xl">
-                {/* Modal Header */}
-                <div class="flex items-center gap-4 mb-4">
-                  {entry.data.logo && (
-                    <div class="avatar">
-                      <div class="w-16 mask mask-squircle">
-                        <Image
-                          src={entry.data.logo}
-                          alt={entry.data.title}
-                          inferSize={true}
-                        />
-                      </div>
-                    </div>
-                  )}
-                  <div>
-                    <h3 class="font-bold text-xl">{entry.data.title}</h3>
-                    <p style={`color: var(--color-${color})`} class="font-semibold">
-                      {entry.data.subtitle}
-                    </p>
-                    {"location" in entry.data && entry.data.location && (
-                      <p class="text-sm text-base-content/60">
-                        {entry.data.location}
-                      </p>
                     )}
-                    <p class="text-sm text-base-content/70 font-mono italic mt-1">
-                      {formatPeriod(entry.data.startDate, entry.data.endDate)}
-                      {calculateDuration(
-                        entry.data.startDate,
-                        entry.data.endDate,
-                      ) && (
-                        <span class="ml-1 text-base-content/50">
-                          {calculateDuration(
-                            entry.data.startDate,
-                            entry.data.endDate,
-                          )}
-                        </span>
-                      )}
-                    </p>
+                    <div class="min-w-0">
+                      <h3 class="font-bold text-lg leading-tight mb-1">{entry.data.title}</h3>
+                      <p style={`color: var(--color-${color})`} class="font-semibold text-sm">
+                        {entry.data.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="text-xs sm:text-sm text-base-content/70 font-mono sm:whitespace-nowrap shrink-0 pl-13 sm:pl-0">
+                    {formatPeriod(entry.data.startDate, entry.data.endDate)}
+                    {calculateDuration(entry.data.startDate, entry.data.endDate) && (
+                      <span class="ml-1 text-base-content/50">
+                        {calculateDuration(entry.data.startDate, entry.data.endDate)}
+                      </span>
+                    )}
                   </div>
                 </div>
-
-                {/* Skills */}
-                {"skills" in entry.data &&
-                  entry.data.skills &&
-                  entry.data.skills.length > 0 && (
-                    <div class="flex flex-wrap gap-2 mb-4">
-                      {(entry.data.skills as string[]).map((skill: string) => (
-                        <SkillBadge skill={skill} />
-                      ))}
-                    </div>
-                  )}
-
-                {/* Modal Content */}
-                <div class="prose prose-sm max-w-none text-base-content/80">
+              </summary>
+              <div class="collapse-content">
+                <div class="prose prose-sm max-w-none">
                   <Content />
                 </div>
-
-                {/* Modal Footer */}
-                <div class="modal-action">
-                  {entry.data.link && (
+                {entry.data.link && (
+                  <div class="flex justify-end">
                     <a
                       href={entry.data.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="btn btn-ghost gap-2"
+                      class="link link-hover"
                     >
-                      {collection === "work" ? "会社サイトを見る" : "学校サイトを見る"}
-                      <ExternalLink class="size-4" />
+                      {collection === "work" ? t("timeline.companySite") : t("timeline.schoolSite")}
                     </a>
-                  )}
-                  <form method="dialog">
-                    <button class="btn">閉じる</button>
-                  </form>
-                </div>
+                  </div>
+                )}
               </div>
-              <form method="dialog" class="modal-backdrop">
-                <button>close</button>
-              </form>
-            </dialog>
-          ))}
-        </>
-      ) : (
-        <ul class="list bg-base-100 rounded-box border border-base-200 shadow-sm">
-          {entriesWithContent.map(({ entry, Content }, index) => (
-            <li class="border-b hover:opacity-85 transition-opacity border-base-300 last:border-b-0">
-              <details class="collapse">
-                <summary class="collapse-title pe-2 sm:pe-5">
-                  <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 w-full">
-                    <div class="flex items-center gap-3 sm:gap-4 flex-1">
-                      {entry.data.logo && (
-                        <div class="avatar shrink-0">
-                          <div class="w-10 mask mask-squircle">
-                            <Image
-                              src={entry.data.logo}
-                              alt={entry.data.title}
-                              inferSize={true}
-                            />
-                          </div>
-                        </div>
-                      )}
+            </details>
+          </li>
+        ))}
+      </ul>
+    )}
 
-                      <div class="min-w-0">
-                        <h3 class="font-bold text-lg leading-tight mb-1">
-                          {entry.data.title}
-                        </h3>
-                        <p style={`color: var(--color-${color})`} class="font-semibold text-sm">
-                          {entry.data.subtitle}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div class="text-xs sm:text-sm text-base-content/70 font-mono sm:whitespace-nowrap shrink-0 pl-13 sm:pl-0">
-                      {formatPeriod(entry.data.startDate, entry.data.endDate)}
-                      {calculateDuration(
-                        entry.data.startDate,
-                        entry.data.endDate,
-                      ) && (
-                        <span class="ml-1 text-base-content/50">
-                          {calculateDuration(
-                            entry.data.startDate,
-                            entry.data.endDate,
-                          )}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </summary>
-
-                <div class="collapse-content">
-                  <div class="prose prose-sm max-w-none">
-                    <Content />
-                  </div>
-                  {entry.data.link && (
-                    <div class="flex justify-end">
-                      <a
-                        href={entry.data.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="link link-hover"
-                      >
-                        {collection === "work" ? "会社サイトを見る" : "学校サイトを見る"}
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </details>
-            </li>
-          ))}
-        </ul>
-      )
-    }
-
-    {
-      collection === "work" && variant === "timeline" && aboutLink && (
-        <div class="text-center mt-10">
-          <a
-            href={aboutLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-primary btn-outline"
-          >
-            職務経歴をもっと見る
-          </a>
-        </div>
-      )
-    }
+    {collection === "work" && variant === "timeline" && aboutLink && (
+      <div class="text-center mt-10">
+        <a
+          href={aboutLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-primary btn-outline"
+        >
+          {t("timeline.seeResume")}
+        </a>
+      </div>
+    )}
   </div>
 </section>

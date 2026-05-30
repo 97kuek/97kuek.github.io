@@ -28,10 +28,11 @@ const {
 
 const origin = Astro.url.origin;
 const ogImageUrl = ogImage ?? `${origin}/images/og_home.png`;
+const locale = Astro.currentLocale ?? "ja";
 ---
 
 <!doctype html>
-<html lang="ja" data-theme="light">
+<html lang={locale} data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -44,6 +45,9 @@ const ogImageUrl = ogImage ?? `${origin}/images/og_home.png`;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <link rel="canonical" href={Astro.url.href} />
+    <link rel="alternate" hreflang="ja" href={`${origin}/`} />
+    <link rel="alternate" hreflang="en" href={`${origin}/en/`} />
+    <link rel="alternate" hreflang="x-default" href={`${origin}/`} />
 
     <!-- Open Graph / Social Media -->
     <meta property="og:title" content={title} />

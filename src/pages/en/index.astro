@@ -1,0 +1,81 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Hero from "../../components/Hero.astro";
+import About from "../../components/About.astro";
+import Timeline from "../../components/Timeline.astro";
+import Projects from "../../components/Projects.astro";
+import Contact from "../../components/Contact.astro";
+import { Briefcase, GraduationCap } from "@lucide/astro";
+import { getEntry, render } from "astro:content";
+
+// English content entries (ID is the filename without extension)
+const heroEntry = (await getEntry("hero", "en" as any))!;
+const aboutEntry = (await getEntry("about", "en" as any))!;
+const { Content: AboutContent } = await render(aboutEntry);
+
+// General settings (same for both locales)
+const generalEntry = (await getEntry("general", "index"))!;
+const general = generalEntry.data;
+
+const sameAs = heroEntry.data.socialLinks
+  .filter((l: { url: string }) => !l.url.startsWith("mailto:"))
+  .map((l: { url: string }) => l.url);
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: heroEntry.data.name,
+  url: Astro.url.origin,
+  sameAs: sameAs,
+  description: heroEntry.data.description.trim(),
+};
+---
+
+<Layout
+  title={`${heroEntry.data.name} - Portfolio`}
+  description={heroEntry.data.description}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  </Fragment>
+  <main class="bg-base-200">
+    <Hero hero={heroEntry.data} />
+
+    <div>
+      {general.showAboutSection && (
+        <About
+          title={aboutEntry.data.title}
+          photo={aboutEntry.data.photo}
+          Content={AboutContent}
+          link={aboutEntry.data.link}
+        />
+      )}
+
+      {general.showProjectsSection && <Projects />}
+
+      {/* Blog is Japanese-only — not shown on English page */}
+
+      {general.showWorkSection && (
+        <Timeline
+          collection="work"
+          variant="timeline"
+          color="primary"
+          icon={Briefcase}
+          sectionTitle="Work Experience"
+        />
+      )}
+
+      {general.showEducationSection && (
+        <Timeline
+          collection="education"
+          variant="list"
+          color="primary"
+          icon={GraduationCap}
+          sectionTitle="Education"
+        />
+      )}
+
+      {general.showContactSection && <Contact />}
+    </div>
+  </main>
+</Layout>
