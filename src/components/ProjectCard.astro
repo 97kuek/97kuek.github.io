@@ -5,12 +5,22 @@ import OgPlaceholder from "./OgPlaceholder.astro";
 import { ExternalLink } from "@lucide/astro";
 import type { CollectionEntry } from "astro:content";
 import { formatPeriod } from "../utils/formatDate";
+import { useTranslations, type Lang } from "../i18n/ui";
 
 interface Props {
   project: CollectionEntry<"projects">;
 }
 
 const { project } = Astro.props;
+const locale = (Astro.currentLocale ?? "ja") as Lang;
+const displayTitle =
+  locale === "en" && project.data.title_en
+    ? project.data.title_en
+    : project.data.title;
+const displayDescription =
+  locale === "en" && project.data.description_en
+    ? project.data.description_en
+    : project.data.description;
 ---
 
 <article
@@ -27,7 +37,7 @@ const { project } = Astro.props;
         height={400}
       />
     ) : (
-      <OgPlaceholder id={project.id} title={project.data.title} tags={project.data.skills} showText={false} />
+      <OgPlaceholder id={project.id} title={displayTitle} tags={project.data.skills} showText={false} />
     )}
   </figure>
   <div class="card-body">
@@ -35,12 +45,12 @@ const { project } = Astro.props;
       <a
         href={`${import.meta.env.BASE_URL}projects/${project.id}`}
         class="after:absolute after:inset-0 after:content-[''] hover:text-primary transition-colors"
-      >{project.data.title}</a>
+      >{displayTitle}</a>
     </h3>
     <time class="text-sm text-base-content/60">
       {formatPeriod(project.data.startDate, project.data.endDate)}
     </time>
-    <p class="text-base-content/80">{project.data.description}</p>
+    <p class="text-base-content/80">{displayDescription}</p>
     <div class="flex flex-wrap gap-2 mt-2">
       {
         project.data.skills.map((skill) => (

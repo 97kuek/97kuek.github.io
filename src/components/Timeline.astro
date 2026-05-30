@@ -31,18 +31,15 @@ const IconComponent = icon;
 const locale = (Astro.currentLocale ?? "ja") as Lang;
 const t = useTranslations(locale);
 
-// Locale-specific filtering: English entries have -en suffix
 const allEntries = await getCollection(collection);
 const entries = allEntries.filter((entry) =>
   locale === "en" ? entry.id.endsWith("-en") : !entry.id.endsWith("-en")
 );
 
-// Load about content to get the link (for work section button)
 const aboutId = locale === "en" ? "en" : "index";
 const aboutEntry = (await getEntry("about", aboutId as any))!;
 const aboutLink = aboutEntry?.data?.link;
 
-// Sort by start date, most recent first
 const sortedEntries = entries.sort(
   (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime()
 );
@@ -54,35 +51,29 @@ function formatPeriod(startDate: Date, endDate?: Date) {
   const end = endDate
     ? endDate.toLocaleDateString(dateLocale, options)
     : t("timeline.present");
-  return `${start} - ${end}`;
+  return `${start} – ${end}`;
 }
 
 function calculateDuration(startDate: Date, endDate?: Date): string | null {
   if (!endDate) return null;
-
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-
   const totalMonths =
-    (end.getFullYear() - start.getFullYear()) * 12 +
-    (end.getMonth() - start.getMonth()) +
+    (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+    (endDate.getMonth() - startDate.getMonth()) +
     1;
-
   const years = Math.floor(totalMonths / 12);
   const months = totalMonths % 12;
-
   const mo = t("timeline.months");
   const yr = t("timeline.years");
-
   if (years === 0) return `(${months}${mo})`;
-  else if (months === 0) return `(${years}${yr})`;
-  else return `(${years}${yr}${months}${mo})`;
+  if (months === 0) return `(${years}${yr})`;
+  return `(${years}${yr}${months}${mo})`;
 }
 
 const entriesWithContent = await Promise.all(
   sortedEntries.map(async (entry) => {
     const { Content } = await render(entry);
-    return { entry, Content };
+    const duration = calculateDuration(entry.data.startDate, entry.data.endDate);
+    return { entry, Content, duration };
   })
 );
 
@@ -125,127 +116,80 @@ const containerId = `${collection}-items`;
     )}
 
     {variant === "timeline" ? (
-      <>
-        <ul class="timeline timeline-vertical timeline-snap-icon timeline-compact" id={containerId}>
-          {entriesWithContent.map(({ entry, Content }, index) => (
-            <li data-filter-tags={(collection === "work" ? ((entry as CollectionEntry<"work">).data.skills || []) : []).join(",")}>
-              {index > 0 && <hr class="bg-base-100" />}
-              <div class="timeline-middle">
-                <IconComponent class="size-5 mx-3 my-1" style={`color: var(--color-${color})`} />
-              </div>
-              <div class="timeline-end max-w-lg pt-3 mb-10">
-                <time class="font-mono text-sm text-base-content/70 block italic">
-                  {formatPeriod(entry.data.startDate, entry.data.endDate)}
-                  {calculateDuration(entry.data.startDate, entry.data.endDate) && (
-                    <span class="ml-1 text-base-content/50">
-                      {calculateDuration(entry.data.startDate, entry.data.endDate)}
-                    </span>
-                  )}
-                </time>
-                <div class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 mt-2">
-                  <div class="card-body">
-                    <div class="flex items-center gap-4">
-                      {entry.data.logo && (
-                        <div class="avatar">
-                          <div class="w-12 mask mask-squircle">
-                            <Image src={entry.data.logo} alt={entry.data.title} inferSize={true} />
-                          </div>
+      <ul class="timeline timeline-vertical timeline-snap-icon timeline-compact" id={containerId}>
+        {entriesWithContent.map(({ entry, Content, duration }, index) => (
+          <li data-filter-tags={(collection === "work" ? ((entry as CollectionEntry<"work">).data.skills || []) : []).join(",")}>
+            {index > 0 && <hr class="bg-base-100" />}
+            <div class="timeline-middle">
+              <IconComponent class="size-5 mx-3 my-1" style={`color: var(--color-${color})`} />
+            </div>
+            <div class="timeline-end max-w-lg pt-3 mb-10">
+              <time class="font-mono text-sm text-base-content/70 block italic">
+                {formatPeriod(entry.data.startDate, entry.data.endDate)}
+                {duration && <span class="ml-1 text-base-content/50">{duration}</span>}
+              </time>
+              <div class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 mt-2">
+                <div class="card-body gap-3">
+                  <!-- Header: logo + info + link -->
+                  <div class="flex items-start gap-3">
+                    {entry.data.logo && (
+                      <div class="avatar shrink-0">
+                        <div class="w-11 mask mask-squircle">
+                          <Image src={entry.data.logo} alt={entry.data.title} inferSize={true} />
                         </div>
-                      )}
-                      <div class="flex-1">
-                        <h3 class="card-title">{entry.data.title}</h3>
-                        <p class="font-semibold" style={`color: var(--color-${color})`}>
-                          {entry.data.subtitle}
-                        </p>
-                        {"location" in entry.data && entry.data.location && (
-                          <p class="text-sm text-base-content/60">{entry.data.location}</p>
+                      </div>
+                    )}
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-start justify-between gap-2">
+                        <div>
+                          <h3 class="font-bold text-base leading-snug">{entry.data.title}</h3>
+                          <p class="font-semibold text-sm mt-0.5" style={`color: var(--color-${color})`}>
+                            {entry.data.subtitle}
+                          </p>
+                          {"location" in entry.data && entry.data.location && (
+                            <p class="text-xs text-base-content/50 mt-0.5">{entry.data.location}</p>
+                          )}
+                        </div>
+                        {entry.data.link && (
+                          <a
+                            href={entry.data.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn btn-ghost btn-xs gap-1 shrink-0 mt-0.5"
+                          >
+                            <ExternalLink class="size-3" />
+                            <span class="hidden sm:inline text-xs">
+                              {collection === "work" ? t("timeline.companySite") : t("timeline.schoolSite")}
+                            </span>
+                          </a>
                         )}
                       </div>
                     </div>
-                    <div class="card-actions justify-end mt-2">
-                      <button
-                        class="btn btn-ghost btn-sm"
-                        onclick={`document.getElementById('modal-${entry.id}').showModal()`}
-                      >
-                        {t("timeline.readMore")}
-                      </button>
-                    </div>
                   </div>
-                </div>
-              </div>
-              {index < entriesWithContent.length - 1 && <hr class="bg-base-100" />}
-            </li>
-          ))}
-        </ul>
 
-        {entriesWithContent.map(({ entry, Content }) => (
-          <dialog id={`modal-${entry.id}`} class="modal">
-            <div class="modal-box max-w-2xl">
-              <div class="flex items-center gap-4 mb-4">
-                {entry.data.logo && (
-                  <div class="avatar">
-                    <div class="w-16 mask mask-squircle">
-                      <Image src={entry.data.logo} alt={entry.data.title} inferSize={true} />
+                  <!-- Skills -->
+                  {"skills" in entry.data && entry.data.skills && entry.data.skills.length > 0 && (
+                    <div class="flex flex-wrap gap-1.5">
+                      {(entry.data.skills as string[]).map((skill: string) => (
+                        <SkillBadge skill={skill} />
+                      ))}
                     </div>
-                  </div>
-                )}
-                <div>
-                  <h3 class="font-bold text-xl">{entry.data.title}</h3>
-                  <p style={`color: var(--color-${color})`} class="font-semibold">
-                    {entry.data.subtitle}
-                  </p>
-                  {"location" in entry.data && entry.data.location && (
-                    <p class="text-sm text-base-content/60">{entry.data.location}</p>
                   )}
-                  <p class="text-sm text-base-content/70 font-mono italic mt-1">
-                    {formatPeriod(entry.data.startDate, entry.data.endDate)}
-                    {calculateDuration(entry.data.startDate, entry.data.endDate) && (
-                      <span class="ml-1 text-base-content/50">
-                        {calculateDuration(entry.data.startDate, entry.data.endDate)}
-                      </span>
-                    )}
-                  </p>
+
+                  <!-- Content -->
+                  <div class="prose prose-sm max-w-none text-base-content/80">
+                    <Content />
+                  </div>
                 </div>
-              </div>
-
-              {"skills" in entry.data && entry.data.skills && entry.data.skills.length > 0 && (
-                <div class="flex flex-wrap gap-2 mb-4">
-                  {(entry.data.skills as string[]).map((skill: string) => (
-                    <SkillBadge skill={skill} />
-                  ))}
-                </div>
-              )}
-
-              <div class="prose prose-sm max-w-none text-base-content/80">
-                <Content />
-              </div>
-
-              <div class="modal-action">
-                {entry.data.link && (
-                  <a
-                    href={entry.data.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn btn-ghost gap-2"
-                  >
-                    {collection === "work" ? t("timeline.companySite") : t("timeline.schoolSite")}
-                    <ExternalLink class="size-4" />
-                  </a>
-                )}
-                <form method="dialog">
-                  <button class="btn">{t("timeline.close")}</button>
-                </form>
               </div>
             </div>
-            <form method="dialog" class="modal-backdrop">
-              <button>close</button>
-            </form>
-          </dialog>
+            {index < entriesWithContent.length - 1 && <hr class="bg-base-100" />}
+          </li>
         ))}
-      </>
+      </ul>
     ) : (
       <ul class="list bg-base-100 rounded-box border border-base-200 shadow-sm">
-        {entriesWithContent.map(({ entry, Content }, index) => (
+        {entriesWithContent.map(({ entry, Content, duration }) => (
           <li class="border-b hover:opacity-85 transition-opacity border-base-300 last:border-b-0">
             <details class="collapse">
               <summary class="collapse-title pe-2 sm:pe-5">
@@ -267,11 +211,7 @@ const containerId = `${collection}-items`;
                   </div>
                   <div class="text-xs sm:text-sm text-base-content/70 font-mono sm:whitespace-nowrap shrink-0 pl-13 sm:pl-0">
                     {formatPeriod(entry.data.startDate, entry.data.endDate)}
-                    {calculateDuration(entry.data.startDate, entry.data.endDate) && (
-                      <span class="ml-1 text-base-content/50">
-                        {calculateDuration(entry.data.startDate, entry.data.endDate)}
-                      </span>
-                    )}
+                    {duration && <span class="ml-1 text-base-content/50">{duration}</span>}
                   </div>
                 </div>
               </summary>
@@ -280,12 +220,12 @@ const containerId = `${collection}-items`;
                   <Content />
                 </div>
                 {entry.data.link && (
-                  <div class="flex justify-end">
+                  <div class="flex justify-end mt-2">
                     <a
                       href={entry.data.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="link link-hover"
+                      class="link link-hover text-sm"
                     >
                       {collection === "work" ? t("timeline.companySite") : t("timeline.schoolSite")}
                     </a>
