@@ -33,7 +33,7 @@ class="card bg-base-100 border border-base-200 hover:border-primary/20 transitio
 pill バッジ・グラデーション下線禁止。統一パターン:
 
 ```html
-<p class="text-sm font-bold tracking-widest text-primary uppercase mb-3">SECTION NAME</p>
+<p class="text-base font-bold tracking-widest text-primary uppercase mb-3">SECTION NAME</p>
 <p class="text-base text-base-content/60">サブテキスト（任意）</p>
 ```
 

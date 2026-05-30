@@ -7,6 +7,7 @@ const hero = defineCollection({
   schema: ({ image }) =>
     z.object({
       name: z.string(),
+      alternateName: z.string().optional(),
       title: z.string(),
       description: z.string(),
       avatar: image(),

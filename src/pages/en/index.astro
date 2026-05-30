@@ -25,6 +25,7 @@ const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: heroEntry.data.name,
+  ...(heroEntry.data.alternateName ? { alternateName: heroEntry.data.alternateName } : {}),
   url: Astro.url.origin,
   sameAs: sameAs,
   description: heroEntry.data.description.trim(),
