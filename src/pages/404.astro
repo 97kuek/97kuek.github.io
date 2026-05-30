@@ -1,56 +1,75 @@
-﻿---
+---
 import Layout from "../layouts/Layout.astro";
 import { House, FolderOpen } from "@lucide/astro";
 ---
 
-<Layout
-  title="404 - ページが見つかりません | 97kuek"
-  description="お探しのページは存在しません。"
->
+<Layout>
   <div class="min-h-screen flex items-center justify-center px-4 py-20">
     <div class="text-center max-w-2xl mx-auto">
-      <!-- Large 404 Number -->
       <h1 class="text-9xl font-bold text-primary mb-4 animate-bounce">404</h1>
 
-      <!-- Error Title -->
-      <h2 class="text-4xl font-bold mb-4">ページが見つかりません</h2>
-
-      <!-- Error Description -->
-      <p class="text-xl mb-8 text-base-content/70">
-        お探しのページは存在しないか、移動した可能性があります。
-      </p>
-
-      <!-- Divider -->
-      <div class="divider"></div>
-
-      <!-- Action Buttons -->
-      <div class="flex gap-4 justify-center flex-wrap mt-8">
-        <a href={import.meta.env.BASE_URL} class="btn btn-primary gap-2">
-          <House class="size-5" />
-          ホームに戻る
-        </a>
-        <a
-          href={`${import.meta.env.BASE_URL}/#projects`}
-          class="btn btn-outline gap-2"
-        >
-          <FolderOpen class="size-5" />
-          プロジェクトを見る
-        </a>
+      <!-- Japanese (default) -->
+      <div id="content-ja">
+        <h2 class="text-4xl font-bold mb-4">ページが見つかりません</h2>
+        <p class="text-xl mb-8 text-base-content/70">
+          お探しのページは存在しないか、移動した可能性があります。
+        </p>
+        <div class="divider"></div>
+        <div class="flex gap-4 justify-center flex-wrap mt-8">
+          <a href={import.meta.env.BASE_URL} class="btn btn-primary gap-2">
+            <House class="size-5" />
+            ホームに戻る
+          </a>
+          <a href={`${import.meta.env.BASE_URL}#projects`} class="btn btn-outline gap-2">
+            <FolderOpen class="size-5" />
+            プロジェクトを見る
+          </a>
+        </div>
+        <div class="flex flex-col items-center gap-3 mt-12">
+          <p class="text-sm text-base-content/60">こちらのリンクもお探しですか？</p>
+          <div class="flex gap-3 justify-center flex-wrap text-sm">
+            <a href={`${import.meta.env.BASE_URL}blog`} class="link link-hover">ブログ</a>
+            <span class="text-base-content/30">&bull;</span>
+            <a href={`${import.meta.env.BASE_URL}#about`} class="link link-hover">プロフィール</a>
+            <span class="text-base-content/30">&bull;</span>
+            <a href={`${import.meta.env.BASE_URL}#contact`} class="link link-hover">お問い合わせ</a>
+          </div>
+        </div>
       </div>
 
-      <!-- Helpful Links -->
-      <div class="flex flex-col items-center gap-3 mt-12">
-        <p class="text-sm text-base-content/60">
-          こちらのリンクもお探しですか？
+      <!-- English -->
+      <div id="content-en" class="hidden">
+        <h2 class="text-4xl font-bold mb-4">Page Not Found</h2>
+        <p class="text-xl mb-8 text-base-content/70">
+          The page you are looking for does not exist or has been moved.
         </p>
-        <div class="flex gap-3 justify-center flex-wrap text-sm">
-          <a href={`${import.meta.env.BASE_URL}blog`} class="link link-hover">ブログ</a>
-          <span class="text-base-content/30">&bull;</span>
-          <a href={`${import.meta.env.BASE_URL}#about`} class="link link-hover">プロフィール</a>
-          <span class="text-base-content/30">&bull;</span>
-          <a href={`${import.meta.env.BASE_URL}#contact`} class="link link-hover">お問い合わせ</a>
+        <div class="divider"></div>
+        <div class="flex gap-4 justify-center flex-wrap mt-8">
+          <a href="/en/" class="btn btn-primary gap-2">
+            <House class="size-5" />
+            Back to Home
+          </a>
+          <a href="/en/#projects" class="btn btn-outline gap-2">
+            <FolderOpen class="size-5" />
+            See Projects
+          </a>
+        </div>
+        <div class="flex flex-col items-center gap-3 mt-12">
+          <p class="text-sm text-base-content/60">Looking for something else?</p>
+          <div class="flex gap-3 justify-center flex-wrap text-sm">
+            <a href="/en/#about" class="link link-hover">About</a>
+            <span class="text-base-content/30">&bull;</span>
+            <a href="/en/#contact" class="link link-hover">Contact</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </Layout>
+
+<script is:inline>
+  if (window.location.pathname.startsWith('/en')) {
+    document.getElementById('content-ja').classList.add('hidden');
+    document.getElementById('content-en').classList.remove('hidden');
+  }
+</script>

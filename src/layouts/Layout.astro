@@ -18,9 +18,15 @@ interface Props {
   ogImageHeight?: number;
 }
 
+const isEn = (Astro.currentLocale ?? "ja") === "en";
+const defaultTitle = isEn ? "Keitaro Ueki - Portfolio" : "植木敬太郎 - Portfolio";
+const defaultDescription = isEn
+  ? "Portfolio of Keitaro Ueki (植木敬太郎), software engineering student at Waseda University."
+  : "植木敬太郎（Keitaro Ueki）のポートフォリオ。早稲田大学基幹理工学部在籍。プロジェクトや技術ブログを公開中。";
+
 const {
-  title = "97kuek - Portfolio",
-  description = "A modern portfolio template built with Astro and DaisyUI",
+  title = defaultTitle,
+  description = defaultDescription,
   ogImage,
   ogImageWidth,
   ogImageHeight,

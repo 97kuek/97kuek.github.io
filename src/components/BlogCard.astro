@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import OgPlaceholder from "./OgPlaceholder.astro";
 import { formatDate } from "../utils/formatDate";
+import { useTranslations, type Lang } from "../i18n/ui";
 
 interface Props {
   post: CollectionEntry<"blog">;
@@ -10,10 +11,13 @@ interface Props {
 
 const { post } = Astro.props;
 
+const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
+
 const body = post.body ?? '';
 const japaneseChars = (body.match(/[　-鿿＀-￯]/g) ?? []).length;
 const englishWords = (body.match(/[a-zA-Z]+/g) ?? []).length;
 const readingTime = Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 200));
+const readingTimeLabel = t("blog.readingTime").replace("{n}", String(readingTime));
 ---
 
 <a
@@ -34,7 +38,7 @@ const readingTime = Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 2
       </h3>
       <div class="flex items-center gap-3 text-xs text-base-content/60">
         <time>{formatDate(post.data.publishDate)}</time>
-        <span>約{readingTime}分</span>
+        <span>{readingTimeLabel}</span>
       </div>
       <p class="text-base-content/70 text-sm line-clamp-2">{post.data.description}</p>
       {

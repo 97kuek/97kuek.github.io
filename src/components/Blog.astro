@@ -2,6 +2,9 @@
 import { getCollection } from "astro:content";
 import BlogCard from "./BlogCard.astro";
 import { ArrowRight } from "@lucide/astro";
+import { useTranslations, type Lang } from "../i18n/ui";
+
+const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 
 const blogEntries = await getCollection("blog");
 
@@ -17,7 +20,7 @@ const latestPosts = sortedPosts.slice(0, 3);
     <div class="text-center mb-14">
       <p class="text-base font-bold tracking-widest text-primary uppercase mb-3">BLOG</p>
       <p class="text-lg text-base-content/60">
-        技術的な知見や開発の裏側、日々の学びを記録しています。
+        {t("blog.subtitle")}
       </p>
     </div>
 
@@ -27,7 +30,7 @@ const latestPosts = sortedPosts.slice(0, 3);
 
     <div class="text-center mt-12">
       <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary btn-outline gap-2">
-        すべての記事を見る
+        {t("blog.seeAll")}
         <ArrowRight class="size-4" />
       </a>
     </div>

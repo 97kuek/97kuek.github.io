@@ -1,0 +1,53 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout
+  title="Search - Keitaro Ueki"
+  description="Search blog posts and projects"
+>
+  <Fragment slot="head">
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  </Fragment>
+
+  <main class="max-w-3xl mx-auto px-4 py-20">
+    <div class="text-center mb-12">
+      <p class="text-base font-bold tracking-widest text-primary uppercase mb-3">SEARCH</p>
+      <h1 class="text-3xl font-bold mb-4">Search</h1>
+      <p class="text-base text-base-content/60">Search blog posts and projects</p>
+    </div>
+
+    <div id="search"></div>
+  </main>
+</Layout>
+
+<style>
+  #search {
+    --pagefind-ui-primary: #4a5568;
+    --pagefind-ui-font: inherit;
+    --pagefind-ui-border-radius: 0.5rem;
+    --pagefind-ui-border-width: 1px;
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function () {
+    var script = document.createElement('script');
+    script.src = '/pagefind/pagefind-ui.js';
+    script.onload = function () {
+      new PagefindUI({
+        element: '#search',
+        showImages: false,
+        showEmptyFilters: false,
+      });
+    };
+    script.onerror = function () {
+      var el = document.getElementById('search');
+      if (el) {
+        el.innerHTML =
+          '<p style="text-align:center;color:#718096;padding:3rem 0">Search is not available in development.<br><code style="font-size:0.875rem">npm run build &amp;&amp; npm run preview</code></p>';
+      }
+    };
+    document.head.appendChild(script);
+  });
+</script>
