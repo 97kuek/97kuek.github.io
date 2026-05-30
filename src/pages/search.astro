@@ -31,7 +31,8 @@ import Layout from "../layouts/Layout.astro";
 </style>
 
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('astro:page-load', function () {
+    if (!document.getElementById('search')) return;
     var script = document.createElement('script');
     script.src = '/pagefind/pagefind-ui.js';
     script.onload = function () {

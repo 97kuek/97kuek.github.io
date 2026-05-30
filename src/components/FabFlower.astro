@@ -17,14 +17,14 @@ const { extraLinks } = Astro.props;
 <div class="fab fab-flower hidden lg:grid">
   <!-- a focusable div with tabindex is necessary to work on all browsers. role="button" is necessary for accessibility -->
   <div class="tooltip tooltip-top" data-tip="More links">
-    <div tabindex="0" role="button" class="btn btn-lg btn-accent btn-circle">
+    <div tabindex="0" role="button" aria-label="その他のリンクを開く" class="btn btn-lg btn-accent btn-circle">
       <Link class="size-6" />
     </div>
   </div>
 
   <!-- Main Action button replaces the original button when FAB is open -->
   <div class="fab-close">
-    <span class="btn btn-circle btn-lg btn-ghost">✕</span>
+    <button class="btn btn-circle btn-lg btn-ghost" aria-label="閉じる">✕</button>
   </div>
 
   <!-- buttons that show up when FAB is open -->

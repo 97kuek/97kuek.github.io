@@ -13,7 +13,7 @@ interface Props {
 const { extraLinks } = Astro.props;
 ---
 
-<div class="dock dock-lg bg-neutral text-neutral-content lg:hidden z-50">
+<div class="dock dock-lg bg-neutral text-neutral-content lg:hidden z-50" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom))">
   {
     extraLinks.map((link) => {
       const IconComponent = getIcon(link.icon);
