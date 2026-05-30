@@ -6,7 +6,7 @@
 
 | ファイル | 役割 |
 | --- | --- |
-| `layouts/Layout.astro` | 全ページ共通（head・OGP・JSON-LD・Navbar） |
+| `layouts/Layout.astro` | 全ページ共通（head・OGP・JSON-LD・hreflang・Navbar） |
 | `layouts/BlogLayout.astro` | ブログ記事ページ（TOC・読了時間・前後ナビ・関連記事） |
 | `layouts/ProjectLayout.astro` | プロジェクト詳細ページ（期間・スキル・前後ナビ） |
 
@@ -17,19 +17,19 @@
 | `Hero.astro` | ヒーローセクション（名前・肩書き・SNS リンク） |
 | `About.astro` | 自己紹介セクション |
 | `Projects.astro` | プロジェクト一覧（`featured: true` のみ） |
-| `Blog.astro` | ブログ一覧（最新3件） |
-| `Timeline.astro` | 職務経歴・学歴タイムライン（`collection` prop で切り替え） |
+| `Blog.astro` | ブログ一覧（最新3件、日本語ページのみ表示） |
+| `Timeline.astro` | 職務経歴・学歴タイムライン（`collection` prop で切り替え、コンテンツをカード内に直接表示） |
 | `Hackathons.astro` | ハッカソン一覧 |
-| `Contact.astro` | 連絡先セクション |
+| `Contact.astro` | 連絡先セクション（ロケール別エントリを自動読み込み） |
 
 ## ナビゲーション
 
 | コンポーネント | 役割 |
 | --- | --- |
-| `Navbar.astro` | 固定ヘッダー（スクロールで shadow 強化・検索ボタン） |
+| `Navbar.astro` | 固定ヘッダー（言語トグル JA/EN・検索ボタン・スクロール連動スタイル） |
 | `FabFlower.astro` | デスクトップ用フローティングメニュー |
 | `Dock.astro` | モバイル用ドック型ナビ |
-| `BackToTop.astro` | トップへ戻るボタン |
+| `BackToTop.astro` | トップへ戻るボタン（長押しで目次ポップアップ） |
 | `PrevNextNav.astro` | 前後記事ナビゲーション |
 
 ## 記事ページ
@@ -46,9 +46,9 @@
 | コンポーネント | 役割 |
 | --- | --- |
 | `BlogCard.astro` | ブログ記事カード（`<a>` ラップ、カード全体がリンク） |
-| `ProjectCard.astro` | プロジェクトカード（stretched-link） |
+| `ProjectCard.astro` | プロジェクトカード（stretched-link、ロケール別 `title_en`/`description_en` 対応） |
 | `SkillBadge.astro` | スキル・タグのバッジ（リンク付き） |
-| `FilterSection.astro` | タグフィルター（AND 絞り込み、URL パラメータ同期） |
+| `FilterSection.astro` | タグフィルター（AND 絞り込み、URL パラメータ同期、i18n 対応） |
 | `ImageLightbox.astro` | 画像クリックで拡大表示 |
 | `OgPlaceholder.astro` | 画像なし記事の SVG プレースホルダー（Primary カラー固定） |
 

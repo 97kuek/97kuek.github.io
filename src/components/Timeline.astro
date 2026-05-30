@@ -6,6 +6,7 @@ import { ExternalLink } from "@lucide/astro";
 import SkillBadge from "./SkillBadge.astro";
 import FilterSection from "./FilterSection.astro";
 import { useTranslations, type Lang } from "../i18n/ui";
+import { formatPeriod, calculateDuration } from "../utils/formatDate";
 
 interface Props {
   collection: "work" | "education";
@@ -44,36 +45,17 @@ const sortedEntries = entries.sort(
   (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime()
 );
 
-function formatPeriod(startDate: Date, endDate?: Date) {
-  const dateLocale = t("timeline.dateLocale");
-  const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" };
-  const start = startDate.toLocaleDateString(dateLocale, options);
-  const end = endDate
-    ? endDate.toLocaleDateString(dateLocale, options)
-    : t("timeline.present");
-  return `${start} – ${end}`;
-}
-
-function calculateDuration(startDate: Date, endDate?: Date): string | null {
-  if (!endDate) return null;
-  const totalMonths =
-    (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-    (endDate.getMonth() - startDate.getMonth()) +
-    1;
-  const years = Math.floor(totalMonths / 12);
-  const months = totalMonths % 12;
-  const mo = t("timeline.months");
-  const yr = t("timeline.years");
-  if (years === 0) return `(${months}${mo})`;
-  if (months === 0) return `(${years}${yr})`;
-  return `(${years}${yr}${months}${mo})`;
-}
+const dateLocale = t("timeline.dateLocale");
+const presentText = t("timeline.present");
+const monthsLabel = t("timeline.months");
+const yearsLabel = t("timeline.years");
 
 const entriesWithContent = await Promise.all(
   sortedEntries.map(async (entry) => {
     const { Content } = await render(entry);
-    const duration = calculateDuration(entry.data.startDate, entry.data.endDate);
-    return { entry, Content, duration };
+    const period = formatPeriod(entry.data.startDate, entry.data.endDate, dateLocale, presentText);
+    const duration = calculateDuration(entry.data.startDate, entry.data.endDate, monthsLabel, yearsLabel);
+    return { entry, Content, period, duration };
   })
 );
 
@@ -117,7 +99,7 @@ const containerId = `${collection}-items`;
 
     {variant === "timeline" ? (
       <ul class="timeline timeline-vertical timeline-snap-icon timeline-compact" id={containerId}>
-        {entriesWithContent.map(({ entry, Content, duration }, index) => (
+        {entriesWithContent.map(({ entry, Content, period, duration }, index) => (
           <li data-filter-tags={(collection === "work" ? ((entry as CollectionEntry<"work">).data.skills || []) : []).join(",")}>
             {index > 0 && <hr class="bg-base-100" />}
             <div class="timeline-middle">
@@ -125,7 +107,7 @@ const containerId = `${collection}-items`;
             </div>
             <div class="timeline-end max-w-lg pt-3 mb-10">
               <time class="font-mono text-sm text-base-content/70 block italic">
-                {formatPeriod(entry.data.startDate, entry.data.endDate)}
+                {period}
                 {duration && <span class="ml-1 text-base-content/50">{duration}</span>}
               </time>
               <div class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 mt-2">
@@ -189,7 +171,7 @@ const containerId = `${collection}-items`;
       </ul>
     ) : (
       <ul class="list bg-base-100 rounded-box border border-base-200 shadow-sm">
-        {entriesWithContent.map(({ entry, Content, duration }) => (
+        {entriesWithContent.map(({ entry, Content, period, duration }) => (
           <li class="border-b hover:opacity-85 transition-opacity border-base-300 last:border-b-0">
             <details class="collapse">
               <summary class="collapse-title pe-2 sm:pe-5">
@@ -210,7 +192,7 @@ const containerId = `${collection}-items`;
                     </div>
                   </div>
                   <div class="text-xs sm:text-sm text-base-content/70 font-mono sm:whitespace-nowrap shrink-0 pl-13 sm:pl-0">
-                    {formatPeriod(entry.data.startDate, entry.data.endDate)}
+                    {period}
                     {duration && <span class="ml-1 text-base-content/50">{duration}</span>}
                   </div>
                 </div>

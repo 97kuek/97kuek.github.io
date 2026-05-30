@@ -1,4 +1,6 @@
 ---
+import { useTranslations, type Lang } from "../i18n/ui";
+
 interface Props {
   tags: string[];
   containerId: string;
@@ -7,10 +9,15 @@ interface Props {
 }
 
 const { tags, containerId, tagCounts, totalCount } = Astro.props;
+const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
+
+const noResultsMsg = t("filter.noResults");
+const resetLabel = t("filter.reset");
+const itemsSuffix = t("filter.items");
 ---
 
 <div class="mb-8" id={`filter-section-${containerId}`}>
-  <button 
+  <button
     id={`filter-toggle-${containerId}`}
     class="flex items-center justify-between w-full mb-4 px-2 py-1 group hover:bg-base-200/50 rounded-lg transition-colors duration-200"
     aria-expanded="false"
@@ -22,16 +29,16 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
       </svg>
       <span class="font-bold text-sm tracking-wide uppercase">Tags</span>
     </div>
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width="18" 
-      height="18" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      stroke-width="2" 
-      stroke-linecap="round" 
-      stroke-linejoin="round" 
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
       class="chevron transition-transform duration-300 -rotate-90"
     >
       <polyline points="6 9 12 15 18 9"></polyline>
@@ -61,41 +68,41 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
 
   <div class="flex items-center justify-between px-2 text-sm text-base-content/60">
     <div id={`results-count-${containerId}`}>
-      {totalCount !== undefined ? `${totalCount}件` : ''}
+      {totalCount !== undefined ? `${totalCount}${itemsSuffix}` : ''}
     </div>
   </div>
 
-  <div 
-    id={`no-results-${containerId}`} 
+  <div
+    id={`no-results-${containerId}`}
     class="hidden text-center py-20 border-2 border-dashed border-base-300 rounded-xl mt-4"
   >
-    <p class="text-xl text-base-content/50">該当するアイテムがありません。</p>
+    <p class="text-xl text-base-content/50">{noResultsMsg}</p>
     <button class="btn btn-ghost btn-sm mt-4 reset-filters">
-      フィルターをリセット
+      {resetLabel}
     </button>
   </div>
 </div>
 
-<script define:vars={{ containerId }}>
+<script define:vars={{ containerId, itemsSuffix }}>
   const initFilter = () => {
     const filterRoot = document.getElementById(`filter-section-${containerId}`);
     const filterSection = document.getElementById(`filter-${containerId}`);
     const container = document.getElementById(containerId);
     const countDisplay = document.getElementById(`results-count-${containerId}`);
     const noResults = document.getElementById(`no-results-${containerId}`);
-    
+
     if (filterSection && container && countDisplay && noResults) {
       const toggle = document.getElementById(`filter-toggle-${containerId}`);
       const content = document.getElementById(`filter-content-${containerId}`);
       const chevron = toggle?.querySelector('.chevron');
-      
+
       const buttons = filterSection.querySelectorAll('.filter-btn');
 
       if (toggle && content && chevron) {
         toggle.addEventListener('click', () => {
           const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
           toggle.setAttribute('aria-expanded', (!isExpanded).toString());
-          
+
           if (isExpanded) {
             content.style.maxHeight = '0px';
             content.style.opacity = '0';
@@ -115,7 +122,6 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
       const updateUI = (updateUrl = true) => {
         let visibleCount = 0;
 
-        // Update button states
         buttons.forEach(btn => {
           const btnTag = btn.getAttribute('data-tag');
           if (btnTag === 'all') {
@@ -137,11 +143,10 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
           }
         });
 
-        // Filter items with AND logic
         items.forEach(item => {
           const itemTags = item.getAttribute('data-filter-tags').split(',').map(t => t.trim().toLowerCase());
           const isVisible = activeTags.size === 0 || Array.from(activeTags).every(tag => itemTags.includes(tag));
-          
+
           if (isVisible) {
             item.style.display = '';
             visibleCount++;
@@ -150,8 +155,7 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
           }
         });
 
-        // Update count and no-results message
-        countDisplay.textContent = `${visibleCount}件`;
+        countDisplay.textContent = `${visibleCount}${itemsSuffix}`;
         if (visibleCount === 0) {
           noResults.classList.remove('hidden');
           container.classList.add('hidden');
@@ -160,13 +164,10 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
           container.classList.remove('hidden');
         }
 
-        // Synchronize with URL
         if (updateUrl) {
           const url = new URL(window.location.href);
           url.searchParams.delete('tag');
           activeTags.forEach(tag => url.searchParams.append('tag', tag));
-          
-          // Only push state if the URL actually changed to avoid history bloating
           if (url.toString() !== window.location.href) {
             window.history.pushState({ tags: Array.from(activeTags) }, '', url);
           }
@@ -199,7 +200,6 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
         });
       }
 
-      // Handle deep linking from URL parameters
       const syncFromUrl = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const urlTags = urlParams.getAll('tag');
@@ -211,15 +211,13 @@ const { tags, containerId, tagCounts, totalCount } = Astro.props;
             activeTags.add(lowerTag);
           }
         });
-        updateUI(false); // Don't push state again
+        updateUI(false);
       };
 
-      // Handle browser back/forward
-      window.addEventListener('popstate', (event) => {
+      window.addEventListener('popstate', () => {
         syncFromUrl();
       });
 
-      // Initial sync
       syncFromUrl();
     }
   };

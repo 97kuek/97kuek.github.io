@@ -24,6 +24,9 @@ const ui = {
     "nav.openMenu": "メニューを開く",
     "lang.switchTo": "EN",
     "lang.switchLabel": "Switch to English",
+    "filter.noResults": "該当するアイテムがありません。",
+    "filter.reset": "フィルターをリセット",
+    "filter.items": "件",
   },
   en: {
     "timeline.readMore": "Read more",
@@ -45,6 +48,9 @@ const ui = {
     "nav.openMenu": "Open menu",
     "lang.switchTo": "JA",
     "lang.switchLabel": "日本語に切り替え",
+    "filter.noResults": "No items match the selected filters.",
+    "filter.reset": "Reset filters",
+    "filter.items": " items",
   },
 } as const;
 

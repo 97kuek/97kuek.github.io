@@ -22,11 +22,11 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
       <p class="text-sm font-bold tracking-widest text-primary uppercase mb-2">ABOUT</p>
     </div>
 
-    <div class="card lg:card-side bg-base-100 border border-base-200 shadow-sm overflow-hidden">
+    <div class="card lg:card-side bg-base-100 border border-base-200 overflow-hidden">
       {
         photo && (
           <figure class="shrink-0 lg:w-1/3 pt-8 lg:pt-0 flex justify-center">
-            <div class="w-56 h-56 lg:h-full lg:w-full overflow-hidden rounded-full lg:rounded-none mx-auto ring-4 ring-primary/30 lg:ring-0 shadow-sm lg:shadow-none">
+            <div class="w-56 h-56 lg:h-full lg:w-full overflow-hidden rounded-full lg:rounded-none mx-auto ring-4 ring-primary/30 lg:ring-0">
               {typeof photo === "string" ? (
                 <img
                   src={photo}
