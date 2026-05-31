@@ -1,41 +1,32 @@
 ---
-title: "GitHub Issues × Claude AI でスライドを自動生成する"
-description: "GitHub Issue を作るだけで Claude AI がスライドを生成し、PDF・PPTX・HTML を一括出力する仕組みを、セットアップから実際の使い方まで丁寧に解説します。"
+title: "GitHub Issues × Claude AI でスライドを自動生成する仕組みを作る"
+description: "GitHub Issue に内容を書くだけで Claude AI が Marp スライドを自動生成し、PDF・PPTX・HTML を出力する仕組みをゼロから構築する方法を解説します。"
 publishDate: "2026-05-31"
 tags: ["Claude AI", "GitHub Actions", "Marp", "自動化", "プレゼンテーション"]
 ---
 
-プレゼンテーションを作るとき、本来一番時間をかけるべきは「何を話すか」の設計のはずです。でも実際は、スライドのデザイン調整やツールの操作に何時間も使ってしまいがちです。
+プレゼンテーションを作るとき、**本来一番時間をかけるべきは何を話すかの設計のはず**です。でも実際は、スライドのデザイン調整やツールの操作に何時間も使ってしまいがちです。
 
-そこで、**GitHub Issue に「こういうスライドを作りたい」と書くだけで、Claude AI が自動でスライドを生成し、PDF・PPTX・HTML の形式で出力してくれる**仕組みを作りました。
+この記事では、**GitHub Issue に内容を書くだけで Claude AI が自動でスライドを生成し、PDF・PPTX・HTML・PNG を一括出力してくれる**仕組みをゼロから作る方法を解説します。
 
-リポジトリはこちら：[97kuek/slide-generator](https://github.com/97kuek/slide-generator)
-
----
-
-## 全体の仕組み
-
-このシステムは、3つの技術を組み合わせています。
+## 何ができるのか
 
 {% DiagramFlow title="スライドが完成するまでの流れ" %}
-  {% DiagramNode label="GitHub Issue" sublabel="内容を日本語で書く" color="primary" /%}
-  {% DiagramNode label="Claude AI" sublabel="Marp形式に変換" color="secondary" /%}
+  {% DiagramNode label="Issue 作成" sublabel="内容を日本語で書く" color="primary" /%}
+  {% DiagramNode label="Claude AI" sublabel="Marp形式に変換・PR作成" color="secondary" /%}
   {% DiagramNode label="GitHub Actions" sublabel="PDF/PPTX/HTMLをビルド" color="accent" /%}
 {% /DiagramFlow %}
 
-**GitHub Issues** — スライドの内容を自然な日本語で書く場所。専用のフォームがあるので、タイトルや目的・構成を埋めるだけです。
-
-**Claude AI** — Issue の内容を読み取り、スライドの原稿（Markdown）を自動生成します。「何枚目に何を話すか」「どのレイアウトが適切か」まで判断してくれます。
-
-**GitHub Actions** — 生成された Markdown を PDF・PPTX・HTML・PNG に自動変換します。ダウンロードリンクが PR にコメントされるので、そのまま使えます。
+1. `slide-request` ラベル付きの Issue を作成する
+2. Claude AI が Issue の内容を読み取り、Marp 形式のスライド原稿を生成
+3. `input/input.md` にコミットしたプルリクエストを自動作成
+4. GitHub Actions がビルドし、PDF・PPTX・HTML・PNG をアーティファクトとして PR にコメント
 
 ---
 
 ## Marp とは
 
-このシステムのベースになっているのが **Marp**（マープ）というツールです。
-
-Marp は「Markdown でプレゼンテーションを作る」ための仕組みです。PowerPoint や Keynote のような GUI ツールとは違い、テキストファイル（Markdown）を書くことでスライドを作ります。
+このシステムのベースになっているのが **Marp** です。Marp は Markdown でスライドを書けるツールで、`---` でページを区切るだけでプレゼンテーションになります。
 
 ```markdown
 ---
@@ -52,295 +43,453 @@ marp: true
 
 - 箇条書き1
 - 箇条書き2
-
----
-
-## 3枚目のスライド
-
-コードも書ける。
 ```
 
-`---`（水平線）でページが区切られ、あとは普通の Markdown をそのまま書くだけです。
-
-**Marp を使うメリット**は、スライドがテキストファイルなので Git で管理できること、そして CLI でビルドできるので GitHub Actions との相性が非常に良いことです。
+テキストファイルなので Git 管理ができ、CLI でビルドできるため GitHub Actions と相性が抜群です。
 
 ---
 
-## セットアップ
+## 事前準備
 
-### 1. リポジトリをフォークする
+- GitHub アカウント
+- Node.js 20 以上（ローカルプレビューを使う場合）
+- Anthropic アカウント（Claude AI の API キー取得のため）
 
-GitHub で [97kuek/slide-generator](https://github.com/97kuek/slide-generator) を開き、右上の **Fork** ボタンを押して自分のアカウントにコピーします。
+---
 
-{% Box color="info" title="Fork とは" %}
-Fork は、他人のリポジトリを自分のアカウントに丸ごとコピーする機能です。元のリポジトリとは独立して変更できるので、カスタマイズしたり自由に使えます。
+## ステップ 1: リポジトリを作る
+
+GitHub で新しいリポジトリを作成します。名前は何でも構いません（例: `slide-generator`）。
+
+ローカルにクローンしてディレクトリ構成を作ります。
+
+```text
+slide-generator/
+├── .github/
+│   ├── workflows/
+│   │   ├── claude.yml          ← Claude AI を起動するワークフロー
+│   │   └── build-slides.yml    ← Marp でビルドするワークフロー
+│   └── ISSUE_TEMPLATE/
+│       └── slide-request.yml   ← Issue のフォーム定義
+├── input/
+│   └── input.md                ← Claude が生成したスライドの保存先
+├── output/                     ← ビルド成果物（.gitignore 推奨）
+├── theme/
+│   └── theme.css               ← カスタムテーマ
+├── CLAUDE.md                   ← Claude への指示書
+└── package.json
+```
+
+---
+
+## ステップ 2: package.json を作る
+
+```bash
+npm init -y
+npm install --save-dev @marp-team/marp-cli
+```
+
+`package.json` の `scripts` を以下のように設定します。
+
+```json
+{
+  "scripts": {
+    "dev":        "marp --watch input/input.md --output output/",
+    "build":      "npm run build:pdf && npm run build:pptx && npm run build:html && npm run build:png",
+    "build:pdf":  "marp input/input.md --pdf  --output output/input.pdf  --allow-local-files",
+    "build:pptx": "marp input/input.md --pptx --output output/input.pptx --allow-local-files",
+    "build:html": "marp input/input.md --html --output output/input.html  --allow-local-files",
+    "build:png":  "marp input/input.md --images png --output output/      --allow-local-files"
+  }
+}
+```
+
+`npm run dev` を起動すると、ブラウザで `input/input.md` をリアルタイムプレビューしながら編集できます。
+
+---
+
+## ステップ 3: Marp テーマを作る
+
+`theme/theme.css` を作成します。最低限の構成はこのとおりです。
+
+```css
+/* @theme custom */
+
+:root {
+  --color-primary: #4a5568;
+  --color-accent:  #667eea;
+  --color-bg:      #ffffff;
+  --color-text:    #1a202c;
+}
+
+section {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 1.5rem;
+  padding: 2rem 3rem;
+}
+
+/* タイトルスライド */
+section.title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--color-primary);
+  color: white;
+}
+
+h1, h2 {
+  color: var(--color-primary);
+  border-bottom: 3px solid var(--color-accent);
+  padding-bottom: 0.3em;
+}
+
+/* 2カラムレイアウト */
+.cols  { display: grid; grid-template-columns: 1fr 1fr;       gap: 2rem; }
+.cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr;   gap: 1.5rem; }
+
+/* 強調ボックス */
+.callout {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  border-left: 4px solid var(--color-accent);
+  padding: 1rem 1.5rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  margin: 1rem 0;
+}
+
+/* カード */
+.cards { display: flex; gap: 1rem; margin: 1rem 0; }
+.cards > div { flex: 1; padding: 0.8rem 1rem; border-radius: 0.5rem; font-size: 0.9rem; }
+.cards .ok   { background: #f0fdf4; border: 1px solid #86efac; }
+.cards .warn { background: #fffbeb; border: 1px solid #fcd34d; }
+.cards .info { background: #eff6ff; border: 1px solid #93c5fd; }
+```
+
+フロントマターにテーマを指定するとスタイルが適用されます。
+
+```markdown
+---
+marp: true
+theme: custom
+---
+```
+
+---
+
+## ステップ 4: Issue テンプレートを作る
+
+`.github/ISSUE_TEMPLATE/slide-request.yml` を作成します。このフォームが Issue 作成時に表示されます。
+
+```yaml
+name: Slide Request
+description: スライドの生成をリクエストします
+labels: ["slide-request"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: スライドのタイトル
+      placeholder: "例: チームへの新機能紹介"
+    validations:
+      required: true
+
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 目的・背景
+      description: 誰に向けて、何のために、何分で話すかを書いてください
+      placeholder: |
+        - 対象: 開発チーム（5名）
+        - 目的: 先週リリースした機能の説明
+        - 発表時間: 10分
+    validations:
+      required: true
+
+  - type: textarea
+    id: content
+    attributes:
+      label: 内容・構成
+      description: 話したいことを箇条書きで書いてください。細かく書くほど精度が上がります
+      placeholder: |
+        - 機能の概要と背景
+        - 使い方のデモ手順
+        - 注意点・既知の問題
+        - 今後の予定
+    validations:
+      required: true
+
+  - type: input
+    id: slides
+    attributes:
+      label: スライド枚数（任意）
+      placeholder: "例: 10〜15枚"
+
+  - type: input
+    id: style
+    attributes:
+      label: スタイル・トーン（任意）
+      placeholder: "例: フォーマル、図を多めに、コード例あり"
+```
+
+`labels: ["slide-request"]` を指定しておくと、Issue 作成時にラベルが自動付与されます。
+
+---
+
+## ステップ 5: CLAUDE.md を書く
+
+`CLAUDE.md` は **Claude への指示書**です。ワークフローが起動すると Claude はこのファイルを最初に読み、何をすべきかを把握します。
+
+````markdown
+# Slide Generator — Claude への指示
+
+## あなたの役割
+
+`slide-request` ラベル付きの GitHub Issue が届いたとき、Issue の内容を読んで
+Marp 形式のスライドを生成し、`input/input.md` に保存してプルリクエストを作成してください。
+
+## スライドの仕様
+
+- フロントマターは必ず以下の形式にする
+
+```
+---
+marp: true
+theme: custom
+size: 16:9
+paginate: true
+math: katex
+footer: "© 2026 Your Name"
+---
+```
+
+- 1枚目は必ず `<!-- _class: title -->` を付けたタイトルスライド
+- 2枚目は必ずアジェンダ
+- 各スライドの箇条書きは 5 項目以内に抑える
+- 1スライドに情報を詰め込みすぎない
+
+## 使えるレイアウトコンポーネント
+
+以下の HTML を Markdown 内に直接書いてレイアウトを変えられます。
+
+**2カラム比較**（対比したいとき）
+```html
+<div class="cols">
+<div>左カラム</div>
+<div>右カラム</div>
+</div>
+```
+
+**強調ボックス**（最重要メッセージ）
+```html
+<div class="callout">ここに一言で書く</div>
+```
+
+**カード**（メリット・デメリット・補足）
+```html
+<div class="cards">
+  <div class="ok">✅ ...</div>
+  <div class="warn">⚠️ ...</div>
+  <div class="info">ℹ️ ...</div>
+</div>
+```
+
+## PR の作成方法
+
+1. ブランチ名: `slide/<issue番号>`
+2. `input/input.md` にスライドを保存してコミット
+3. PR タイトル: `[Slide] <Issue のタイトル>`
+4. PR 本文: Issue へのリンクと、生成したスライドの構成を簡単に説明
+````
+
+Claude はこの指示に従って動くので、スタイルや構成のルールはここに書けば自由にカスタマイズできます。
+
+---
+
+## ステップ 6: GitHub Actions ワークフローを作る
+
+### claude.yml — Claude を起動する
+
+`.github/workflows/claude.yml` を作成します。
+
+```yaml
+name: Generate Slide with Claude
+
+on:
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  generate:
+    if: contains(github.event.issue.labels.*.name, 'slide-request')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
+`on.issues` に `labeled` を含めているのは、Issue テンプレートのラベル自動付与でも起動させるためです。`if` 条件で `slide-request` ラベルを確認し、それ以外の Issue では動きません。
+
+{% Box color="info" title="claude-code-action とは" %}
+Anthropic が提供する GitHub Action です。リポジトリの CLAUDE.md を読んで Claude Code が自動的に動き、ファイルの編集・コミット・PR 作成まで行います。
 {% /Box %}
 
-### 2. GitHub Actions を有効化する
+### build-slides.yml — Marp でビルドする
 
-Fork 直後は Actions が無効になっています。
+`.github/workflows/build-slides.yml` を作成します。
 
-リポジトリの **Settings → Actions → General** を開き、「Allow all actions and reusable workflows」を選択して保存します。
+```yaml
+name: Build Slides
 
-### 3. Anthropic API キーを登録する
+on:
+  pull_request:
+    paths:
+      - 'input/input.md'
 
-Claude AI を呼び出すために、Anthropic の API キーが必要です。
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
-**API キーの取得方法：**
-1. [Anthropic Console](https://console.anthropic.com/) でアカウントを作成
-2. 「API Keys」から新しいキーを発行
-3. 発行されたキー（`sk-ant-...` で始まる文字列）をコピー
+    steps:
+      - uses: actions/checkout@v4
 
-**GitHub への登録方法：**
-1. フォークしたリポジトリの **Settings** を開く
-2. 左メニューの **Secrets and variables → Actions** を選択
-3. **New repository secret** をクリック
-4. Name に `ANTHROPIC_API_KEY`、Value に先ほどコピーしたキーを貼り付けて保存
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Install Japanese fonts
+        run: sudo apt-get install -y fonts-noto-cjk
+
+      - name: Install Chromium
+        run: npx puppeteer browsers install chrome
+
+      - name: Build slides
+        run: npm run build
+
+      - name: Count slides
+        id: count
+        run: echo "count=$(ls output/*.png 2>/dev/null | wc -l)" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: slides
+          path: output/
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const count = '${{ steps.count.outputs.count }}';
+            const artifactUrl = '${{ steps.upload.outputs.artifact-url }}';
+            const body = `<!-- slides-build-comment -->
+            ✅ **スライドのビルドが完了しました**
+
+            📊 生成されたスライド枚数: **${count} 枚**
+
+            📦 [slides.zip をダウンロード](${artifactUrl})`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes('slides-build-comment'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+```
+
+日本語フォント（`fonts-noto-cjk`）と Chromium を入れているのは、Marp の PDF・PNG 出力にヘッドレスブラウザが必要なためです。
+
+---
+
+## ステップ 7: 初期ファイルを用意する
+
+`input/input.md` のプレースホルダーを作ります。Claude はこのファイルを上書きします。
+
+```markdown
+---
+marp: true
+theme: custom
+size: 16:9
+paginate: true
+---
+
+# スライドタイトル
+
+ここに内容が生成されます。
+```
+
+`output/` はビルド成果物なので `.gitignore` に追加します。
+
+```text
+output/
+node_modules/
+```
+
+---
+
+## ステップ 8: API キーを登録する
+
+GitHub リポジトリの **Settings → Secrets and variables → Actions → New repository secret** を開き、以下を追加します。
+
+| Name | Value |
+| --- | --- |
+| `ANTHROPIC_API_KEY` | Anthropic Console で発行したキー（`sk-ant-...`） |
 
 {% Box color="warning" title="API キーは絶対にコードに書かない" %}
-API キーをリポジトリのファイルに直接書くと、公開リポジトリの場合は全世界に漏れます。必ず GitHub Secrets に登録して、コードからは参照する形にしましょう。
+`ANTHROPIC_API_KEY` を直接ファイルに書いてしまうと、公開リポジトリでは全世界に漏れます。必ず GitHub Secrets に登録してください。
 {% /Box %}
-
-これでセットアップは完了です。
 
 ---
 
 ## 使い方
 
-### Step 1: Issue を作成する
+すべてのファイルをプッシュしたら、さっそく試してみましょう。
 
-リポジトリの **Issues タブ → New issue** を開くと、「Slide Request」というテンプレートが選択できます。
+**Issues タブ → New issue → Slide Request** を選択し、フォームを埋めて Submit します。数分後に自動でプルリクエストが作られ、`input/input.md` にスライドが生成されます。ビルドワークフローが走り、PR のコメントに zip のダウンロードリンクが届きます。
 
-フォームには以下の項目があります。
+### 手動で修正したいとき
 
-**スライドのタイトル（必須）**
-プレゼンテーションのタイトルです。「〇〇について」「〇〇の紹介」など、シンプルに書きます。
+生成されたスライドに手を加えたい場合は、PR の `input/input.md` を直接編集してコミットします。コミットのたびに自動で再ビルドが走り、コメントが更新されます。
 
-**目的・背景（必須）**
-「誰に」「何のために」「何分で」話すか。Claude はここを読んで、専門用語の量や説明の深さを調整します。
-
-例：
-```text
-- 対象: 開発チーム（全員がエンジニア）
-- 目的: 新しいデプロイフローの説明
-- 発表時間: 15分
-```
-
-**内容・構成（必須）**
-話したいことのリストです。箇条書きで書けばOKです。細かく書くほど、Claude がより意図に沿ったスライドを作ります。
-
-例：
-```text
-- 現状のデプロイの問題点（手動作業が多い、ミスが起きやすい）
-- 新しいフローの概要（GitHub Actions + ArgoCD）
-- 移行スケジュール
-- 質疑応答
-```
-
-**スライド枚数・スタイル（任意）**
-「10〜15枚」「フォーマルなトーン」「コードの例を多めに」など、希望があれば書きます。
-
-### Step 2: ラベルを付けて Submit
-
-Issue の右側にある **Labels** から `slide-request` を選択してから Submit します。
-
-{% Box color="warning" title="ラベルを忘れると動きません" %}
-`slide-request` ラベルが付いていないと Claude が起動しません。Issue 作成後に付け忘れに気づいた場合は、ラベルを後から追加すれば再び起動します。
-{% /Box %}
-
-### Step 3: 自動で PR が作成される
-
-数分待つと、Claude が Issue の内容を読んでスライドを生成し、自動でプルリクエストを作成します。
-
-PR には `input/input.md` というファイルが追加されています。これが Marp 形式のスライド原稿です。
-
-### Step 4: PDF などをダウンロードする
-
-PR が作成されると、もう一つの GitHub Actions（`build-slides.yml`）が自動的に起動し、`input.md` を PDF・PPTX・HTML・PNG に変換します。
-
-ビルドが完了すると PR のコメントに以下が投稿されます：
-
-- 生成されたスライドの枚数
-- `slides.zip` のダウンロードリンク（PDF・PPTX・HTML・PNG が全部入っています）
-
-zip を解凍すれば、そのまま発表で使えます。
-
----
-
-## 生成されるスライドの中身
-
-Claude が生成したスライドがどんな構造になっているか、実際の例で見てみましょう。
-
-### フロントマター
-
-ファイルの冒頭には Marp の設定が書かれています。
-
-```markdown
----
-marp: true
-size: 16:9
-paginate: true
-math: katex
-footer: "© 2026 Your Organization"
----
-```
-
-| 設定 | 意味 |
-| --- | --- |
-| `marp: true` | このファイルを Marp として処理する宣言 |
-| `size: 16:9` | スライドのアスペクト比（ワイド画面向け） |
-| `paginate: true` | 右下にページ番号を表示 |
-| `math: katex` | 数式を KaTeX でレンダリング |
-| `footer` | 全スライドの下部に表示されるテキスト |
-
-### スライドの構成
-
-```markdown
-<!-- _class: title -->
-
-# プレゼンテーションタイトル
-
----
-
-## アジェンダ
-
-- セクション1
-- セクション2
-- セクション3
-
----
-
-## セクション1: 現状の課題
-
-ここに本文。
-
-- ポイントA
-- ポイントB
-```
-
-`<!-- _class: title -->` はタイトルスライド専用のデザインを適用するコメントです。2枚目以降は `---` で区切るだけです。
-
-### 使えるレイアウトコンポーネント
-
-テーマには、見やすいスライドを作るためのカスタムコンポーネントが定義されています。Claude は内容に応じて自動的に使い分けます。
-
-**2カラムレイアウト（cols）**
-
-左右に並べて比較したいときに使います。
-
-```html
-<div class="cols">
-<div>
-
-### 従来の方法
-
-- 手動でデプロイ
-- 時間がかかる
-- ミスが起きやすい
-
-</div>
-<div>
-
-### 新しい方法
-
-- 自動デプロイ
-- 5分で完了
-- ヒューマンエラーなし
-
-</div>
-</div>
-```
-
-**Callout（強調ボックス）**
-
-スライドで一番伝えたいことを目立たせます。
-
-```html
-<div class="callout">
-
-ここに重要なメッセージを一言で書く
-
-</div>
-```
-
-**カード（ok / warn / info）**
-
-メリット・デメリット・補足情報を整理して表示します。
-
-```html
-<div class="cards">
-  <div class="ok">✅ うまくいくこと</div>
-  <div class="warn">⚠️ 注意が必要なこと</div>
-  <div class="info">ℹ️ 補足情報</div>
-</div>
-```
-
-**数式（KaTeX）**
-
-理系の発表でよく使う数式も書けます。
-
-```markdown
-$$
-E = mc^2
-$$
-```
-
----
-
-## 細かい修正をしたいとき
-
-Claude が生成したスライドは完璧ではないこともあります。そのときは `input/input.md` を直接編集します。
-
-PR のファイル一覧から `input/input.md` を開き、GitHub 上でそのまま編集できます。編集して commit すると、自動で再ビルドが走り、PR のコメントが最新の出力に更新されます。
-
-ローカルで作業したい場合は：
-
-```bash
-git clone https://github.com/あなたのアカウント/slide-generator.git
-cd slide-generator
-npm install
-npm run dev   # ブラウザでリアルタイムプレビュー
-```
-
-`npm run dev` を起動すると、`input/input.md` を編集するたびにブラウザのプレビューが自動更新されます。デザインを細かく調整しながら確認できます。
-
-出力ファイルは `output/` ディレクトリに保存されます。
-
-| コマンド | 出力 |
-| --- | --- |
-| `npm run build` | PDF・PPTX・HTML・PNG を一括生成 |
-| `npm run build:pdf` | PDF のみ |
-| `npm run build:pptx` | PowerPoint のみ |
-| `npm run build:html` | HTML スライドのみ |
-
----
-
-## デザインのカスタマイズ
-
-`theme/theme.css` を編集することで、色・フォント・余白などを自由に変えられます。
-
-```css
-:root {
-  --primary: #4a5568;   /* メインカラー */
-  --accent:  #667eea;   /* アクセントカラー */
-}
-```
-
-日本語フォントは Noto CJK が使われており、GitHub Actions の Ubuntu 環境でも文字化けしません。PDF に変換しても日本語が正しく表示されます。
+ローカルで細かく調整するなら `npm run dev` でリアルタイムプレビューが使えます。
 
 ---
 
 ## まとめ
 
-slide-generator を使うと、スライド作成のフローがこう変わります。
-
-| 従来 | slide-generator |
+| やること | 使う技術 |
 | --- | --- |
-| PowerPoint を開いてレイアウトを選ぶ | Issue に内容を書いて Submit するだけ |
-| デザインに時間をかける | Claude が自動でレイアウトを判断 |
-| 手動で PDF に書き出す | GitHub Actions が自動で全形式を出力 |
-| ファイルをメールで送る | PR のコメントにダウンロードリンク |
+| スライドの内容を指定する | GitHub Issues（フォームテンプレート） |
+| スライドを自動生成する | Claude Code Action + CLAUDE.md |
+| 複数形式に変換する | Marp CLI + GitHub Actions |
+| 結果を通知する | GitHub Script でコメント |
 
-特に「定期的に似たような構成のスライドを作る」場面で効果的です。社内勉強会・週次報告・技術共有など、毎回ゼロから作っていた発表が大幅に楽になります。
-
-リポジトリを Fork してすぐ使えます：[97kuek/slide-generator](https://github.com/97kuek/slide-generator)
+特に **CLAUDE.md の書き方でスライドの品質が大きく変わります**。スライド枚数・トーン・使うコンポーネントのルールを細かく書くほど、意図に沿った結果が得られます。

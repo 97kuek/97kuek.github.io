@@ -1,7 +1,10 @@
 ---
 import Layout from "./Layout.astro";
 import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import OgPlaceholder from "../components/OgPlaceholder.astro";
+import Carousel from "../components/Carousel.astro";
+import CarouselSlide from "../components/CarouselSlide.astro";
 import SkillBadge from "../components/SkillBadge.astro";
 import { ExternalLink } from "@lucide/astro";
 import { formatDate, formatPeriod } from "../utils/formatDate";
@@ -24,7 +27,8 @@ interface Props {
   description: string;
   startDate: Date;
   endDate?: Date;
-  image: any;
+  image?: ImageMetadata;
+  images?: ImageMetadata[];
   skills: string[];
   demoLink?: string;
   sourceLink?: string;
@@ -41,6 +45,7 @@ const {
   startDate,
   endDate,
   image,
+  images,
   skills,
   demoLink,
   sourceLink,
@@ -115,9 +120,23 @@ const projectSchema = {
       </a>
     </div>
 
-    <!-- Featured Image -->
-    <figure class="mb-8 max-w-3xl mx-auto rounded-2xl overflow-hidden">
-      {image ? (
+    <!-- Featured Image / Carousel -->
+    <div class="mb-8 max-w-3xl mx-auto rounded-2xl overflow-hidden">
+      {images && images.length > 1 ? (
+        <Carousel interval={5000}>
+          {images.map((img) => (
+            <div class="carousel-slide flex-shrink-0 aspect-video">
+              <Image
+                src={img}
+                alt={title}
+                class="w-full h-full object-cover"
+                width={1200}
+                height={675}
+              />
+            </div>
+          ))}
+        </Carousel>
+      ) : image ? (
         <Image
           src={image}
           alt={title}
@@ -128,7 +147,7 @@ const projectSchema = {
       ) : (
         <OgPlaceholder id={id} title={title} tags={skills} label="PROJECT" />
       )}
-    </figure>
+    </div>
 
     <!-- Project Header -->
     <header class="mb-8">
