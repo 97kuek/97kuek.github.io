@@ -1,0 +1,17 @@
+---
+const { cols = 3, caption } = Astro.props;
+---
+
+<figure class="not-prose my-8">
+  <div
+    class="grid gap-2"
+    style={`grid-template-columns: repeat(${cols}, minmax(0, 1fr))`}
+  >
+    <slot />
+  </div>
+  {caption && (
+    <figcaption class="text-center text-sm text-base-content/55 mt-2">
+      {caption}
+    </figcaption>
+  )}
+</figure>

@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+const { src, alt = '' } = Astro.props;
+
+const allImages = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/**/*.{jpg,jpeg,png,webp,gif,avif}',
+  { eager: true }
+);
+
+let resolvedSrc: ImageMetadata | string = src;
+if (src.startsWith('@assets/')) {
+  const key = src.replace('@assets/', '/src/assets/');
+  resolvedSrc = allImages[key]?.default ?? src;
+}
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const externalSrc = typeof resolvedSrc === 'string' && !resolvedSrc.startsWith('http')
+  ? `${base}${resolvedSrc}`
+  : resolvedSrc;
+---
+
+<div class="overflow-hidden rounded-md bg-base-200 aspect-square">
+  {typeof resolvedSrc !== 'string' ? (
+    <Image
+      src={resolvedSrc}
+      alt={alt}
+      class="w-full h-full object-cover transition-transform duration-300 hover:scale-105 cursor-zoom-in"
+      data-gallery-lightbox
+    />
+  ) : (
+    <img
+      src={externalSrc as string}
+      alt={alt}
+      class="w-full h-full object-cover transition-transform duration-300 hover:scale-105 cursor-zoom-in"
+      data-gallery-lightbox
+    />
+  )}
+</div>

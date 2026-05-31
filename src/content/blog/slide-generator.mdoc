@@ -1,0 +1,304 @@
+---
+title: "GitHub Issues × Claude AI でスライドを自動生成する"
+description: "GitHub Issue を作るだけで Marp 形式のスライドを Claude AI が自動生成し、PDF・PPTX・HTML・PNG を一括出力するシステムの仕組みと導入方法を詳しく解説します。"
+publishDate: "2026-05-31"
+tags: ["Claude AI", "GitHub Actions", "Marp", "自動化", "プレゼンテーション"]
+---
+
+プレゼンテーションを作るとき、スライドの内容より「どのツールで作るか」「どう見栄えよくするか」に時間を取られた経験はないでしょうか。
+
+そこで、**GitHub Issue に内容を書くだけで Claude AI がスライドを生成し、PDF・PPTX・HTML を自動的に出力する**システムを作りました。
+
+この記事では、仕組みの解説から導入方法・使い方まで丁寧に説明します。
+
+## 何ができるのか
+
+**slide-generator** は、GitHub Issues と Claude AI・GitHub Actions を組み合わせたスライド自動生成システムです。
+
+{% DiagramFlow title="全体のフロー" %}
+  {% DiagramNode label="Issue 作成" sublabel="内容・構成を記述" color="primary" /%}
+  {% DiagramNode label="Claude AI" sublabel="Marp スライドを生成" color="secondary" /%}
+  {% DiagramNode label="PR 作成" sublabel="input.md をコミット" color="accent" /%}
+  {% DiagramNode label="自動ビルド" sublabel="PDF / PPTX / HTML / PNG" color="success" /%}
+{% /DiagramFlow %}
+
+1. `slide-request` ラベル付きの Issue を作成する
+2. Claude AI が Issue の内容を読み取り、Marp 形式のスライドを生成
+3. `input/input.md` にスライドをコミットしたプルリクエストを自動作成
+4. GitHub Actions がビルドし、PDF・PPTX・HTML・PNG をアーティファクトとして PR にコメント
+
+Issue を作るだけでプロのスライドが手に入ります。
+
+---
+
+## Marp とは
+
+このシステムが使っている **Marp**（Markdown Presentation Ecosystem）を先に紹介します。
+
+Marp は、Markdown でプレゼンテーションスライドを書けるツールです。`---` でスライドを区切り、普通の Markdown 記法でコンテンツを書くだけでスライドができます。
+
+```markdown
+---
+marp: true
+size: 16:9
+paginate: true
+---
+
+# タイトルスライド
+
+---
+
+## 2枚目のスライド
+
+- 箇条書き1
+- 箇条書き2
+
+---
+
+## 3枚目のスライド
+
+コードも書ける。
+```
+
+テキストベースなのでバージョン管理がしやすく、CI/CD と相性が抜群です。
+
+---
+
+## 事前準備
+
+リポジトリのセットアップには以下が必要です。
+
+- GitHub アカウント
+- Node.js 20 以上（ローカルでビルドする場合）
+- Claude Code の設定（後述）
+
+---
+
+## セットアップ手順
+
+### 1. リポジトリをフォーク / クローン
+
+```bash
+git clone https://github.com/97kuek/slide-generator.git
+cd slide-generator
+npm install
+```
+
+または GitHub 上で **Fork** してから自分のリポジトリとして使うのがおすすめです。
+
+### 2. GitHub Actions の有効化を確認
+
+リポジトリの **Settings → Actions → General** から、Actions の実行が許可されていることを確認します。
+
+`.github/workflows/` には以下の 2 つのワークフローが含まれています。
+
+| ファイル | 役割 |
+| --- | --- |
+| `claude.yml` | Issue 作成時に Claude AI を起動してスライド生成・PR 作成 |
+| `build-slides.yml` | PR 作成・更新時に Marp でビルドしてアーティファクトを生成 |
+
+### 3. Claude Code Action の設定
+
+`claude.yml` は [Claude Code Action](https://github.com/anthropics/claude-code-action) を使っています。利用するには、リポジトリの **Settings → Secrets and variables → Actions** に以下のシークレットを追加します。
+
+```text
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+{% Box color="info" title="Claude Code Action とは" %}
+GitHub Actions の中で Claude AI を呼び出し、コードの生成・編集・コミットまでを自動で行うアクションです。`CLAUDE.md` に記述されたルールに従って動作します。
+{% /Box %}
+
+### 4. Issue テンプレートの確認
+
+`.github/ISSUE_TEMPLATE/slide-request.yml` に Issue のフォーム定義があります。このテンプレートを使うことで、Claude が必要な情報を正確に受け取れます。
+
+---
+
+## 使い方
+
+セットアップが完了したら、実際にスライドを生成してみましょう。
+
+### Step 1: Issue を作成する
+
+リポジトリの **Issues → New issue** から「Slide Request」テンプレートを選択します。
+
+以下のフィールドを埋めます。
+
+| フィールド | 必須 | 内容 |
+| --- | --- | --- |
+| スライドのタイトル | ✓ | プレゼンテーション名 |
+| 目的・背景 | ✓ | 対象者・目的・発表時間 |
+| 内容 | ✓ | 話したいこと・構成のアイデア |
+| スライド枚数 | — | 目安の枚数（例: 10〜15枚） |
+| スタイル・トーン | — | フォーマル・カジュアルなど |
+| 補足 | — | 図やコードを入れてほしいなど |
+
+### Step 2: `slide-request` ラベルを付けて Submit
+
+Issue を作成すると `claude.yml` が起動し、Claude AI がスライドの生成を開始します。数分待つと、自動でプルリクエストが作成されます。
+
+{% Box color="info" title="ラベルが重要" %}
+`slide-request` ラベルが付いていないと Claude が起動しません。Issue 作成時にラベルを忘れずに付けましょう。
+{% /Box %}
+
+### Step 3: PR でスライドを確認する
+
+自動作成された PR を開くと、`input/input.md` に生成されたスライドの Markdown が確認できます。
+
+さらに `build-slides.yml` が走り、PR のコメントに以下が自動で投稿されます。
+
+- 生成されたスライドの枚数
+- PDF・PPTX・HTML・PNG を含む zip ファイルのダウンロードリンク
+
+{% Box color="success" title="内容を修正したい場合" %}
+`input/input.md` を直接編集してコミットすると、再ビルドが走り最新の出力が更新されます。
+{% /Box %}
+
+---
+
+## 生成されるスライドの構成
+
+Claude は以下のルールでスライドを生成します。
+
+```markdown
+---
+marp: true
+size: 16:9
+paginate: true
+math: katex
+footer: "© 2026 Your Organization"
+---
+
+<!-- _class: title -->
+
+# スライドタイトル
+
+---
+
+## アジェンダ
+
+- セクション1
+- セクション2
+- セクション3
+
+---
+
+## セクション1
+
+内容...
+```
+
+### 使えるコンポーネント
+
+テーマには以下のカスタムコンポーネントが定義されており、Claude が状況に応じて使い分けます。
+
+**2列・3列レイアウト**
+
+```html
+<div class="cols">
+<div>
+
+左カラムの内容
+
+</div>
+<div>
+
+右カラムの内容
+
+</div>
+</div>
+```
+
+**Callout（強調ボックス）**
+
+```html
+<div class="callout">
+
+ここに重要なポイントを書く
+
+</div>
+```
+
+**カード（ok / warn / info）**
+
+```html
+<div class="cards">
+  <div class="ok">✅ うまくいくこと</div>
+  <div class="warn">⚠️ 注意が必要なこと</div>
+  <div class="info">ℹ️ 補足情報</div>
+</div>
+```
+
+**数式（KaTeX）**
+
+```markdown
+$$
+E = mc^2
+$$
+```
+
+---
+
+## ローカルでビルドする
+
+PR を待たずに手元でスライドをプレビューしたい場合は、ローカルビルドが便利です。
+
+```bash
+# 依存パッケージをインストール
+npm install
+
+# ファイル変更を監視しながらリアルタイムプレビュー
+npm run dev
+
+# すべての形式を一括ビルド
+npm run build
+
+# 形式を絞ってビルド
+npm run build:pdf
+npm run build:pptx
+npm run build:html
+```
+
+`npm run dev` を起動すると、ブラウザでスライドをリアルタイムに確認しながら `input/input.md` を編集できます。
+
+出力ファイルは `output/` ディレクトリに保存されます。
+
+```text
+output/
+├── input.pdf
+├── input.pptx
+├── input.html
+├── input.001.png
+├── input.002.png
+└── ...
+```
+
+---
+
+## テーマのカスタマイズ
+
+`theme/theme.css` を編集することで、フォント・カラー・レイアウトをカスタマイズできます。
+
+```css
+/* カラーを変えるだけでブランドに合わせられる */
+:root {
+  --primary: #4a5568;
+  --accent: #667eea;
+}
+```
+
+日本語フォントは Noto CJK に対応しており、GitHub Actions の Ubuntu 環境でも文字化けしません。
+
+---
+
+## まとめ
+
+**slide-generator** を使うと、スライドのデザインや構成を一から考える時間を大幅に削減できます。
+
+- Issue に内容を書くだけで Claude AI がスライドを自動生成
+- GitHub Actions で PDF・PPTX・HTML・PNG を一括出力
+- `input/input.md` を直接編集すれば細かい修正も自由
+- テーマ CSS でブランドや好みに合わせたデザインに変更可能
+
+リポジトリは [こちら](https://github.com/97kuek/slide-generator) から確認できます。ぜひ Fork して使ってみてください。

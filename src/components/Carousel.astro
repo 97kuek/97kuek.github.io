@@ -1,0 +1,106 @@
+---
+const { interval = 4000 } = Astro.props;
+---
+
+<div
+  class="group not-prose my-8 relative overflow-hidden rounded-xl bg-base-200"
+  data-carousel
+  data-interval={interval}
+>
+  <div
+    class="flex will-change-transform"
+    style="transition: transform 0.5s ease-in-out;"
+    data-carousel-track
+  >
+    <slot />
+  </div>
+
+  <button
+    class="absolute left-3 top-1/2 -translate-y-1/2 btn btn-circle btn-sm bg-base-100/80 hover:bg-base-100 border-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+    data-carousel-prev
+    aria-label="前へ"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+  </button>
+
+  <button
+    class="absolute right-3 top-1/2 -translate-y-1/2 btn btn-circle btn-sm bg-base-100/80 hover:bg-base-100 border-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+    data-carousel-next
+    aria-label="次へ"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+  </button>
+
+  <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10" data-carousel-dots></div>
+</div>
+
+<script>
+  function initCarousel(el: HTMLElement) {
+    const track = el.querySelector<HTMLElement>('[data-carousel-track]')!;
+    const slides = track.querySelectorAll<HTMLElement>('.carousel-slide');
+    const dotsEl = el.querySelector<HTMLElement>('[data-carousel-dots]')!;
+    const prevBtn = el.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
+    const nextBtn = el.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
+    const intervalMs = parseInt(el.dataset.interval ?? '4000', 10);
+
+    if (slides.length === 0) return;
+
+    let current = 0;
+    let timer: ReturnType<typeof setInterval> | null = null;
+
+    // Dots
+    const dots: HTMLButtonElement[] = [];
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.setAttribute('aria-label', `スライド ${i + 1}`);
+      dot.addEventListener('click', () => { stop(); goTo(i); start(); });
+      dotsEl.appendChild(dot);
+      dots.push(dot);
+    });
+
+    function updateUI() {
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach((dot, i) => {
+        dot.className = i === current
+          ? 'w-2 h-2 rounded-full bg-base-content transition-colors duration-200'
+          : 'w-2 h-2 rounded-full bg-base-content/30 transition-colors duration-200';
+      });
+    }
+
+    function goTo(index: number) {
+      current = ((index % slides.length) + slides.length) % slides.length;
+      updateUI();
+    }
+
+    function start() {
+      if (slides.length <= 1) return;
+      timer = setInterval(() => goTo(current + 1), intervalMs);
+    }
+
+    function stop() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    prevBtn.addEventListener('click', () => { stop(); goTo(current - 1); start(); });
+    nextBtn.addEventListener('click', () => { stop(); goTo(current + 1); start(); });
+    el.addEventListener('mouseenter', stop);
+    el.addEventListener('mouseleave', start);
+
+    // Swipe
+    let touchStartX = 0;
+    el.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    el.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) { stop(); goTo(current + (diff > 0 ? 1 : -1)); start(); }
+    });
+
+    if (slides.length <= 1) { prevBtn.hidden = true; nextBtn.hidden = true; }
+
+    updateUI();
+    start();
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-carousel]').forEach(initCarousel);
+  });
+</script>

@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import SkillBadge from "./SkillBadge.astro";
 import OgPlaceholder from "./OgPlaceholder.astro";
+import CardCarousel from "./CardCarousel.astro";
 import { ExternalLink } from "@lucide/astro";
 import type { CollectionEntry } from "astro:content";
 import { formatPeriod } from "../utils/formatDate";
@@ -28,7 +29,9 @@ const displayDescription =
   data-filter-tags={project.data.skills.join(",")}
 >
   <figure class="aspect-video overflow-hidden">
-    {project.data.image ? (
+    {project.data.images && project.data.images.length > 1 ? (
+      <CardCarousel images={project.data.images} alt={project.data.title} />
+    ) : project.data.image ? (
       <Image
         src={project.data.image}
         alt={project.data.title}

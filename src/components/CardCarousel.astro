@@ -1,0 +1,111 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  images: ImageMetadata[];
+  alt: string;
+  interval?: number;
+}
+
+const { images, alt, interval = 3500 } = Astro.props;
+---
+
+<div
+  class="card-carousel relative w-full h-full overflow-hidden"
+  data-card-carousel
+  data-interval={interval}
+>
+  <div
+    class="card-carousel-track flex h-full will-change-transform"
+    style="transition: transform 0.5s ease-in-out;"
+  >
+    {images.map((img, i) => (
+      <div class="flex-shrink-0 w-full h-full">
+        <Image
+          src={img}
+          alt={i === 0 ? alt : `${alt} ${i + 1}`}
+          class="w-full h-full object-cover"
+          width={600}
+          height={400}
+        />
+      </div>
+    ))}
+  </div>
+
+  {images.length > 1 && (
+    <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10" data-card-dots>
+      {images.map((_, i) => (
+        <button
+          class={i === 0
+            ? 'w-1.5 h-1.5 rounded-full bg-white transition-colors duration-200'
+            : 'w-1.5 h-1.5 rounded-full bg-white/40 transition-colors duration-200'}
+          aria-label={`スライド ${i + 1}`}
+          data-index={i}
+        />
+      ))}
+    </div>
+  )}
+</div>
+
+<script>
+  function initCardCarousel(el: HTMLElement) {
+    const track = el.querySelector<HTMLElement>('.card-carousel-track')!;
+    const slides = track.children;
+    const dotsEl = el.querySelector<HTMLElement>('[data-card-dots]');
+    const dots = dotsEl ? dotsEl.querySelectorAll<HTMLButtonElement>('button') : null;
+    const intervalMs = parseInt(el.dataset.interval ?? '3500', 10);
+
+    if (slides.length <= 1) return;
+
+    let current = 0;
+    let timer: ReturnType<typeof setInterval> | null = null;
+
+    function updateUI() {
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dots?.forEach((dot, i) => {
+        dot.className = i === current
+          ? 'w-1.5 h-1.5 rounded-full bg-white transition-colors duration-200'
+          : 'w-1.5 h-1.5 rounded-full bg-white/40 transition-colors duration-200';
+      });
+    }
+
+    function goTo(index: number) {
+      current = ((index % slides.length) + slides.length) % slides.length;
+      updateUI();
+    }
+
+    function start() {
+      timer = setInterval(() => goTo(current + 1), intervalMs);
+    }
+
+    function stop() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    dots?.forEach((dot) => {
+      dot.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const i = parseInt((e.currentTarget as HTMLElement).dataset.index ?? '0', 10);
+        stop(); goTo(i); start();
+      });
+    });
+
+    el.addEventListener('mouseenter', stop);
+    el.addEventListener('mouseleave', start);
+
+    let touchStartX = 0;
+    el.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    el.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) { stop(); goTo(current + (diff > 0 ? 1 : -1)); start(); }
+    });
+
+    start();
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-card-carousel]').forEach(initCardCarousel);
+  });
+</script>

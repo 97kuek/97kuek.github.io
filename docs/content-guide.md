@@ -114,6 +114,23 @@ sourceLink: "https://..."   # 省略可
 | `{% YouTube id="..." /%}` | YouTube 埋め込み |
 | `{% Spotify url="..." /%}` | Spotify 埋め込み |
 | `{% Twitter url="..." /%}` | ツイート埋め込み |
+| `{% Gallery cols=3 caption="..." %}...{% /Gallery %}` | 写真グリッドギャラリー |
+| `{% GalleryImage src="..." alt="..." /%}` | ギャラリー内の個別写真 |
+
+### Gallery の使い方
+
+写真は `public/` 以下に置き、`/` から始まるパスで参照する（例: `public/projects/wasa/photo1.jpg` → `src="/projects/wasa/photo1.jpg"`）。
+
+```markdoc
+{% Gallery cols=3 caption="フライト写真" %}
+  {% GalleryImage src="/projects/wasa/photo1.jpg" alt="機体全景" /%}
+  {% GalleryImage src="/projects/wasa/photo2.jpg" alt="翼断面" /%}
+  {% GalleryImage src="/projects/wasa/photo3.jpg" alt="フライト中" /%}
+{% /Gallery %}
+```
+
+- `cols` は 1〜4 を指定可（デフォルト 3）
+- 画像をクリックするとライトボックスで拡大表示される
 
 ### Box の color 値
 

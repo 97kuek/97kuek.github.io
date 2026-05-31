@@ -34,7 +34,9 @@
       "Bash(git commit -m 'style: hero section fills full viewport height on tablet/PC *)",
       "Bash(git commit -m 'style: remove white bg from Projects and Education sections *)",
       "Bash(git commit -m 'style: remove sidebar TOC, tighten section spacing, redesign Box *)",
-      "Bash(git commit -m 'style: force dark code blocks, prevent typography override *)"
+      "Bash(git commit -m 'style: force dark code blocks, prevent typography override *)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",

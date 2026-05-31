@@ -76,7 +76,7 @@
 
   function initLightbox() {
     const proseImages = document.querySelectorAll<HTMLImageElement>(
-      '.prose img:not([data-no-lightbox])'
+      '.prose img:not([data-no-lightbox]), [data-gallery-lightbox]'
     );
     proseImages.forEach((img) => {
       if (img.dataset.lightboxInit) return;
