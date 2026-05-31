@@ -21,19 +21,19 @@ const externalSrc = typeof resolvedSrc === 'string' && !resolvedSrc.startsWith('
   : resolvedSrc;
 ---
 
-<div class="overflow-hidden rounded-md bg-base-200 aspect-square">
+<div class="break-inside-avoid mb-1.5 overflow-hidden rounded-md bg-base-200">
   {typeof resolvedSrc !== 'string' ? (
     <Image
       src={resolvedSrc}
       alt={alt}
-      class="w-full h-full object-cover transition-transform duration-300 hover:scale-105 cursor-zoom-in"
+      class="w-full block transition-transform duration-300 hover:scale-105 cursor-zoom-in"
       data-gallery-lightbox
     />
   ) : (
     <img
       src={externalSrc as string}
       alt={alt}
-      class="w-full h-full object-cover transition-transform duration-300 hover:scale-105 cursor-zoom-in"
+      class="w-full block transition-transform duration-300 hover:scale-105 cursor-zoom-in"
       data-gallery-lightbox
     />
   )}
