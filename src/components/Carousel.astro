@@ -37,7 +37,7 @@ const { interval = 4000 } = Astro.props;
 <script>
   function initCarousel(el: HTMLElement) {
     const track = el.querySelector<HTMLElement>('[data-carousel-track]')!;
-    const slides = track.querySelectorAll<HTMLElement>('.carousel-slide');
+    const slides = Array.from(track.querySelectorAll<HTMLElement>('.carousel-slide'));
     const dotsEl = el.querySelector<HTMLElement>('[data-carousel-dots]')!;
     const prevBtn = el.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
     const nextBtn = el.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
@@ -48,7 +48,13 @@ const { interval = 4000 } = Astro.props;
     let current = 0;
     let timer: ReturnType<typeof setInterval> | null = null;
 
-    // Dots
+    // スライド幅をコンテナ幅に固定（translateX のピクセル計算に使う）
+    function setSlideWidths() {
+      const w = el.offsetWidth;
+      slides.forEach(s => { s.style.flexShrink = '0'; s.style.width = `${w}px`; });
+    }
+
+    // Dots を動的に生成
     const dots: HTMLButtonElement[] = [];
     slides.forEach((_, i) => {
       const dot = document.createElement('button');
@@ -59,7 +65,8 @@ const { interval = 4000 } = Astro.props;
     });
 
     function updateUI() {
-      track.style.transform = `translateX(-${current * 100}%)`;
+      const w = el.offsetWidth;
+      track.style.transform = `translateX(-${current * w}px)`;
       dots.forEach((dot, i) => {
         dot.className = i === current
           ? 'w-2 h-2 rounded-full bg-base-content transition-colors duration-200'
@@ -86,7 +93,6 @@ const { interval = 4000 } = Astro.props;
     el.addEventListener('mouseenter', stop);
     el.addEventListener('mouseleave', start);
 
-    // Swipe
     let touchStartX = 0;
     el.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
     el.addEventListener('touchend', (e) => {
@@ -94,8 +100,13 @@ const { interval = 4000 } = Astro.props;
       if (Math.abs(diff) > 40) { stop(); goTo(current + (diff > 0 ? 1 : -1)); start(); }
     });
 
+    // ウィンドウリサイズ時に幅を再計算
+    const ro = new ResizeObserver(() => { setSlideWidths(); updateUI(); });
+    ro.observe(el);
+
     if (slides.length <= 1) { prevBtn.hidden = true; nextBtn.hidden = true; }
 
+    setSlideWidths();
     updateUI();
     start();
   }

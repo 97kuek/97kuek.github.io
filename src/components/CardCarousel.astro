@@ -16,22 +16,21 @@ const { images, alt, interval = 3500 } = Astro.props;
   data-card-carousel
   data-interval={interval}
 >
-  <div
-    class="card-carousel-track flex h-full will-change-transform"
-    style="transition: transform 0.5s ease-in-out;"
-  >
-    {images.map((img, i) => (
-      <div class="flex-shrink-0 w-full h-full">
-        <Image
-          src={img}
-          alt={i === 0 ? alt : `${alt} ${i + 1}`}
-          class="w-full h-full object-cover"
-          width={600}
-          height={400}
-        />
-      </div>
-    ))}
-  </div>
+  {images.map((img, i) => (
+    <div
+      class="absolute inset-0 transition-opacity duration-700"
+      style={i === 0 ? 'opacity: 1;' : 'opacity: 0;'}
+      data-card-slide
+    >
+      <Image
+        src={img}
+        alt={i === 0 ? alt : `${alt} ${i + 1}`}
+        class="w-full h-full object-cover"
+        width={600}
+        height={400}
+      />
+    </div>
+  ))}
 
   {images.length > 1 && (
     <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10" data-card-dots>
@@ -50,8 +49,7 @@ const { images, alt, interval = 3500 } = Astro.props;
 
 <script>
   function initCardCarousel(el: HTMLElement) {
-    const track = el.querySelector<HTMLElement>('.card-carousel-track')!;
-    const slides = track.children;
+    const slides = el.querySelectorAll<HTMLElement>('[data-card-slide]');
     const dotsEl = el.querySelector<HTMLElement>('[data-card-dots]');
     const dots = dotsEl ? dotsEl.querySelectorAll<HTMLButtonElement>('button') : null;
     const intervalMs = parseInt(el.dataset.interval ?? '3500', 10);
@@ -62,7 +60,9 @@ const { images, alt, interval = 3500 } = Astro.props;
     let timer: ReturnType<typeof setInterval> | null = null;
 
     function updateUI() {
-      track.style.transform = `translateX(-${current * 100}%)`;
+      slides.forEach((slide, i) => {
+        slide.style.opacity = i === current ? '1' : '0';
+      });
       dots?.forEach((dot, i) => {
         dot.className = i === current
           ? 'w-1.5 h-1.5 rounded-full bg-white transition-colors duration-200'
