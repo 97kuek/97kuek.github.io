@@ -59,10 +59,12 @@ The name should be the same as the theme name below.
   height: auto;
 }
 
-/* Fix: daisyUI sets data-theme="light" on :root, which triggers EC's light theme CSS
-   (white background, light syntax colors). Force github-dark values on .expressive-code.
-   Specificity (0,2,1) beats EC's :root[data-theme="light"] rule (0,1,1). */
+/* Fix: daisyUI sets data-theme="light" on :root, triggering EC's light theme CSS.
+   Override ALL github-dark values on .expressive-code (specificity 0,3,0 > EC's 0,2,0).
+   --ec-frm-* vars are needed because is-terminal/has-title frames use
+   --code-background → --ec-frm-trmBg/edBg instead of --ec-codeBg for pre background. */
 :root[data-theme="light"] .expressive-code {
+  /* base */
   --ec-brdCol: #1b1f23;
   --ec-codeBg: #24292e;
   --ec-codeFg: #e1e4e8;
@@ -75,6 +77,24 @@ The name should be the same as the theme name below.
   --ec-focusBrd: #005cc5;
   --ec-sbThumbCol: #6a737d33;
   --ec-sbThumbHoverCol: #6a737dd1;
+  /* editor frame (has-title) */
+  --ec-frm-edBg: #24292e;
+  --ec-frm-edActTabBg: #24292e;
+  --ec-frm-edActTabFg: #e1e4e8;
+  --ec-frm-edActTabIndBtmCol: #24292e;
+  --ec-frm-edTabBarBg: #1f2428;
+  --ec-frm-edTabBarBrdCol: #1b1f23;
+  --ec-frm-edTabBarBrdBtmCol: #1b1f23;
+  /* terminal frame (bash/shell, is-terminal) — trmTtbBg was the "white mist" */
+  --ec-frm-trmTtbFg: #e1e4e8;
+  --ec-frm-trmTtbDotsFg: #e1e4e8;
+  --ec-frm-trmTtbBg: #24292e;
+  --ec-frm-trmTtbBrdBtmCol: #1b1f23;
+  --ec-frm-trmBg: #1f2428;
+  /* inline buttons */
+  --ec-frm-inlBtnFg: #e1e4e8;
+  --ec-frm-inlBtnBg: #e1e4e8;
+  --ec-frm-inlBtnBrd: #e1e4e8;
 }
 
 /* Force dark syntax highlight token colors; EC's (0,2,1) span rule loses to our (0,3,1). */
