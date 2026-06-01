@@ -2,12 +2,28 @@
 const { label = "コードを表示" } = Astro.props;
 ---
 
-<details class="not-prose my-4 group">
-  <summary class="cursor-pointer select-none list-none flex items-center gap-2 text-sm px-3 py-1.5 rounded-t bg-[#161b22] text-gray-400 hover:text-gray-200 transition-colors border border-[#30363d] border-b-0">
+<details class="details-block not-prose my-6 group">
+  <summary class="cursor-pointer select-none list-none flex items-center gap-2 text-sm font-mono px-4 py-2 rounded-lg group-open:rounded-b-none bg-[#161b22] text-[#8b949e] hover:text-[#c9d1d9] transition-colors border border-[#30363d]">
     <span class="group-open:hidden">▶ {label}</span>
     <span class="hidden group-open:inline">▼ 折りたたむ</span>
   </summary>
-  <div class="rounded-b border border-[#30363d] border-t-0 overflow-hidden [&_.expressive-code]:my-0 [&_.expressive-code_.frame]:rounded-t-none">
-    <slot />
-  </div>
+  <slot />
 </details>
+
+<style is:global>
+  /* EC の空ヘッダーバーを非表示 */
+  .details-block .expressive-code figcaption.header {
+    display: none;
+  }
+  /* サマリーと連続させるためトップの border / radius を除去 */
+  .details-block .expressive-code pre {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: none;
+  }
+  /* EC ブロック自体のマージンをリセット */
+  .details-block .expressive-code {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+</style>
