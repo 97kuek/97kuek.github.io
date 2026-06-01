@@ -53,15 +53,36 @@ The name should be the same as the theme name below.
   color: var(--color-primary);
 }
 
-/* Prevent @tailwindcss/typography from overriding expressive-code dark theme.
-   Use :where() to keep specificity at (0,0,1) so EC's own styles always win. */
-:where(.prose) :where(.expressive-code) pre,
-:where(.prose) :where(.expressive-code) pre code {
-  background-color: unset;
-  color: unset;
-  font-size: unset;
-  padding: unset;
-  border-radius: unset;
-  margin: unset;
+/* Unlayered rule: beats @layer utilities so max-width always applies on mobile */
+.prose img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fix: daisyUI sets data-theme="light" on :root, which triggers EC's light theme CSS
+   (white background, light syntax colors). Force github-dark values on .expressive-code.
+   Specificity (0,2,1) beats EC's :root[data-theme="light"] rule (0,1,1). */
+:root[data-theme="light"] .expressive-code {
+  --ec-brdCol: #1b1f23;
+  --ec-codeBg: #24292e;
+  --ec-codeFg: #e1e4e8;
+  --ec-codeSelBg: #3392ff44;
+  --ec-gtrFg: #727980;
+  --ec-gtrBrdCol: #72798033;
+  --ec-gtrHlFg: #e1e4e896;
+  --ec-uiSelBg: #39414a;
+  --ec-uiSelFg: #e1e4e8;
+  --ec-focusBrd: #005cc5;
+  --ec-sbThumbCol: #6a737d33;
+  --ec-sbThumbHoverCol: #6a737dd1;
+}
+
+/* Force dark syntax highlight token colors; EC's (0,2,1) span rule loses to our (0,3,1). */
+:root[data-theme="light"] .expressive-code .ec-line :where(span[style^='--']:not([class])) {
+  color: var(--0, inherit);
+  background-color: var(--0bg, transparent);
+  font-style: var(--0fs, inherit);
+  font-weight: var(--0fw, inherit);
+  text-decoration: var(--0td, inherit);
 }
 

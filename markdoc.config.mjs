@@ -73,6 +73,12 @@ export default defineMarkdocConfig({
         caption: { type: String },
       },
     },
+    DetailsBlock: {
+      render: component('./src/components/DetailsBlock.astro'),
+      attributes: {
+        label: { type: String, default: 'コードを表示' },
+      },
+    },
     GalleryImage: {
       render: component('./src/components/GalleryImage.astro'),
       attributes: {

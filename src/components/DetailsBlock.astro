@@ -1,0 +1,13 @@
+---
+const { label = "コードを表示" } = Astro.props;
+---
+
+<details class="not-prose my-4 group">
+  <summary class="cursor-pointer select-none list-none flex items-center gap-2 text-sm px-3 py-1.5 rounded-t bg-[#161b22] text-gray-400 hover:text-gray-200 transition-colors border border-[#30363d] border-b-0">
+    <span class="group-open:hidden">▶ {label}</span>
+    <span class="hidden group-open:inline">▼ 折りたたむ</span>
+  </summary>
+  <div class="rounded-b border border-[#30363d] border-t-0 overflow-hidden [&_.expressive-code]:my-0 [&_.expressive-code_.frame]:rounded-t-none">
+    <slot />
+  </div>
+</details>
