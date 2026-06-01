@@ -5,7 +5,7 @@ export default defineMarkdocConfig({
     SpeakerDeck: {
       render: component('./src/components/SpeakerDeck.astro'),
       attributes: {
-        id: { type: String, required: true },
+        url: { type: String, required: true },
         title: { type: String },
       },
     },

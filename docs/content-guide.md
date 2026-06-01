@@ -32,11 +32,11 @@ image: "@assets/blog/記事名/thumbnail.png"  # 省略可
 
 ## プロジェクトの追加
 
-### ファイル
+### プロジェクトファイル
 
 `src/content/projects/<プロジェクト名>.md`（Markdown 形式）
 
-### フロントマター
+### プロジェクトフロントマター
 
 ```yaml
 ---
@@ -114,7 +114,7 @@ sourceLink: "https://..."   # 省略可
 | `{% YouTube id="..." /%}` | YouTube 埋め込み |
 | `{% Spotify url="..." /%}` | Spotify 埋め込み |
 | `{% Twitter url="..." /%}` | ツイート埋め込み |
-| `{% SpeakerDeck id="..." title="..." /%}` | Speaker Deck スライド埋め込み |
+| `{% SpeakerDeck url="..." /%}` | Speaker Deck スライド埋め込み |
 | `{% Gallery cols=3 caption="..." %}...{% /Gallery %}` | 写真グリッドギャラリー |
 | `{% GalleryImage src="..." alt="..." /%}` | ギャラリー内の個別写真 |
 
