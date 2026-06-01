@@ -114,6 +114,7 @@ sourceLink: "https://..."   # 省略可
 | `{% YouTube id="..." /%}` | YouTube 埋め込み |
 | `{% Spotify url="..." /%}` | Spotify 埋め込み |
 | `{% Twitter url="..." /%}` | ツイート埋め込み |
+| `{% SpeakerDeck id="..." title="..." /%}` | Speaker Deck スライド埋め込み |
 | `{% Gallery cols=3 caption="..." %}...{% /Gallery %}` | 写真グリッドギャラリー |
 | `{% GalleryImage src="..." alt="..." /%}` | ギャラリー内の個別写真 |
 

@@ -2,6 +2,13 @@ import { defineMarkdocConfig, component, nodes } from '@astrojs/markdoc/config';
 
 export default defineMarkdocConfig({
   tags: {
+    SpeakerDeck: {
+      render: component('./src/components/SpeakerDeck.astro'),
+      attributes: {
+        id: { type: String, required: true },
+        title: { type: String },
+      },
+    },
     Spotify: {
       render: component('./src/components/Spotify.astro'),
       attributes: {

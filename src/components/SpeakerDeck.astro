@@ -1,0 +1,21 @@
+---
+interface Props {
+  id: string;
+  title?: string;
+}
+
+const { id, title = "スライド" } = Astro.props;
+const src = `https://speakerdeck.com/player/${id}`;
+---
+
+<div class="my-6 rounded-xl overflow-hidden" style="aspect-ratio: 560 / 315;">
+  <iframe
+    src={src}
+    title={title}
+    class="w-full h-full"
+    frameborder="0"
+    allowfullscreen
+    loading="lazy"
+    allow="fullscreen"
+  ></iframe>
+</div>
