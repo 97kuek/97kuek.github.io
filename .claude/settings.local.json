@@ -36,7 +36,8 @@
       "Bash(git commit -m 'style: remove sidebar TOC, tighten section spacing, redesign Box *)",
       "Bash(git commit -m 'style: force dark code blocks, prevent typography override *)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:api.github.com)"
+      "WebFetch(domain:api.github.com)",
+      "Bash(git commit -m 'fix: 画像パスを @assets/blog/slide-generator/ に修正 *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",

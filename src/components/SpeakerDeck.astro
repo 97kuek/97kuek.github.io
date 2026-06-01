@@ -1,40 +1,21 @@
 ---
 interface Props {
-  url: string;
+  id: string;
   title?: string;
 }
 
-const { url, title } = Astro.props;
-
-let slideId: string | undefined;
-let resolvedTitle = title ?? "スライド";
-
-try {
-  const oembedEndpoint = `https://speakerdeck.com/oembed.json?url=${encodeURIComponent(url)}`;
-  const res = await fetch(oembedEndpoint);
-  const data = await res.json();
-  const match = (data.html as string)?.match(/data-id="([^"]+)"/);
-  slideId = match?.[1];
-  if (!title && data.title) resolvedTitle = data.title;
-} catch {
-  // ビルド時に取得できなければフォールバックメッセージを表示
-}
-
-const src = slideId ? `https://speakerdeck.com/player/${slideId}` : undefined;
+const { id, title = "スライド" } = Astro.props;
+const src = `https://speakerdeck.com/player/${id}`;
 ---
 
-{src ? (
-  <div class="my-6 rounded-xl overflow-hidden" style="aspect-ratio: 560 / 315;">
-    <iframe
-      src={src}
-      title={resolvedTitle}
-      class="w-full h-full"
-      frameborder="0"
-      allowfullscreen
-      loading="lazy"
-      allow="fullscreen"
-    ></iframe>
-  </div>
-) : (
-  <p class="text-error text-sm">Speaker Deck の読み込みに失敗しました: {url}</p>
-)}
+<div class="my-6 rounded-xl overflow-hidden" style="aspect-ratio: 560 / 315;">
+  <iframe
+    src={src}
+    title={title}
+    class="w-full h-full"
+    frameborder="0"
+    allowfullscreen
+    loading="lazy"
+    allow="fullscreen"
+  ></iframe>
+</div>
