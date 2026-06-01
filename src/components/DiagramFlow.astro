@@ -35,7 +35,8 @@ const { direction = 'row', title } = Astro.props;
   .diagram-flow-inner:not([data-direction="col"]) > .diagram-node-outer:not(:last-child)::after {
     content: '→';
     padding: 0 0.5rem;
-    opacity: 0.4;
+    color: var(--color-primary);
+    opacity: 0.5;
     font-size: 1.1rem;
     flex-shrink: 0;
   }
@@ -47,7 +48,8 @@ const { direction = 'row', title } = Astro.props;
   .diagram-flow-inner[data-direction="col"] > .diagram-node-outer:not(:last-child)::after {
     content: '↓';
     padding: 0.3rem 0;
-    opacity: 0.4;
+    color: var(--color-primary);
+    opacity: 0.5;
     font-size: 1.1rem;
   }
 </style>
