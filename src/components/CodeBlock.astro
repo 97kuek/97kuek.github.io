@@ -4,22 +4,7 @@ import { Code } from 'astro-expressive-code/components';
 const { content, language: rawLanguage = 'plaintext', ...rest } = Astro.props;
 const slotHtml = await Astro.slots.render("default");
 const code = content || slotHtml.replace(/<[^>]*>/g, "").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim();
-
-// "bash collapsed" → lang="bash", collapsed=true
-const parts = (rawLanguage || 'plaintext').split(/\s+/);
-const lang = parts[0] || 'plaintext';
-const collapsed = parts.includes('collapsed');
+const lang = (rawLanguage || 'plaintext').split(/\s+/)[0] || 'plaintext';
 ---
 
-{collapsed ? (
-  <details class="my-4 group">
-    <summary class="cursor-pointer select-none list-none flex items-center gap-2 text-sm px-3 py-1.5 rounded-t bg-[#161b22] text-gray-400 hover:text-gray-200 transition-colors border border-[#30363d]">
-      <span class="group-open:hidden">▶ コードを表示</span>
-      <span class="hidden group-open:inline">▼ 折りたたむ</span>
-      {lang !== 'plaintext' && <span class="ml-auto font-mono text-xs opacity-50">{lang}</span>}
-    </summary>
-    <Code code={code} lang={lang} theme="github-dark" {...rest} />
-  </details>
-) : (
-  <Code code={code} lang={lang} theme="github-dark" {...rest} />
-)}
+<Code code={code} lang={lang} {...rest} />
