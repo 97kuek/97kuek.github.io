@@ -7,7 +7,17 @@
       "Bash(python3 -c ' *)",
       "Bash(powershell -Command \"Get-Content 'c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\\\\src\\\\pages\\\\404.astro' | Select-Object -Index 15 | Format-Hex\")",
       "Bash(python -c ' *)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(git -C \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\" status)",
+      "Bash(git -C \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\" diff --stat)",
+      "Bash(git -C \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\" add src/content/blog/http-https.mdoc src/assets/blog/http-https.mdoc)",
+      "Bash(git -C 'c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio' commit -m ' *)",
+      "Bash(git -C \"c:\\\\Users\\\\yamashita\\\\Documents\\\\my-portfolio\" push origin main)",
+      "Bash(git -C \"c:/Users/yamashita/Documents/my-portfolio\" mv \"src/assets/blog/http-https.mdoc\" \"src/assets/blog/http-https\")",
+      "Bash(git -C \"c:/Users/yamashita/Documents/my-portfolio\" status)",
+      "Bash(git -C \"c:/Users/yamashita/Documents/my-portfolio\" add src/content/blog/http-https.mdoc)",
+      "Bash(git -C c:/Users/yamashita/Documents/my-portfolio commit -m ' *)",
+      "Bash(git -C \"c:/Users/yamashita/Documents/my-portfolio\" push origin main)"
     ]
   }
 }
