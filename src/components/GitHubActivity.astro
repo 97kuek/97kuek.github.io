@@ -1,0 +1,98 @@
+---
+import { Github, ArrowRight } from "@lucide/astro";
+
+const USERNAME = "97kuek";
+const PROFILE_URL = `https://github.com/${USERNAME}`;
+// 3D contribution graph generated in the GitHub profile repository (97kuek/97kuek)
+const GRAPH_3D = `https://raw.githubusercontent.com/${USERNAME}/${USERNAME}/main/profile-3d-contrib/profile-season-animate.svg`;
+
+const isJa = (Astro.currentLocale ?? "ja") === "ja";
+
+// Best-effort live stats fetched at build time. Failures keep zeros so the
+// build never breaks (e.g. GitHub API rate limit).
+let repos = 0;
+let followers = 0;
+let stars = 0;
+try {
+  const headers: Record<string, string> = {
+    "User-Agent": "portfolio-build",
+    Accept: "application/vnd.github+json",
+  };
+  if (import.meta.env.GITHUB_TOKEN) {
+    headers.Authorization = `Bearer ${import.meta.env.GITHUB_TOKEN}`;
+  }
+  const userRes = await fetch(`https://api.github.com/users/${USERNAME}`, { headers });
+  if (userRes.ok) {
+    const user = await userRes.json();
+    repos = user.public_repos ?? 0;
+    followers = user.followers ?? 0;
+  }
+  const reposRes = await fetch(
+    `https://api.github.com/users/${USERNAME}/repos?per_page=100&type=owner`,
+    { headers },
+  );
+  if (reposRes.ok) {
+    const list: Array<{ stargazers_count?: number }> = await reposRes.json();
+    stars = list.reduce((sum, r) => sum + (r.stargazers_count ?? 0), 0);
+  }
+} catch {
+  // ignore — stats are optional
+}
+
+const stats = [
+  { label: isJa ? "リポジトリ" : "Repositories", value: repos },
+  { label: isJa ? "スター" : "Stars", value: stars },
+  { label: isJa ? "フォロワー" : "Followers", value: followers },
+];
+const hasStats = repos > 0 || followers > 0 || stars > 0;
+---
+
+<section id="github" class="py-16 px-4 bg-base-200">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <p class="text-base font-bold tracking-widest text-primary uppercase mb-3">GITHUB</p>
+      <p class="text-lg text-base-content/60">
+        {isJa ? "GitHub での活動" : "My activity on GitHub"}
+      </p>
+    </div>
+
+    {
+      hasStats && (
+        <div class="flex justify-center mb-10">
+          <div class="stats stats-horizontal bg-base-100 shadow">
+            {stats.map((s) => (
+              <div class="stat place-items-center">
+                <div class="stat-value text-primary">{s.value}</div>
+                <div class="stat-title">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    <div class="card bg-base-100 shadow-md">
+      <div class="card-body items-center">
+        <img
+          src={GRAPH_3D}
+          alt="GitHub 3D contribution graph"
+          loading="lazy"
+          class="w-full max-w-3xl"
+        />
+      </div>
+    </div>
+
+    <div class="text-center mt-12">
+      <a
+        href={PROFILE_URL}
+        target="_blank"
+        rel="noopener"
+        class="btn btn-primary btn-outline gap-2"
+      >
+        <Github class="size-4" />
+        {isJa ? "GitHub を見る" : "View GitHub"}
+        <ArrowRight class="size-4" />
+      </a>
+    </div>
+  </div>
+</section>
