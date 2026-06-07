@@ -9,12 +9,9 @@ interface Props {
 
 const { id, title, tags = [], label, showText = true } = Astro.props;
 
-const gradId = `og-grad-${id.replace(/[^a-zA-Z0-9]/g, "-")}`;
-
-// CJK文字は1unit、ASCII等は0.55unitとして視覚的な幅で折り返す
 function wrapTitle(text: string, maxWidth = 16): string[] {
   const isCJK = (ch: string) =>
-    /[⺀-鿿豈-﫿︰-﹏！-｠￠-￦]/.test(ch);
+    /[⺀-鿿豈-﫿︰-﹏！-｠￠-￦]/.test(ch);
   const lines: string[] = [];
   let cur = "";
   let curW = 0;
@@ -35,11 +32,11 @@ function wrapTitle(text: string, maxWidth = 16): string[] {
 
 const lines = wrapTitle(title);
 
-const maxLines = 4;
+const maxLines = 3;
 const capped = lines.slice(0, maxLines);
 if (lines.length > maxLines) capped[maxLines - 1] += "…";
 
-const lineHeight = 50;
+const lineHeight = 46;
 const totalH = capped.length * lineHeight;
 const startY = 210 - totalH / 2 + lineHeight * 0.8;
 ---
@@ -50,58 +47,39 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
   style="display:block;width:100%;height:100%;"
   aria-hidden="true"
 >
-  <defs>
-    <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#3d5fa5" />
-      <stop offset="100%" stop-color="#6880c8" />
-    </linearGradient>
-  </defs>
-
   <!-- Background -->
-  <rect width="800" height="450" fill={`url(#${gradId})`} />
+  <rect width="800" height="450" fill="#f8fafc" />
 
-  <!-- Decorative circles -->
-  <circle cx="720" cy="-20" r="200" fill="rgba(255,255,255,0.07)" />
-  <circle cx="80" cy="470" r="180" fill="rgba(255,255,255,0.07)" />
-  <circle cx="400" cy="225" r="280" fill="rgba(255,255,255,0.025)" />
+  <!-- Subtle border -->
+  <rect width="800" height="450" fill="none" stroke="#e2e8f0" stroke-width="2" />
 
   {showText && (
     <Fragment>
-      <!-- Bottom tint bar -->
-      <rect y="390" width="800" height="60" fill="rgba(0,0,0,0.3)" />
+      <!-- Left accent bar -->
+      <rect x="52" y="60" width="4" height="36" rx="2" fill="#4a5568" />
 
-      <!-- Label (category) -->
+      <!-- Label -->
       {label && (
         <text
-          x="52"
-          y="68"
-          fill="rgba(255,255,255,0.55)"
-          font-size="14"
+          x="66"
+          y="84"
+          fill="#4a5568"
+          font-size="13"
           font-family="system-ui,-apple-system,sans-serif"
-          font-weight="600"
-          letter-spacing="2.5"
+          font-weight="700"
+          letter-spacing="2"
         >
           {label.toUpperCase()}
         </text>
       )}
-
-      <!-- Accent line -->
-      <rect
-        x="48"
-        y={label ? 80 : 30}
-        width="44"
-        height="3"
-        rx="1.5"
-        fill="rgba(255,255,255,0.45)"
-      />
 
       <!-- Title lines -->
       {capped.map((line, i) => (
         <text
           x="52"
           y={startY + i * lineHeight}
-          fill="white"
-          font-size="36"
+          fill="#1e293b"
+          font-size="34"
           font-weight="700"
           font-family="system-ui,-apple-system,sans-serif"
         >
@@ -109,26 +87,26 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
         </text>
       ))}
 
-      <!-- Tag pills -->
-      {tags.slice(0, 4).map((tag, i) => {
-        const x = 52 + i * 150;
+      <!-- Tag badges -->
+      {tags.slice(0, 5).map((tag, i) => {
+        const x = 52 + i * 148;
         const displayTag = tag.length > 14 ? tag.slice(0, 13) + "…" : tag;
         return (
           <g>
             <rect
               x={x}
-              y="403"
-              width="138"
-              height="28"
-              rx="14"
-              fill="rgba(255,255,255,0.2)"
+              y="390"
+              width="136"
+              height="26"
+              rx="13"
+              fill="#e2e8f0"
             />
             <text
-              x={x + 69}
-              y="422"
+              x={x + 68}
+              y="407"
               text-anchor="middle"
-              fill="rgba(255,255,255,0.9)"
-              font-size="13"
+              fill="#475569"
+              font-size="12"
               font-family="system-ui,-apple-system,sans-serif"
             >
               {displayTag}

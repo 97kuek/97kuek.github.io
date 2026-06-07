@@ -30,15 +30,26 @@ const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   "name": heroEntry.data.name,
-  ...(heroEntry.data.alternateName ? { "alternateName": heroEntry.data.alternateName } : {}),
+  "familyName": "Ueki",
+  "givenName": "Keitaro",
+  ...(heroEntry.data.alternateName ? {
+    "alternateName": heroEntry.data.alternateName,
+    "additionalName": heroEntry.data.alternateName,
+  } : {}),
   "url": Astro.url.origin,
   "sameAs": sameAs,
   "description": heroEntry.data.description.trim(),
+  "nationality": { "@type": "Country", "name": "Japan" },
+  "alumniOf": {
+    "@type": "EducationalOrganization",
+    "name": "早稲田大学",
+    "alternateName": "Waseda University",
+  },
 };
 ---
 
 <Layout
-  title={`${heroEntry.data.name} - Portfolio`}
+  title={`植木敬太郎 (Keitaro Ueki) - Portfolio`}
   description={heroEntry.data.description}
 >
   <Fragment slot="head">
