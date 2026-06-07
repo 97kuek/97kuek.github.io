@@ -6,7 +6,12 @@ import { useTranslations, type Lang } from "../i18n/ui";
 
 const projectEntries = await getCollection("projects");
 
-const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
+const locale = (Astro.currentLocale ?? "ja") as Lang;
+const t = useTranslations(locale);
+const projectsBase =
+  locale === "en"
+    ? `${import.meta.env.BASE_URL}en/projects`
+    : `${import.meta.env.BASE_URL}projects`;
 
 const featuredProjects = projectEntries
   .filter((project) => project.data.featured === true)
@@ -44,7 +49,7 @@ const featuredProjects = projectEntries
     }
 
     <div class="text-center mt-10">
-      <a href={`${import.meta.env.BASE_URL}projects`} class="btn btn-primary btn-outline gap-2">
+      <a href={projectsBase} class="btn btn-primary btn-outline gap-2">
         {t("projects.seeAll")}
         <ArrowRight class="size-4" />
       </a>

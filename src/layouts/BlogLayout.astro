@@ -127,7 +127,7 @@ const blogSchema = {
             {tags.map((tag) => (
               <SkillBadge
                 skill={tag}
-                href={`${import.meta.env.BASE_URL}blog?tag=${encodeURIComponent(tag.toLowerCase())}`}
+                href={`${import.meta.env.BASE_URL}blog/tags/${tag}`}
               />
             ))}
           </div>

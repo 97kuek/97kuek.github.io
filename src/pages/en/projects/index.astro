@@ -1,0 +1,71 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import ProjectCard from "../../../components/ProjectCard.astro";
+import FilterSection from "../../../components/FilterSection.astro";
+
+const projects = await getCollection("projects");
+
+const sortedProjects = projects.sort((a, b) => {
+  const aTime = a.data.endDate ? a.data.endDate.getTime() : Number.MAX_SAFE_INTEGER;
+  const bTime = b.data.endDate ? b.data.endDate.getTime() : Number.MAX_SAFE_INTEGER;
+  return bTime - aTime;
+});
+
+const allSkills = [...new Set(projects.flatMap(p => p.data.skills))].sort();
+const skillCounts = projects.reduce((acc, project) => {
+  project.data.skills.forEach(skill => {
+    acc[skill] = (acc[skill] || 0) + 1;
+  });
+  return acc;
+}, {} as Record<string, number>);
+---
+
+<Layout
+  title="Projects - 97kuek"
+  description="A collection of web apps, tools, and programs I have built."
+>
+  <main class="max-w-6xl mx-auto px-4 py-20">
+    <div class="text-center mb-16">
+      <h1 class="text-3xl font-bold mb-4">Projects</h1>
+      <p class="text-xl text-base-content/70">
+        A collection of web apps, tools, and programs I have built.
+      </p>
+    </div>
+
+    <div class="mb-8">
+      <a href={`${import.meta.env.BASE_URL}en`} class="btn btn-ghost btn-sm">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
+        Back to Home
+      </a>
+    </div>
+
+    <FilterSection tags={allSkills} tagCounts={skillCounts} totalCount={sortedProjects.length} containerId="projects-grid" />
+
+    {
+      sortedProjects.length === 0 ? (
+        <div class="text-center py-20">
+          <p class="text-2xl text-base-content/60">No projects yet. Stay tuned!</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
+          {sortedProjects.map((project) => (
+            <ProjectCard project={project} />
+          ))}
+        </div>
+      )
+    }
+  </main>
+</Layout>

@@ -1,0 +1,60 @@
+---
+import { getEntry, getCollection, render } from "astro:content";
+import ProjectLayout from "../../../layouts/ProjectLayout.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("projects");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+  }));
+}
+
+const { slug } = Astro.params;
+const entry = await getEntry("projects", slug as string);
+
+if (!entry) {
+  return Astro.redirect(`${import.meta.env.BASE_URL}404`);
+}
+
+const { Content, headings } = await render(entry);
+
+const allProjects = await getCollection("projects");
+const sorted = allProjects.sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+const currentIndex = sorted.findIndex((e) => e.id === entry.id);
+const prevEntry = sorted[currentIndex + 1];
+const nextEntry = sorted[currentIndex - 1];
+const base = `${import.meta.env.BASE_URL}en/projects/`;
+const prevNav = prevEntry
+  ? {
+      title: prevEntry.data.title_en ?? prevEntry.data.title,
+      description: prevEntry.data.description_en ?? prevEntry.data.description,
+      url: `${base}${prevEntry.id}`,
+    }
+  : undefined;
+const nextNav = nextEntry
+  ? {
+      title: nextEntry.data.title_en ?? nextEntry.data.title,
+      description: nextEntry.data.description_en ?? nextEntry.data.description,
+      url: `${base}${nextEntry.id}`,
+    }
+  : undefined;
+---
+
+<ProjectLayout
+  id={entry.id}
+  title={entry.data.title_en ?? entry.data.title}
+  description={entry.data.description_en ?? entry.data.description}
+  startDate={entry.data.startDate}
+  endDate={entry.data.endDate}
+  image={entry.data.image}
+  images={entry.data.images}
+  skills={entry.data.skills}
+  demoLink={entry.data.demoLink}
+  sourceLink={entry.data.sourceLink}
+  updatedDate={entry.data.updatedDate}
+  headings={headings}
+  prev={prevNav}
+  next={nextNav}
+>
+  <Content />
+</ProjectLayout>
