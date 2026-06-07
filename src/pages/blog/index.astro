@@ -87,7 +87,7 @@ const tagCounts = blogPosts.reduce((acc, post) => {
                       height={400}
                     />
                   ) : (
-                    <OgPlaceholder id={post.id} title={post.data.title} tags={post.data.tags} showText={false} />
+                    <OgPlaceholder id={post.id} title={post.data.title} tags={post.data.tags} label="BLOG" />
                   )}
                 </figure>
                 <div class="card-body">

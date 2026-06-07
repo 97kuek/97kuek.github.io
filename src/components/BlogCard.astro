@@ -29,7 +29,7 @@ const readingTimeLabel = t("blog.readingTime").replace("{n}", String(readingTime
       {post.data.image ? (
         <Image src={post.data.image} alt={post.data.title} class="w-full h-full object-cover" />
       ) : (
-        <OgPlaceholder id={post.id} title={post.data.title} tags={post.data.tags} showText={false} />
+        <OgPlaceholder id={post.id} title={post.data.title} tags={post.data.tags} label="BLOG" />
       )}
     </figure>
     <div class="card-body">
