@@ -70,50 +70,51 @@ const tagCounts = blogPosts.reduce((acc, post) => {
         </div>
       ) : (
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="blog-grid">
-          {sortedPosts.map((post, index) => (
-            <a
-              href={`${import.meta.env.BASE_URL}blog/${post.id}`}
-              class={`block group ${index === 0 ? "md:col-span-2 lg:col-span-3" : ""}`}
+          {sortedPosts.map((post) => (
+            <article
+              class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 h-full relative group"
               data-filter-tags={(post.data.tags || []).join(",")}
             >
-              <article class={`card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 h-full ${index === 0 ? "md:flex-row" : ""}`}>
-                <figure class={`overflow-hidden ${index === 0 ? "aspect-video md:aspect-auto md:w-2/5 flex-shrink-0" : "aspect-video"}`}>
-                  {post.data.image ? (
-                    <Image
-                      src={post.data.image}
-                      alt={post.data.title}
-                      class="w-full h-full object-cover"
-                      width={index === 0 ? 900 : 600}
-                      height={index === 0 ? 500 : 400}
-                    />
-                  ) : (
-                    <OgPlaceholder id={post.id} title={post.data.title} tags={post.data.tags} label="BLOG" />
-                  )}
-                </figure>
-                <div class={`card-body ${index === 0 ? "md:p-10" : ""}`}>
-                  <div class="flex items-center gap-2 text-sm text-base-content/60">
-                    <time>{formatDate(post.data.publishDate)}</time>
-                    <span>&bull;</span>
-                    <span>約{calcReadingTime(post.body ?? '')}分</span>
-                  </div>
-                  <h2 class={`card-title group-hover:text-primary transition-colors ${index === 0 ? "text-xl md:text-2xl" : ""}`}>{post.data.title}</h2>
-                  <p class="text-base-content/70 text-sm">{post.data.description}</p>
-                  {post.data.tags && post.data.tags.length > 0 && (
-                    <div class="flex flex-wrap gap-1 mt-2">
-                      {post.data.tags.map((tag) => (
-                        <a
-                          href={`${import.meta.env.BASE_URL}blog/tags/${tag}`}
-                          class="text-[0.65rem] leading-none px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors relative z-10"
-                          onclick="event.stopPropagation()"
-                        >
-                          {tag}
-                        </a>
-                      ))}
-                    </div>
-                  )}
+              <figure class="aspect-video overflow-hidden flex-none">
+                {post.data.image ? (
+                  <Image
+                    src={post.data.image}
+                    alt={post.data.title}
+                    class="w-full h-full object-cover"
+                    width={600}
+                    height={400}
+                  />
+                ) : (
+                  <OgPlaceholder id={post.id} title={post.data.title} label="BLOG" minimal={true} />
+                )}
+              </figure>
+              <div class="card-body">
+                <div class="flex items-center gap-2 text-sm text-base-content/60">
+                  <time>{formatDate(post.data.publishDate)}</time>
+                  <span>&bull;</span>
+                  <span>約{calcReadingTime(post.body ?? '')}分</span>
                 </div>
-              </article>
-            </a>
+                <h2 class="card-title line-clamp-2">
+                  <a
+                    href={`${import.meta.env.BASE_URL}blog/${post.id}`}
+                    class="group-hover:text-primary transition-colors after:absolute after:inset-0 after:content-['']"
+                  >{post.data.title}</a>
+                </h2>
+                <p class="text-base-content/70 text-sm line-clamp-2">{post.data.description}</p>
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1 mt-2">
+                    {post.data.tags.slice(0, 3).map((tag) => (
+                      <a
+                        href={`${import.meta.env.BASE_URL}blog/tags/${tag}`}
+                        class="text-[0.65rem] leading-none px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors relative z-10"
+                      >
+                        {tag}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </article>
           ))}
         </div>
       )

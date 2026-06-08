@@ -5,9 +5,10 @@ interface Props {
   tags?: string[];
   label?: string;
   showText?: boolean;
+  minimal?: boolean;
 }
 
-const { id, title, tags = [], label, showText = true } = Astro.props;
+const { id, title, tags = [], label, showText = true, minimal = false } = Astro.props;
 
 function wrapTitle(text: string, maxWidth = 16): string[] {
   const isCJK = (ch: string) =>
@@ -48,12 +49,30 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
   aria-hidden="true"
 >
   <!-- Background -->
-  <rect width="800" height="450" fill="#f8fafc" />
+  <rect width="800" height="450" fill={minimal ? "#edf1f7" : "#f8fafc"} />
 
   <!-- Subtle border -->
-  <rect width="800" height="450" fill="none" stroke="#e2e8f0" stroke-width="2" />
+  <rect width="800" height="450" fill="none" stroke={minimal ? "#cfd7e6" : "#e2e8f0"} stroke-width="2" />
 
-  {showText && (
+  {minimal && label && (
+    <Fragment>
+      <text
+        x="400"
+        y="225"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        fill="#4a5568"
+        font-size="44"
+        font-family="system-ui,-apple-system,sans-serif"
+        font-weight="700"
+        letter-spacing="8"
+      >
+        {label.toUpperCase()}
+      </text>
+    </Fragment>
+  )}
+
+  {!minimal && showText && (
     <Fragment>
       <!-- Left accent bar -->
       <rect x="52" y="60" width="4" height="36" rx="2" fill="#4a5568" />

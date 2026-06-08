@@ -60,52 +60,51 @@ const posts = allPosts
       ) : (
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
-            <a
-              href={`${import.meta.env.BASE_URL}blog/${post.id}`}
-              class="block group"
-            >
-              <article class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 h-full">
-                <figure class="aspect-video overflow-hidden">
-                  {post.data.image ? (
-                    <Image
-                      src={post.data.image}
-                      alt={post.data.title}
-                      class="w-full h-full object-cover"
-                      width={600}
-                      height={400}
-                    />
-                  ) : (
-                    <OgPlaceholder id={post.id} title={post.data.title} tags={post.data.tags} label="BLOG" />
-                  )}
-                </figure>
-                <div class="card-body">
-                  <div class="flex items-center gap-2 text-sm text-base-content/60">
-                    <time>{formatDate(post.data.publishDate)}</time>
-                    <span>&bull;</span>
-                    <span>約{calcReadingTime(post.body ?? "")}分</span>
-                  </div>
-                  <h2 class="card-title group-hover:text-primary transition-colors">{post.data.title}</h2>
-                  <p class="text-base-content/70 text-sm">{post.data.description}</p>
-                  {post.data.tags && post.data.tags.length > 0 && (
-                    <div class="flex flex-wrap gap-1 mt-2">
-                      {post.data.tags.map((t) => (
-                        <a
-                          href={`${import.meta.env.BASE_URL}blog/tags/${t}`}
-                          class={`text-[0.65rem] leading-none px-1.5 py-0.5 rounded-full border transition-colors relative z-10 ${
-                            t === tag
-                              ? "bg-primary text-primary-content border-primary"
-                              : "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
-                          }`}
-                          onclick="event.stopPropagation()"
-                        >
-                          {t}
-                        </a>
-                      ))}
-                    </div>
-                  )}
+            <article class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 h-full relative group">
+              <figure class="aspect-video overflow-hidden flex-none">
+                {post.data.image ? (
+                  <Image
+                    src={post.data.image}
+                    alt={post.data.title}
+                    class="w-full h-full object-cover"
+                    width={600}
+                    height={400}
+                  />
+                ) : (
+                  <OgPlaceholder id={post.id} title={post.data.title} label="BLOG" minimal={true} />
+                )}
+              </figure>
+              <div class="card-body">
+                <div class="flex items-center gap-2 text-sm text-base-content/60">
+                  <time>{formatDate(post.data.publishDate)}</time>
+                  <span>&bull;</span>
+                  <span>約{calcReadingTime(post.body ?? "")}分</span>
                 </div>
-              </article>
-            </a>
+                <h2 class="card-title line-clamp-2">
+                  <a
+                    href={`${import.meta.env.BASE_URL}blog/${post.id}`}
+                    class="group-hover:text-primary transition-colors after:absolute after:inset-0 after:content-['']"
+                  >{post.data.title}</a>
+                </h2>
+                <p class="text-base-content/70 text-sm line-clamp-2">{post.data.description}</p>
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1 mt-2">
+                    {post.data.tags.slice(0, 3).map((t) => (
+                      <a
+                        href={`${import.meta.env.BASE_URL}blog/tags/${t}`}
+                        class={`text-[0.65rem] leading-none px-1.5 py-0.5 rounded-full border transition-colors relative z-10 ${
+                          t === tag
+                            ? "bg-primary text-primary-content border-primary"
+                            : "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+                        }`}
+                      >
+                        {t}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </article>
           ))}
         </div>
       )
