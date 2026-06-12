@@ -10,9 +10,26 @@ const { Content } = await render(contactEntry);
 
 const SectionIcon = getIcon(contact.icon);
 const FooterIcon = getIcon(contact.footerIcon);
+
+const base = import.meta.env.BASE_URL;
+const isEn = locale === "en";
+const footerLinks = [
+  { href: isEn ? "/en/" : base, label: isEn ? "Home" : "ホーム" },
+  ...(isEn ? [] : [{ href: `${base}blog`, label: "Blog" }]),
+  { href: isEn ? `${base}en/projects` : `${base}projects`, label: "Projects" },
+  { href: isEn ? `${base}en/search` : `${base}search`, label: isEn ? "Search" : "検索" },
+  { href: `${base}rss.xml`, label: "RSS" },
+];
 ---
 
 <footer id="contact" class="footer footer-horizontal footer-center bg-base-200 py-10">
+  <nav class="flex flex-wrap gap-x-6 gap-y-2 justify-center" aria-label={isEn ? "Footer" : "フッターナビゲーション"}>
+    {footerLinks.map((link) => (
+      <a href={link.href} class="link link-hover text-sm text-base-content/70 hover:text-base-content">
+        {link.label}
+      </a>
+    ))}
+  </nav>
   <aside>
     <SectionIcon class="inline-block size-14" />
     <p class="max-w-xl m-auto text-lg">

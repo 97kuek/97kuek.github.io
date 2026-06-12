@@ -45,7 +45,7 @@
 
 | コンポーネント | 役割 |
 | --- | --- |
-| `BlogCard.astro` | ブログ記事カード（`<a>` ラップ、カード全体がリンク） |
+| `BlogCard.astro` | ブログ記事カード（stretched-link、タグリンク・`highlightTag`・`headingLevel` 対応。トップ/一覧/タグページ共通） |
 | `ProjectCard.astro` | プロジェクトカード（stretched-link、ロケール別 `title_en`/`description_en` 対応） |
 | `SkillBadge.astro` | スキル・タグのバッジ（リンク付き） |
 | `FilterSection.astro` | タグフィルター（AND 絞り込み、URL パラメータ同期、i18n 対応） |

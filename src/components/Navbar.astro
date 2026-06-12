@@ -1,5 +1,6 @@
 ---
 import { getEntry } from "astro:content";
+import ThemeToggle from "./ThemeToggle.astro";
 import { useTranslations, type Lang } from "../i18n/ui";
 
 const heroEntry = await getEntry("hero", "index");
@@ -60,6 +61,9 @@ const searchHref = locale === "en" ? `${base}en/search` : `${base}search`;
         </a>
       ))}
     </nav>
+
+    <!-- テーマトグル -->
+    <ThemeToggle />
 
     <!-- 言語トグル -->
     <a

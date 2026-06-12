@@ -36,6 +36,16 @@ const {
 const origin = Astro.url.origin;
 const ogImageUrl = ogImage ?? `${origin}${import.meta.env.BASE_URL}og/home.png`;
 const locale = Astro.currentLocale ?? "ja";
+
+// hreflang: only output alternates for pages that actually have a translation
+// (top page, projects list/detail, search). Blog is Japanese-only.
+const path = Astro.url.pathname;
+const isEnPath = path === "/en" || path.startsWith("/en/");
+const jaPathRaw = isEnPath ? path.replace(/^\/en(\/|$)/, "/") : path;
+const jaPath = jaPathRaw.endsWith("/") ? jaPathRaw : `${jaPathRaw}/`;
+const enPath = jaPath === "/" ? "/en/" : `/en${jaPath}`;
+const hasTranslation =
+  jaPath === "/" || jaPath.startsWith("/projects/") || jaPath === "/search/";
 ---
 
 <!doctype html>
@@ -53,9 +63,30 @@ const locale = Astro.currentLocale ?? "ja";
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <link rel="canonical" href={Astro.url.href} />
-    <link rel="alternate" hreflang="ja" href={`${origin}/`} />
-    <link rel="alternate" hreflang="en" href={`${origin}/en/`} />
-    <link rel="alternate" hreflang="x-default" href={`${origin}/`} />
+    {
+      hasTranslation && (
+        <>
+          <link rel="alternate" hreflang="ja" href={`${origin}${jaPath}`} />
+          <link rel="alternate" hreflang="en" href={`${origin}${enPath}`} />
+          <link rel="alternate" hreflang="x-default" href={`${origin}${jaPath}`} />
+        </>
+      )
+    }
+
+    <!-- Apply theme before paint to avoid a flash of the wrong theme -->
+    <script is:inline>
+      (function () {
+        function applyTheme() {
+          var stored = localStorage.getItem("theme");
+          var theme =
+            stored ||
+            (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+        applyTheme();
+        document.addEventListener("astro:after-swap", applyTheme);
+      })();
+    </script>
 
     <!-- Open Graph / Social Media -->
     <meta property="og:title" content={title} />
@@ -87,6 +118,12 @@ const locale = Astro.currentLocale ?? "ja";
     <slot name="head" />
   </head>
   <body class="min-h-screen overflow-x-hidden">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] btn btn-primary btn-sm"
+    >
+      {isEn ? "Skip to content" : "本文へスキップ"}
+    </a>
     <Navbar />
     <slot />
 

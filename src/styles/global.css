@@ -41,7 +41,7 @@ variables on ThemeToggle component with the new theme names.
 The name should be the same as the theme name below.
 */
 @plugin "daisyui" {
-  themes: light --default;
+  themes: light --default, dark --prefersdark;
 }
 
 /* Primary = slate-blue (#3d5fa5), Accent = amber (#b5832a) */
@@ -50,6 +50,14 @@ The name should be the same as the theme name below.
   --color-primary-content: oklch(98% 0.01 240);
   --color-accent: oklch(64% 0.15 75);
   --color-accent-content: oklch(20% 0.05 75);
+}
+
+/* Dark theme: same hues, lifted lightness for contrast on dark surfaces */
+[data-theme="dark"] {
+  --color-primary: oklch(72% 0.10 240);
+  --color-primary-content: oklch(20% 0.03 240);
+  --color-accent: oklch(75% 0.13 75);
+  --color-accent-content: oklch(22% 0.05 75);
 }
 
 
@@ -67,11 +75,12 @@ The name should be the same as the theme name below.
   height: auto;
 }
 
-/* Fix: daisyUI sets data-theme="light" on :root, triggering EC's light theme CSS.
+/* Fix: daisyUI sets data-theme on :root, triggering EC's light theme CSS.
+   Code blocks stay github-dark in BOTH site themes.
    Override ALL github-dark values on .expressive-code (specificity 0,3,0 > EC's 0,2,0).
    --ec-frm-* vars are needed because is-terminal/has-title frames use
    --code-background → --ec-frm-trmBg/edBg instead of --ec-codeBg for pre background. */
-:root[data-theme="light"] .expressive-code {
+:root[data-theme] .expressive-code {
   /* base */
   --ec-brdCol: #1b1f23;
   --ec-codeBg: #24292e;
@@ -106,7 +115,7 @@ The name should be the same as the theme name below.
 }
 
 /* Force dark syntax highlight token colors; EC's (0,2,1) span rule loses to our (0,3,1). */
-:root[data-theme="light"] .expressive-code .ec-line :where(span[style^='--']:not([class])) {
+:root[data-theme] .expressive-code .ec-line :where(span[style^='--']:not([class])) {
   color: var(--0, inherit);
   background-color: var(--0bg, transparent);
   font-style: var(--0fs, inherit);

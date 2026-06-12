@@ -12,7 +12,7 @@ const isJa = (Astro.currentLocale ?? "ja") === "ja";
 <section id="github" class="py-16 px-4 bg-base-200">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-14">
-      <p class="text-base font-bold tracking-widest text-primary uppercase mb-3">GITHUB</p>
+      <h2 class="text-base font-bold tracking-widest text-primary uppercase mb-3">GITHUB</h2>
       <p class="text-base text-base-content/60">
         {isJa ? "GitHub での活動" : "My activity on GitHub"}
       </p>
@@ -26,7 +26,9 @@ const isJa = (Astro.currentLocale ?? "ja") === "ja";
           src={GRAPH_3D}
           alt="GitHub 3D contribution graph"
           loading="lazy"
-          class="w-full max-w-3xl"
+          width="1280"
+          height="850"
+          class="w-full max-w-3xl h-auto"
         />
       </div>
     </div>

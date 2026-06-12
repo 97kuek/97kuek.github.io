@@ -55,7 +55,7 @@ const personSchema = {
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   </Fragment>
-  <main class="bg-base-200">
+  <main id="main-content" class="bg-base-200">
     <!-- Hero Section (Always visible) -->
     <Hero hero={heroEntry.data} />
 

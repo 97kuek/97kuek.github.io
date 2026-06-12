@@ -26,6 +26,10 @@ const projectBase =
   locale === "en"
     ? `${import.meta.env.BASE_URL}en/projects/`
     : `${import.meta.env.BASE_URL}projects/`;
+const projectsListUrl =
+  locale === "en"
+    ? `${import.meta.env.BASE_URL}en/projects`
+    : `${import.meta.env.BASE_URL}projects`;
 ---
 
 <article
@@ -63,7 +67,7 @@ const projectBase =
         project.data.skills.map((skill) => (
           <SkillBadge
             skill={skill}
-            href={`${import.meta.env.BASE_URL}projects?tag=${encodeURIComponent(skill.toLowerCase())}`}
+            href={`${projectsListUrl}?tag=${encodeURIComponent(skill.toLowerCase())}`}
           />
         ))
       }

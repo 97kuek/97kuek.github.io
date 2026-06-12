@@ -101,13 +101,13 @@ const projectSchema = {
 };
 ---
 
-<Layout title={title} description={description} ogImage={ogImage} ogImageWidth={800} ogImageHeight={450}>
+<Layout title={`${title} - ${isEn ? "Keitaro Ueki" : "植木敬太郎"}`} description={description} ogImage={ogImage} ogImageWidth={800} ogImageHeight={450}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(projectSchema)} />
   </Fragment>
   <ReadingProgress />
   <BackToTop />
-  <article class="max-w-6xl mx-auto px-4 py-20">
+  <main id="main-content" class="max-w-6xl mx-auto px-4 py-20">
     <!-- Back button -->
     <div class="mb-8">
       <a
@@ -302,5 +302,5 @@ const projectSchema = {
       )
     }
     </div>
-  </article>
+  </main>
 </Layout>

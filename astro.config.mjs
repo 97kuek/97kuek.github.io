@@ -2,7 +2,6 @@ import { defineConfig } from "astro/config";
 
 import tailwindcss from "@tailwindcss/vite";
 
-import react from "@astrojs/react";
 import markdoc from "@astrojs/markdoc";
 import astroExpressiveCode from "astro-expressive-code";
 import sitemap from "@astrojs/sitemap";
@@ -24,7 +23,6 @@ export default defineConfig({
 
   integrations: [
     sitemap(),
-    react(),
     markdoc(),
     astroExpressiveCode({
       themes: ["github-dark"],

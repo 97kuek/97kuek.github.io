@@ -10,7 +10,7 @@ import Layout from "../../layouts/Layout.astro";
     <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
   </Fragment>
 
-  <main class="max-w-3xl mx-auto px-4 py-20">
+  <main id="main-content" class="max-w-3xl mx-auto px-4 py-20">
     <div class="text-center mb-12">
       <p class="text-base font-bold tracking-widest text-primary uppercase mb-3">SEARCH</p>
       <h1 class="text-3xl font-bold mb-4">Search</h1>
@@ -24,6 +24,10 @@ import Layout from "../../layouts/Layout.astro";
 <style>
   #search {
     --pagefind-ui-primary: var(--color-primary);
+    --pagefind-ui-text: var(--color-base-content);
+    --pagefind-ui-background: var(--color-base-100);
+    --pagefind-ui-border: var(--color-base-300);
+    --pagefind-ui-tag: var(--color-base-200);
     --pagefind-ui-font: inherit;
     --pagefind-ui-border-radius: 0.5rem;
     --pagefind-ui-border-width: 1px;
