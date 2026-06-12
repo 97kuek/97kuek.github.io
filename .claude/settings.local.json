@@ -71,7 +71,14 @@
       "Bash(node -e \"let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{ let m=d.match\\(/<div class=\\\\\"expressive-code\\\\\"><style>\\([\\\\s\\\\S]*?\\)<\\\\/style>/\\); if\\(m\\) { let css=m[1]; let i=css.indexOf\\(':root'\\); console.log\\(i>=0 ? css.slice\\(i,i+800\\) : 'NO ROOT IN INLINE'\\); } }\\)\")",
       "Bash(node -e \"let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{ let m=d.match\\(/<div class=\\\\\"expressive-code\\\\\"><style>\\([\\\\s\\\\S]*?\\)<\\\\/style>/\\); if\\(m\\) { let css=m[1]; let i=css.indexOf\\('color:var'\\); console.log\\(i>=0 ? css.slice\\(i,i+500\\) : 'NOT FOUND'\\); } }\\)\")",
       "Bash(node -e \"let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{ let m=d.match\\(/<div class=\\\\\"expressive-code\\\\\"><style>\\([\\\\s\\\\S]*?\\)<\\\\/style>/\\); if\\(m\\) { let css=m[1]; let i=css.indexOf\\('var\\(--0\\)'\\); console.log\\('var\\(--0\\) idx:', i\\); i=css.indexOf\\('--1'\\); console.log\\('--1 idx:', i\\); i=css.lastIndexOf\\('}'\\); console.log\\('last 500 chars:', css.slice\\(-500\\)\\); } }\\)\")",
-      "Bash(node -e \"let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{ let m=d.match\\(/<div class=\\\\\"expressive-code\\\\\"><style>\\([\\\\s\\\\S]*?\\)<\\\\/style>/\\); if\\(m\\) { let css=m[1]; let i=css.indexOf\\('var\\(--0'\\); console.log\\('var\\(--0 idx:', i\\); if\\(i>=0\\) console.log\\(css.slice\\(Math.max\\(0,i-300\\),i+200\\)\\); } }\\)\")"
+      "Bash(node -e \"let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{ let m=d.match\\(/<div class=\\\\\"expressive-code\\\\\"><style>\\([\\\\s\\\\S]*?\\)<\\\\/style>/\\); if\\(m\\) { let css=m[1]; let i=css.indexOf\\('var\\(--0'\\); console.log\\('var\\(--0 idx:', i\\); if\\(i>=0\\) console.log\\(css.slice\\(Math.max\\(0,i-300\\),i+200\\)\\); } }\\)\")",
+      "PowerShell(npm run *)",
+      "PowerShell(npx astro check 2>$null | Select-Object -Last 15)",
+      "PowerShell(git add *)",
+      "PowerShell(git push *)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(npm install *)",
+      "PowerShell(git restore *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",

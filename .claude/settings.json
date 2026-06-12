@@ -18,7 +18,12 @@
       "Bash(git -C \"c:/Users/yamashita/Documents/my-portfolio\" add src/content/blog/http-https.mdoc)",
       "Bash(git -C c:/Users/yamashita/Documents/my-portfolio commit -m ' *)",
       "Bash(git -C \"c:/Users/yamashita/Documents/my-portfolio\" push origin main)",
-      "Bash(git -C \"c:/Users/yamashita/Documents/my-portfolio\" add src/content/blog/http.mdoc src/content/blog/http-https.mdoc src/assets/blog/http/ src/assets/blog/http-https/)"
+      "Bash(git -C \"c:/Users/yamashita/Documents/my-portfolio\" add src/content/blog/http.mdoc src/content/blog/http-https.mdoc src/assets/blog/http/ src/assets/blog/http-https/)",
+      "Bash(move \"src\\\\pages\\\\blog\\\\tags\\\\[tag].astro\" \"src\\\\pages\\\\blog\\\\tags\\\\[...tag].astro\")",
+      "Bash(cp \"src/pages/blog/tags/[tag].astro\" \"src/pages/blog/tags/[...tag].astro\")",
+      "Bash(rm \"src/pages/blog/tags/[tag].astro\")",
+      "Bash(git commit -m ' *)",
+      "Bash(git diff *)"
     ]
   }
 }
