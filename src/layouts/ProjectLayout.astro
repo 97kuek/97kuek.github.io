@@ -8,6 +8,7 @@ import CarouselSlide from "../components/CarouselSlide.astro";
 import SkillBadge from "../components/SkillBadge.astro";
 import { ExternalLink } from "@lucide/astro";
 import { formatDate, formatPeriod } from "../utils/formatDate";
+import { useTranslations, type Lang } from "../i18n/ui";
 import Giscus from "../components/Giscus.astro";
 import RelatedContent from "../components/RelatedContent.astro";
 import PrevNextNav from "../components/PrevNextNav.astro";
@@ -55,22 +56,32 @@ const {
   next,
 } = Astro.props;
 
-// Calculate project duration in Japanese
+const locale = (Astro.currentLocale ?? "ja") as Lang;
+const isEn = locale === "en";
+const t = useTranslations(locale);
+const projectsListUrl = isEn
+  ? `${import.meta.env.BASE_URL}en/projects`
+  : `${import.meta.env.BASE_URL}projects`;
+const dateLocale = t("timeline.dateLocale");
+
+// Calculate elapsed project duration (includes ongoing projects, unlike utils' calculateDuration)
 function calculateDuration(startDate: Date, endDate?: Date) {
   const end = endDate || new Date();
   const months =
     (end.getFullYear() - startDate.getFullYear()) * 12 +
     (end.getMonth() - startDate.getMonth());
 
-  if (months < 1) return "1ヶ月未満";
-  if (months < 12) return `${months}ヶ月`;
+  if (months < 1) return isEn ? "less than a month" : "1ヶ月未満";
+  if (months < 12) return isEn ? `${months} mo` : `${months}ヶ月`;
 
   const years = Math.floor(months / 12);
   const remainingMonths = months % 12;
 
-  if (remainingMonths === 0) return `${years}年`;
-  return `${years}年${remainingMonths}ヶ月`;
+  if (remainingMonths === 0) return isEn ? `${years} yr` : `${years}年`;
+  return isEn ? `${years} yr ${remainingMonths} mo` : `${years}年${remainingMonths}ヶ月`;
 }
+
+const hasToc = headings.some((h) => h.depth <= 3);
 
 const ogImage = image
   ? `${Astro.url.origin}${typeof image === "object" && "src" in image ? image.src : image}`
@@ -100,7 +111,7 @@ const projectSchema = {
     <!-- Back button -->
     <div class="mb-8">
       <a
-        href={`${import.meta.env.BASE_URL}projects`}
+        href={projectsListUrl}
         class="btn btn-soft btn-sm"
       >
         <svg
@@ -116,12 +127,15 @@ const projectSchema = {
         >
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        プロジェクト一覧へ
+        {t("project.backToList")}
       </a>
     </div>
 
+    <div class:list={[hasToc && "lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-12 xl:gap-16"]}>
+    <div class="min-w-0">
+    <div class="max-w-3xl mx-auto">
     <!-- Featured Image / Carousel -->
-    <div class="mb-8 max-w-3xl mx-auto rounded-2xl overflow-hidden">
+    <div class="mb-8 rounded-2xl overflow-hidden">
       {images && images.length > 1 ? (
         <Carousel interval={5000}>
           {images.map((img) => (
@@ -157,14 +171,14 @@ const projectSchema = {
       <div
         class="flex flex-wrap items-center gap-4 text-sm text-base-content/60 mb-6"
       >
-        <span class="font-semibold">{formatPeriod(startDate, endDate)}</span>
+        <span class="font-semibold">{formatPeriod(startDate, endDate, dateLocale, t("timeline.present"))}</span>
         <span>&bull;</span>
-        <span>期間: {calculateDuration(startDate, endDate)}</span>
+        <span>{t("project.duration")}: {calculateDuration(startDate, endDate)}</span>
         {
           !endDate && (
             <>
               <span>&bull;</span>
-              <span class="badge badge-success badge-sm">進行中</span>
+              <span class="badge badge-success badge-sm">{t("project.ongoing")}</span>
             </>
           )
         }
@@ -172,7 +186,7 @@ const projectSchema = {
           updatedDate && (
             <>
               <span>&bull;</span>
-              <span>最終更新日: {formatDate(updatedDate)}</span>
+              <span>{t("project.lastUpdated")}: {formatDate(updatedDate, dateLocale)}</span>
             </>
           )
         }
@@ -190,7 +204,7 @@ const projectSchema = {
                 class="btn btn-primary gap-2"
               >
                 <ExternalLink class="size-5" />
-                デモを見る
+                {t("project.viewDemo")}
               </a>
             )}
             {sourceLink && (
@@ -209,7 +223,7 @@ const projectSchema = {
                 >
                   <path d="M16,2.345c7.735,0,14,6.265,14,14-.002,6.015-3.839,11.359-9.537,13.282-.7,.14-.963-.298-.963-.665,0-.473,.018-1.978,.018-3.85,0-1.312-.437-2.152-.945-2.59,3.115-.35,6.388-1.54,6.388-6.912,0-1.54-.543-2.783-1.435-3.762,.14-.35,.63-1.785-.14-3.71,0,0-1.173-.385-3.85,1.435-1.12-.315-2.31-.472-3.5-.472s-2.38,.157-3.5,.472c-2.677-1.802-3.85-1.435-3.85-1.435-.77,1.925-.28,3.36-.14,3.71-.892,.98-1.435,2.24-1.435,3.762,0,5.355,3.255,6.563,6.37,6.913-.403,.35-.77,.963-.893,1.872-.805,.368-2.818,.963-4.077-1.155-.263-.42-1.05-1.452-2.152-1.435-1.173,.018-.472,.665,.017,.927,.595,.332,1.277,1.575,1.435,1.978,.28,.787,1.19,2.293,4.707,1.645,0,1.173,.018,2.275,.018,2.607,0,.368-.263,.787-.963,.665-5.719-1.904-9.576-7.255-9.573-13.283,0-7.735,6.265-14,14-14Z" />
                 </svg>
-                ソースコード
+                {t("project.sourceCode")}
               </a>
             )}
           </div>
@@ -222,12 +236,12 @@ const projectSchema = {
       skills && skills.length > 0 && (
         <div class="card bg-base-200 mb-8">
           <div class="card-body">
-            <h2 class="card-title text-lg mb-3">使用技術</h2>
+            <h2 class="card-title text-lg mb-3">{t("project.techStack")}</h2>
             <div class="flex flex-wrap gap-2">
               {skills.map((skill) => (
                 <SkillBadge
                   skill={skill}
-                  href={`${import.meta.env.BASE_URL}projects?tag=${encodeURIComponent(skill.toLowerCase())}`}
+                  href={`${projectsListUrl}?tag=${encodeURIComponent(skill.toLowerCase())}`}
                 />
               ))}
             </div>
@@ -240,15 +254,15 @@ const projectSchema = {
     <div class="divider"></div>
 
     <div>
-      <!-- TOC (collapsible at top) -->
-      {headings.length > 0 && (
-        <div class="mb-8">
+      <!-- TOC (collapsible, mobile/tablet only) -->
+      {hasToc && (
+        <div class="mb-8 lg:hidden">
           <TableOfContents headings={headings} />
         </div>
       )}
 
       <!-- Project Content -->
-      <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3 prose-img:mx-auto prose-img:block prose-img:max-w-2xl prose-img:rounded-lg">
+      <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3 prose-img:mx-auto prose-img:block prose-img:max-w-full sm:prose-img:max-w-2xl prose-img:rounded-lg">
         <slot />
       </div>
 
@@ -270,10 +284,23 @@ const projectSchema = {
 
       <!-- Back to projects link -->
       <div class="text-center mt-8">
-        <a href={`${import.meta.env.BASE_URL}projects`} class="btn btn-primary">
-          すべてのプロジェクトを見る
+        <a href={projectsListUrl} class="btn btn-primary">
+          {t("project.seeAllBottom")}
         </a>
       </div>
+    </div>
+    </div>
+    </div>
+
+    {
+      hasToc && (
+        <aside class="hidden lg:block">
+          <div class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain pb-4">
+            <TableOfContents headings={headings} sidebar={true} />
+          </div>
+        </aside>
+      )
+    }
     </div>
   </article>
 </Layout>

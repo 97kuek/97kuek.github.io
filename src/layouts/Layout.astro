@@ -4,7 +4,7 @@ import FabFlower from "../components/FabFlower.astro";
 import Dock from "../components/Dock.astro";
 import Navbar from "../components/Navbar.astro";
 import ImageLightbox from "../components/ImageLightbox.astro";
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import { getEntry } from "astro:content";
 
 // Load general singleton
@@ -83,7 +83,7 @@ const locale = Astro.currentLocale ?? "ja";
     <meta name="google-site-verification" content="IdV4d4hYTHpXQOAso7eobHRcWXJw_-bXMiMWMRdth3k" />
     <!-- RSS Feed -->
     <link rel="alternate" type="application/rss+xml" title="Keitaro Ueki のブログ" href="/rss.xml" />
-    <ViewTransitions />
+    <ClientRouter />
     <slot name="head" />
   </head>
   <body class="min-h-screen overflow-x-hidden">
@@ -111,13 +111,6 @@ const locale = Astro.currentLocale ?? "ja";
 
     <!-- Image Lightbox -->
     <ImageLightbox />
-
-    <!-- Smooth Scroll -->
-    <style is:global>
-      html {
-        scroll-behavior: smooth;
-      }
-    </style>
   </body>
 </html>
 

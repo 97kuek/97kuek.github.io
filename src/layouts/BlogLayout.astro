@@ -36,6 +36,8 @@ interface Props {
 const { id, title, description, publishDate, updatedDate, image, tags, headings, readingTime, prev, next } =
   Astro.props;
 
+const hasToc = headings.some((h) => h.depth <= 3);
+
 const ogImage = image
   ? `${Astro.url.origin}${typeof image === "object" && "src" in image ? image.src : image}`
   : `${Astro.url.origin}${import.meta.env.BASE_URL}og/blog/${id}.png`;
@@ -85,92 +87,106 @@ const blogSchema = {
       </a>
     </div>
 
-    <!-- Featured Image -->
-    <figure class="mb-8 max-w-3xl mx-auto rounded-2xl overflow-hidden">
-      {image ? (
-        <Image
-          src={image}
-          alt={title}
-          class="w-full aspect-video object-cover"
-          width={1200}
-          height={630}
-        />
-      ) : (
-        <OgPlaceholder id={id} title={title} tags={tags} label="BLOG" />
-      )}
-    </figure>
+    <div class:list={[hasToc && "lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-12 xl:gap-16"]}>
+      <article class="min-w-0">
+        <div class="max-w-3xl mx-auto">
+          <!-- Featured Image -->
+          <figure class="mb-8 rounded-2xl overflow-hidden">
+            {image ? (
+              <Image
+                src={image}
+                alt={title}
+                class="w-full aspect-video object-cover"
+                width={1200}
+                height={630}
+              />
+            ) : (
+              <OgPlaceholder id={id} title={title} tags={tags} label="BLOG" />
+            )}
+          </figure>
 
-    <!-- Post Header -->
-    <header class="mb-8">
-      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">{title}</h1>
-      <p class="text-base sm:text-lg text-base-content/70 mb-4">{description}</p>
+          <!-- Post Header -->
+          <header class="mb-8">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">{title}</h1>
+            <p class="text-base sm:text-lg text-base-content/70 mb-4">{description}</p>
 
-      <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60">
-        <time datetime={publishDate.toISOString()}>
-          {formatDate(publishDate)}
-        </time>
-        <span>&bull;</span>
-        <span>読了目安: 約{readingTime}分</span>
-        {
-          updatedDate && (
-            <>
+            <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60">
+              <time datetime={publishDate.toISOString()}>
+                {formatDate(publishDate)}
+              </time>
               <span>&bull;</span>
-              <span>最終更新日: {formatDate(updatedDate)}</span>
-            </>
-          )
-        }
-      </div>
+              <span>読了目安: 約{readingTime}分</span>
+              {
+                updatedDate && (
+                  <>
+                    <span>&bull;</span>
+                    <span>最終更新日: {formatDate(updatedDate)}</span>
+                  </>
+                )
+              }
+            </div>
+
+            {
+              tags && tags.length > 0 && (
+                <div class="flex flex-wrap gap-2 mt-4">
+                  {tags.map((tag) => (
+                    <SkillBadge
+                      skill={tag}
+                      href={`${import.meta.env.BASE_URL}blog/tags/${tag}`}
+                    />
+                  ))}
+                </div>
+              )
+            }
+          </header>
+
+          <!-- Divider -->
+          <div class="divider"></div>
+
+          <!-- TOC (collapsible, mobile/tablet only) -->
+          <div class="mb-8 lg:hidden">
+            <TableOfContents headings={headings} />
+          </div>
+
+          <!-- Content Body -->
+          <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3 prose-img:mx-auto prose-img:block prose-img:max-w-full sm:prose-img:max-w-2xl prose-img:rounded-lg">
+            <slot />
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <PrevNextNav prev={prev} next={next} collection="blog" />
+
+          <!-- Related Content -->
+          <RelatedContent
+            currentId={id}
+            collection="blog"
+            tags={tags || []}
+          />
+
+          <!-- Giscus Comments -->
+          <Giscus />
+
+          <!-- Divider -->
+          <div class="divider mt-12"></div>
+
+          <!-- Back to blog link -->
+          <div class="text-center mt-8">
+            <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary">
+              すべての記事を見る
+            </a>
+          </div>
+        </div>
+      </article>
 
       {
-        tags && tags.length > 0 && (
-          <div class="flex flex-wrap gap-2 mt-4">
-            {tags.map((tag) => (
-              <SkillBadge
-                skill={tag}
-                href={`${import.meta.env.BASE_URL}blog/tags/${tag}`}
-              />
-            ))}
-          </div>
+        hasToc && (
+          <aside class="hidden lg:block">
+            <div class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain pb-4">
+              <TableOfContents headings={headings} sidebar={true} />
+            </div>
+          </aside>
         )
       }
-    </header>
-
-    <!-- Divider -->
-    <div class="divider"></div>
-
-    <article>
-      <!-- TOC (collapsible at top) -->
-      <div class="mb-8">
-        <TableOfContents headings={headings} />
-      </div>
-
-      <!-- Content Body -->
-      <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3 prose-img:mx-auto prose-img:block prose-img:max-w-full sm:prose-img:max-w-2xl prose-img:rounded-lg">
-        <slot />
-      </div>
-
-      <!-- Prev / Next Navigation -->
-      <PrevNextNav prev={prev} next={next} collection="blog" />
-
-      <!-- Related Content -->
-      <RelatedContent
-        currentId={id}
-        collection="blog"
-        tags={tags || []}
-      />
-
-      <!-- Giscus Comments -->
-      <Giscus />
-
-      <!-- Divider -->
-      <div class="divider mt-12"></div>
-
-      <!-- Back to blog link -->
-      <div class="text-center mt-8">
-        <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary">
-          すべての記事を見る
-        </a>
-      </div>
-    </article>
+    </div>
   </div>
 </Layout>

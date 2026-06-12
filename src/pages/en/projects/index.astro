@@ -26,13 +26,6 @@ const skillCounts = projects.reduce((acc, project) => {
   description="A collection of web apps, tools, and programs I have built."
 >
   <main class="max-w-6xl mx-auto px-4 py-20">
-    <div class="text-center mb-16">
-      <h1 class="text-3xl font-bold mb-4">Projects</h1>
-      <p class="text-xl text-base-content/70">
-        A collection of web apps, tools, and programs I have built.
-      </p>
-    </div>
-
     <div class="mb-8">
       <a href={`${import.meta.env.BASE_URL}en`} class="btn btn-ghost btn-sm">
         <svg
@@ -50,6 +43,13 @@ const skillCounts = projects.reduce((acc, project) => {
         </svg>
         Back to Home
       </a>
+    </div>
+
+    <div class="text-center mb-16">
+      <h1 class="text-3xl font-bold mb-4">Projects</h1>
+      <p class="text-xl text-base-content/70">
+        A collection of web apps, tools, and programs I have built.
+      </p>
     </div>
 
     <FilterSection tags={allSkills} tagCounts={skillCounts} totalCount={sortedProjects.length} containerId="projects-grid" />

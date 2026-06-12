@@ -3,6 +3,14 @@
 
 html {
   overflow-x: hidden;
+  /* Offset anchor jumps for the fixed navbar (4rem) + breathing room */
+  scroll-padding-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {

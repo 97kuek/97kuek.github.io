@@ -1,5 +1,5 @@
-export function formatDate(date: Date): string {
-  return date.toLocaleDateString("ja-JP", {
+export function formatDate(date: Date, locale: string = "ja-JP"): string {
+  return date.toLocaleDateString(locale, {
     year: "numeric",
     month: "long",
     day: "numeric",

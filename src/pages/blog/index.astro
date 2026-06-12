@@ -29,14 +29,6 @@ const tagCounts = blogPosts.reduce((acc, post) => {
   description="最新の技術記事や開発の記録を掲載しています"
 >
   <main class="max-w-6xl mx-auto px-4 py-20">
-    <!-- Header -->
-    <div class="text-center mb-16">
-      <h1 class="text-3xl font-bold mb-4">ブログ</h1>
-      <p class="text-xl text-base-content/70">
-        開発、デザイン、テクノロジーに関する考えや学びを記録しています。
-      </p>
-    </div>
-
     <!-- Back to Home -->
     <div class="mb-8">
       <a href={import.meta.env.BASE_URL} class="btn btn-ghost btn-sm">
@@ -55,6 +47,14 @@ const tagCounts = blogPosts.reduce((acc, post) => {
         </svg>
         ホームに戻る
       </a>
+    </div>
+
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <h1 class="text-3xl font-bold mb-4">ブログ</h1>
+      <p class="text-xl text-base-content/70">
+        開発、デザイン、テクノロジーに関する考えや学びを記録しています。
+      </p>
     </div>
 
     <!-- Filter -->

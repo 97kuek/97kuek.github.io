@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import OgPlaceholder from "./OgPlaceholder.astro";
-import { formatDate } from "../utils/formatDate";
+import { formatDate, calcReadingTime } from "../utils/formatDate";
 import { useTranslations, type Lang } from "../i18n/ui";
 
 interface Props {
@@ -13,10 +13,7 @@ const { post } = Astro.props;
 
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 
-const body = post.body ?? '';
-const japaneseChars = (body.match(/[　-鿿＀-￯]/g) ?? []).length;
-const englishWords = (body.match(/[a-zA-Z]+/g) ?? []).length;
-const readingTime = Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 200));
+const readingTime = calcReadingTime(post.body ?? '');
 const readingTimeLabel = t("blog.readingTime").replace("{n}", String(readingTime));
 ---
 

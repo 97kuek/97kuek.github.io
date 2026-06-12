@@ -58,7 +58,7 @@ ASCII アート・Mermaid 禁止。`DiagramFlow` + `DiagramNode` を使う → [
 - **コードブロック**は空・未知の言語識別子でビルドエラー。不明な言語は `text` を使う
 - **日付フォーマット**は必ず `src/utils/formatDate.ts` の関数を使う。各コンポーネントに独自定義しない
   - 例外: `Hackathons.astro` は日時まで含む独自フォーマット（短期イベント向け、意図的）
-  - 例外: `ProjectLayout.astro` の `calculateElapsed` はロケール非依存の日本語専用
+  - 例外: `ProjectLayout.astro` の `calculateDuration` は進行中案件も含む経過期間表示用（ロケール対応、意図的にローカル定義）
 - **画像パス**はフロントマターで `@assets/...` 形式を使う（`src/assets/` 以下）
 - `public/` 以下はそのままコピーされる（最適化なし）
 - `backup/` は旧コンテンツのバックアップ。編集不要

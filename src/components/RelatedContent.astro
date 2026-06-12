@@ -14,6 +14,13 @@ const { currentId, collection, tags, maxResults = 3 } = Astro.props;
 
 if (!tags || tags.length === 0) return null;
 
+const isEn = (Astro.currentLocale ?? "ja") === "en";
+// English pages exist for projects only; blog is Japanese-only
+const collectionBase =
+  isEn && collection === "projects"
+    ? `${import.meta.env.BASE_URL}en/${collection}`
+    : `${import.meta.env.BASE_URL}${collection}`;
+
 const allEntries = await getCollection(collection);
 
 // Calculate relevance score based on tag overlap
@@ -32,10 +39,19 @@ const relatedEntries = allEntries
 
 if (relatedEntries.length === 0) return null;
 
-const mappedEntries = relatedEntries.map(({ entry }) => ({
-  entry,
-  data: entry.data as CollectionEntry<"blog">["data"],
-}));
+const mappedEntries = relatedEntries.map(({ entry }) => {
+  const data = entry.data as CollectionEntry<"blog">["data"] & {
+    title_en?: string;
+    description_en?: string;
+  };
+  return {
+    entry,
+    data,
+    displayTitle: isEn && data.title_en ? data.title_en : data.title,
+    displayDescription:
+      isEn && data.description_en ? data.description_en : data.description,
+  };
+});
 ---
 
 <section class="mt-20">
@@ -43,16 +59,16 @@ const mappedEntries = relatedEntries.map(({ entry }) => ({
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     {
-      mappedEntries.map(({ entry, data }) => (
+      mappedEntries.map(({ entry, data, displayTitle, displayDescription }) => (
         <a
-          href={`${import.meta.env.BASE_URL}${collection}/${entry.id}`}
+          href={`${collectionBase}/${entry.id}`}
           class="group block card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 overflow-hidden"
         >
           {data.image && (
             <figure class="aspect-video overflow-hidden">
               <Image
                 src={data.image}
-                alt={data.title}
+                alt={displayTitle}
                 class="w-full h-full object-cover"
                 width={400}
                 height={225}
@@ -61,10 +77,10 @@ const mappedEntries = relatedEntries.map(({ entry }) => ({
           )}
           <div class="card-body p-4">
             <h3 class="card-title text-lg group-hover:text-primary transition-colors">
-              {data.title}
+              {displayTitle}
             </h3>
             <p class="text-sm text-base-content/70 line-clamp-2">
-              {data.description}
+              {displayDescription}
             </p>
           </div>
         </a>

@@ -31,12 +31,13 @@ const homeNavLinks = [
 const nonHomeNavLinks = [
   { href: locale === "en" ? "/en/" : base, label: t("nav.home") },
   ...(locale === "ja" ? [{ href: `${base}blog`, label: "Blog" }] : []),
-  { href: `${base}projects`, label: "Projects" },
+  { href: locale === "en" ? `${base}en/projects` : `${base}projects`, label: "Projects" },
 ];
 
 const navLinks = isHome ? homeNavLinks : nonHomeNavLinks;
 
 const langToggleHref = locale === "en" ? "/" : "/en/";
+const searchHref = locale === "en" ? `${base}en/search` : `${base}search`;
 ---
 
 <header
@@ -70,7 +71,7 @@ const langToggleHref = locale === "en" ? "/" : "/en/";
     </a>
 
     <!-- 検索ボタン -->
-    <a href={`${base}search`} class="btn btn-ghost btn-square btn-sm" aria-label={t("nav.search")}>
+    <a href={searchHref} class="btn btn-ghost btn-square btn-sm" aria-label={t("nav.search")}>
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"></circle>
         <path d="m21 21-4.35-4.35"></path>
@@ -108,8 +109,12 @@ const langToggleHref = locale === "en" ? "/" : "/en/";
 </header>
 
 <script>
-  const navbar = document.getElementById('site-navbar');
-  if (navbar) {
+  const initNavbar = () => {
+    const navbar = document.getElementById('site-navbar');
+    if (!navbar) return;
+
+    const handlers: Array<() => void> = [];
+
     const onScroll = () => {
       if (window.scrollY > 10) {
         navbar.classList.add('bg-base-100/95', 'shadow-sm');
@@ -120,31 +125,52 @@ const langToggleHref = locale === "en" ? "/" : "/en/";
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    handlers.push(() => window.removeEventListener('scroll', onScroll));
     onScroll();
-  }
 
-  const navLinks = document.querySelectorAll<HTMLAnchorElement>('#site-navbar nav a[href^="#"]');
+    const navLinks = navbar.querySelectorAll<HTMLAnchorElement>('nav a[href^="#"]');
 
-  if (navLinks.length > 0) {
-    const ids = [...navLinks].map(l => l.getAttribute('href')!.slice(1));
+    if (navLinks.length > 0) {
+      const ids = [...navLinks].map(l => l.getAttribute('href')!.slice(1));
 
-    const update = () => {
-      const y = window.scrollY + 120;
-      let current = ids[0];
-      for (const id of ids) {
-        const el = document.getElementById(id);
-        if (el && el.offsetTop <= y) current = id;
-      }
-      navLinks.forEach(l => {
-        if (l.getAttribute('href') === `#${current}`) {
-          l.setAttribute('data-active', '');
-        } else {
-          l.removeAttribute('data-active');
+      const update = () => {
+        const y = window.scrollY + 120;
+        let current = ids[0];
+        for (const id of ids) {
+          const el = document.getElementById(id);
+          if (el && el.offsetTop <= y) current = id;
         }
-      });
-    };
+        navLinks.forEach(l => {
+          if (l.getAttribute('href') === `#${current}`) {
+            l.setAttribute('data-active', '');
+          } else {
+            l.removeAttribute('data-active');
+          }
+        });
+      };
 
-    window.addEventListener('scroll', update, { passive: true });
-    update();
-  }
+      window.addEventListener('scroll', update, { passive: true });
+      handlers.push(() => window.removeEventListener('scroll', update));
+      update();
+    }
+
+    // daisyUI dropdown stays open via focus: blur after tapping a menu item
+    navbar.querySelectorAll<HTMLAnchorElement>('.dropdown a').forEach((a) => {
+      a.addEventListener('click', () => {
+        (document.activeElement as HTMLElement | null)?.blur();
+      });
+    });
+
+    return () => handlers.forEach((off) => off());
+  };
+
+  let cleanup: (() => void) | undefined;
+
+  const init = () => {
+    cleanup = initNavbar() ?? undefined;
+  };
+
+  init();
+  document.addEventListener('astro:before-swap', () => cleanup?.());
+  document.addEventListener('astro:after-swap', init);
 </script>
