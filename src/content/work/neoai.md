@@ -2,8 +2,9 @@
 title: "neoAI"
 subtitle: "AIエンジニア"
 location: "🇯🇵 Japan"
-startDate: 2026-10-01
+startDate: 2026-06-10
 link: https://neoai.jp/
 skills: []
 ---
-- 業務内容を記入してください。
+- RAGシステム・AIエージェント・LLM学習
+- 画像生成AIを含むマルチモーダルソリューション
