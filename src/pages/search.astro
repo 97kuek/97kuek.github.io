@@ -36,7 +36,7 @@ import Terminal from "../components/Terminal.astro";
     color: #27c93f;
   }
   .search-prompt .b {
-    color: #58a6ff;
+    color: #e0986a;
   }
   .search-prompt .muted {
     color: #8b949e;
@@ -45,7 +45,7 @@ import Terminal from "../components/Terminal.astro";
 
 <style is:global>
   #search {
-    --pagefind-ui-primary: #58a6ff;
+    --pagefind-ui-primary: #e0986a;
     --pagefind-ui-text: #e1e4e8;
     --pagefind-ui-background: #1f2428;
     --pagefind-ui-border: #30363d;
@@ -55,10 +55,16 @@ import Terminal from "../components/Terminal.astro";
     --pagefind-ui-border-width: 1px;
   }
   #search .pagefind-ui__search-input {
+    /* iOS Safari renders text/search inputs with its own white, rounded,
+       shadowed chrome unless appearance is reset — without this the field
+       stayed light on iPhone/iPad and broke the terminal look. */
+    -webkit-appearance: none;
+    appearance: none;
     background: #0d1117;
     color: #e1e4e8;
     caret-color: #27c93f;
-    font-size: 0.95rem;
+    /* 16px keeps iOS Safari from auto-zooming the page on focus. */
+    font-size: 16px;
   }
   #search .pagefind-ui__search-input::placeholder {
     color: #6e7681;
@@ -78,7 +84,7 @@ import Terminal from "../components/Terminal.astro";
     border-color: #30363d;
   }
   #search .pagefind-ui__result-link {
-    color: #58a6ff;
+    color: #e0986a;
   }
   #search .pagefind-ui__result-excerpt {
     color: #c9d1d9;

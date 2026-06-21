@@ -44,18 +44,20 @@ The name should be the same as the theme name below.
   themes: light --default, dark --prefersdark;
 }
 
-/* Primary = slate-blue (#3d5fa5), Accent = amber (#b5832a) */
+/* Primary = Claude-style orange (~#d97757), Accent = amber (#b5832a).
+   Light: a touch deeper/more saturated so links & buttons stay legible on white.
+   Dark: lifted lightness so the orange pops on dark surfaces. */
 [data-theme="light"] {
-  --color-primary: oklch(44% 0.13 240);
-  --color-primary-content: oklch(98% 0.01 240);
+  --color-primary: oklch(56% 0.16 46);
+  --color-primary-content: oklch(98% 0.02 46);
   --color-accent: oklch(64% 0.15 75);
   --color-accent-content: oklch(20% 0.05 75);
 }
 
-/* Dark theme: same hues, lifted lightness for contrast on dark surfaces */
+/* Dark theme: same hue, lifted lightness for contrast on dark surfaces */
 [data-theme="dark"] {
-  --color-primary: oklch(72% 0.10 240);
-  --color-primary-content: oklch(20% 0.03 240);
+  --color-primary: oklch(74% 0.135 50);
+  --color-primary-content: oklch(22% 0.045 50);
   --color-accent: oklch(75% 0.13 75);
   --color-accent-content: oklch(22% 0.05 75);
 }
