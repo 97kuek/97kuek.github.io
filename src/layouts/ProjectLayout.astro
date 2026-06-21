@@ -2,9 +2,7 @@
 import Layout from "./Layout.astro";
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
-import OgPlaceholder from "../components/OgPlaceholder.astro";
 import Carousel from "../components/Carousel.astro";
-import CarouselSlide from "../components/CarouselSlide.astro";
 import SkillBadge from "../components/SkillBadge.astro";
 import { ExternalLink } from "@lucide/astro";
 import { formatDate, formatPeriod } from "../utils/formatDate";
@@ -64,7 +62,7 @@ const projectsListUrl = isEn
   : `${import.meta.env.BASE_URL}projects`;
 const dateLocale = t("timeline.dateLocale");
 
-// Calculate elapsed project duration (includes ongoing projects, unlike utils' calculateDuration)
+// Includes ongoing projects, unlike the utility used for completed date ranges.
 function calculateDuration(startDate: Date, endDate?: Date) {
   const end = endDate || new Date();
   const months =
@@ -101,19 +99,22 @@ const projectSchema = {
 };
 ---
 
-<Layout title={`${title} - ${isEn ? "Keitaro Ueki" : "植木敬太郎"}`} description={description} ogImage={ogImage} ogImageWidth={800} ogImageHeight={450}>
+<Layout
+  title={`${title} - ${isEn ? "Keitaro Ueki" : "植木敬太郎"}`}
+  description={description}
+  ogImage={ogImage}
+  ogImageWidth={800}
+  ogImageHeight={450}
+>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(projectSchema)} />
   </Fragment>
   <ReadingProgress />
   <BackToTop />
-  <main id="main-content" class="max-w-6xl mx-auto px-4 py-20">
-    <!-- Back button -->
+
+  <main id="main-content" class="max-w-6xl mx-auto px-4 pt-20 pb-16">
     <div class="mb-8">
-      <a
-        href={projectsListUrl}
-        class="btn btn-soft btn-sm"
-      >
+      <a href={projectsListUrl} class="btn btn-soft btn-sm">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"
@@ -124,6 +125,7 @@ const projectSchema = {
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
+          aria-hidden="true"
         >
           <path d="m15 18-6-6 6-6"></path>
         </svg>
@@ -132,175 +134,165 @@ const projectSchema = {
     </div>
 
     <div class:list={[hasToc && "lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-12 xl:gap-16"]}>
-    <div class="min-w-0">
-    <div class="max-w-3xl mx-auto">
-    <!-- Featured Image / Carousel -->
-    <div class="mb-8 rounded-2xl overflow-hidden">
-      {images && images.length > 1 ? (
-        <Carousel interval={5000}>
-          {images.map((img) => (
-            <div class="carousel-slide flex-shrink-0 aspect-video">
-              <Image
-                src={img}
-                alt={title}
-                class="w-full h-full object-cover"
-                width={1200}
-                height={675}
-              />
+      <article class="min-w-0">
+        <div class="max-w-3xl mx-auto">
+          {
+            ((images && images.length > 1) || image) && (
+              <figure class="mb-8 rounded-lg overflow-hidden border border-base-200">
+                {images && images.length > 1 ? (
+                  <Carousel interval={5000}>
+                    {images.map((img) => (
+                      <div class="carousel-slide flex-shrink-0 aspect-video">
+                        <Image
+                          src={img}
+                          alt={title}
+                          class="w-full h-full object-cover"
+                          width={1200}
+                          height={675}
+                        />
+                      </div>
+                    ))}
+                  </Carousel>
+                ) : image ? (
+                  <Image
+                    src={image}
+                    alt={title}
+                    class="w-full aspect-video object-cover"
+                    width={1200}
+                    height={630}
+                  />
+                ) : null}
+              </figure>
+            )
+          }
+
+          <header class="mb-8 border border-base-200 bg-base-100 rounded-lg p-6 sm:p-8">
+            <p class="text-xs font-bold tracking-widest text-primary uppercase mb-4">PROJECT</p>
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">{title}</h1>
+            <p class="text-base sm:text-lg text-base-content/70 mb-6">{description}</p>
+
+            <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60 mb-6">
+              <span class="font-semibold">
+                {formatPeriod(startDate, endDate, dateLocale, t("timeline.present"))}
+              </span>
+              <span>&bull;</span>
+              <span>{t("project.duration")}: {calculateDuration(startDate, endDate)}</span>
+              {
+                !endDate && (
+                  <>
+                    <span>&bull;</span>
+                    <span class="badge badge-success badge-sm">{t("project.ongoing")}</span>
+                  </>
+                )
+              }
+              {
+                updatedDate && (
+                  <>
+                    <span>&bull;</span>
+                    <span>{t("project.lastUpdated")}: {formatDate(updatedDate, dateLocale)}</span>
+                  </>
+                )
+              }
             </div>
-          ))}
-        </Carousel>
-      ) : image ? (
-        <Image
-          src={image}
-          alt={title}
-          class="w-full aspect-video object-cover"
-          width={1200}
-          height={630}
-        />
-      ) : (
-        <OgPlaceholder id={id} title={title} tags={skills} label="PROJECT" />
-      )}
-    </div>
 
-    <!-- Project Header -->
-    <header class="mb-8">
-      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">{title}</h1>
-      <p class="text-base sm:text-lg text-base-content/70 mb-6">{description}</p>
+            {
+              (demoLink || sourceLink) && (
+                <div class="flex flex-wrap gap-3">
+                  {demoLink && (
+                    <a
+                      href={demoLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="btn btn-primary gap-2"
+                    >
+                      <ExternalLink class="size-5" />
+                      {t("project.viewDemo")}
+                    </a>
+                  )}
+                  {sourceLink && (
+                    <a
+                      href={sourceLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="btn btn-soft gap-2"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 32 32"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path d="M16,2.345c7.735,0,14,6.265,14,14-.002,6.015-3.839,11.359-9.537,13.282-.7,.14-.963-.298-.963-.665,0-.473,.018-1.978,.018-3.85,0-1.312-.437-2.152-.945-2.59,3.115-.35,6.388-1.54,6.388-6.912,0-1.54-.543-2.783-1.435-3.762,.14-.35,.63-1.785-.14-3.71,0,0-1.173-.385-3.85,1.435-1.12-.315-2.31-.472-3.5-.472s-2.38,.157-3.5,.472c-2.677-1.802-3.85-1.435-3.85-1.435-.77,1.925-.28,3.36-.14,3.71-.892,.98-1.435,2.24-1.435,3.762,0,5.355,3.255,6.563,6.37,6.913-.403,.35-.77,.963-.893,1.872-.805,.368-2.818,.963-4.077-1.155-.263-.42-1.05-1.452-2.152-1.435-1.173,.018-.472,.665,.017,.927,.595,.332,1.277,1.575,1.435,1.978,.28,.787,1.19,2.293,4.707,1.645,0,1.173,.018,2.275,.018,2.607,0,.368-.263,.787-.963,.665-5.719-1.904-9.576-7.255-9.573-13.283,0-7.735,6.265-14,14-14Z" />
+                      </svg>
+                      {t("project.sourceCode")}
+                    </a>
+                  )}
+                </div>
+              )
+            }
+          </header>
 
-      <div
-        class="flex flex-wrap items-center gap-4 text-sm text-base-content/60 mb-6"
-      >
-        <span class="font-semibold">{formatPeriod(startDate, endDate, dateLocale, t("timeline.present"))}</span>
-        <span>&bull;</span>
-        <span>{t("project.duration")}: {calculateDuration(startDate, endDate)}</span>
-        {
-          !endDate && (
-            <>
-              <span>&bull;</span>
-              <span class="badge badge-success badge-sm">{t("project.ongoing")}</span>
-            </>
-          )
-        }
-        {
-          updatedDate && (
-            <>
-              <span>&bull;</span>
-              <span>{t("project.lastUpdated")}: {formatDate(updatedDate, dateLocale)}</span>
-            </>
-          )
-        }
-      </div>
+          {
+            skills && skills.length > 0 && (
+              <section class="border border-base-200 bg-base-100 rounded-lg p-6 mb-8">
+                <h2 class="text-sm font-bold tracking-widest text-primary uppercase mb-4">
+                  {t("project.techStack")}
+                </h2>
+                <div class="flex flex-wrap gap-2">
+                  {skills.map((skill) => (
+                    <SkillBadge
+                      skill={skill}
+                      href={`${projectsListUrl}?tag=${encodeURIComponent(skill.toLowerCase())}`}
+                    />
+                  ))}
+                </div>
+              </section>
+            )
+          }
 
-      <!-- Prominent Action Buttons -->
-      {
-        (demoLink || sourceLink) && (
-          <div class="flex flex-wrap gap-3 mb-6">
-            {demoLink && (
-              <a
-                href={demoLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn-primary gap-2"
-              >
-                <ExternalLink class="size-5" />
-                {t("project.viewDemo")}
-              </a>
-            )}
-            {sourceLink && (
-              <a
-                href={sourceLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn-soft gap-2"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 32 32"
-                  fill="currentColor"
-                >
-                  <path d="M16,2.345c7.735,0,14,6.265,14,14-.002,6.015-3.839,11.359-9.537,13.282-.7,.14-.963-.298-.963-.665,0-.473,.018-1.978,.018-3.85,0-1.312-.437-2.152-.945-2.59,3.115-.35,6.388-1.54,6.388-6.912,0-1.54-.543-2.783-1.435-3.762,.14-.35,.63-1.785-.14-3.71,0,0-1.173-.385-3.85,1.435-1.12-.315-2.31-.472-3.5-.472s-2.38,.157-3.5,.472c-2.677-1.802-3.85-1.435-3.85-1.435-.77,1.925-.28,3.36-.14,3.71-.892,.98-1.435,2.24-1.435,3.762,0,5.355,3.255,6.563,6.37,6.913-.403,.35-.77,.963-.893,1.872-.805,.368-2.818,.963-4.077-1.155-.263-.42-1.05-1.452-2.152-1.435-1.173,.018-.472,.665,.017,.927,.595,.332,1.277,1.575,1.435,1.978,.28,.787,1.19,2.293,4.707,1.645,0,1.173,.018,2.275,.018,2.607,0,.368-.263,.787-.963,.665-5.719-1.904-9.576-7.255-9.573-13.283,0-7.735,6.265-14,14-14Z" />
-                </svg>
-                {t("project.sourceCode")}
-              </a>
-            )}
+          <div class="divider"></div>
+
+          {hasToc && (
+            <div class="mb-8 lg:hidden">
+              <TableOfContents headings={headings} />
+            </div>
+          )}
+
+          <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3 prose-img:mx-auto prose-img:block prose-img:max-w-full sm:prose-img:max-w-2xl prose-img:rounded-lg">
+            <slot />
           </div>
+
+          <PrevNextNav prev={prev} next={next} collection="projects" />
+
+          <RelatedContent
+            currentId={id}
+            collection="projects"
+            tags={skills}
+          />
+
+          <Giscus />
+
+          <div class="divider mt-12"></div>
+
+          <div class="text-center mt-8">
+            <a href={projectsListUrl} class="btn btn-primary">
+              {t("project.seeAllBottom")}
+            </a>
+          </div>
+        </div>
+      </article>
+
+      {
+        hasToc && (
+          <aside class="hidden lg:block">
+            <div class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain pb-4">
+              <TableOfContents headings={headings} sidebar={true} />
+            </div>
+          </aside>
         )
       }
-    </header>
-
-    <!-- Tech Stack Showcase -->
-    {
-      skills && skills.length > 0 && (
-        <div class="card bg-base-200 mb-8">
-          <div class="card-body">
-            <h2 class="card-title text-lg mb-3">{t("project.techStack")}</h2>
-            <div class="flex flex-wrap gap-2">
-              {skills.map((skill) => (
-                <SkillBadge
-                  skill={skill}
-                  href={`${projectsListUrl}?tag=${encodeURIComponent(skill.toLowerCase())}`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    <!-- Divider -->
-    <div class="divider"></div>
-
-    <div>
-      <!-- TOC (collapsible, mobile/tablet only) -->
-      {hasToc && (
-        <div class="mb-8 lg:hidden">
-          <TableOfContents headings={headings} />
-        </div>
-      )}
-
-      <!-- Project Content -->
-      <div class="prose max-w-none prose-headings:text-primary prose-h2:border-b-2 prose-h2:border-primary prose-h2:pb-2 prose-h3:border-l-4 prose-h3:border-primary prose-h3:pl-3 prose-img:mx-auto prose-img:block prose-img:max-w-full sm:prose-img:max-w-2xl prose-img:rounded-lg">
-        <slot />
-      </div>
-
-      <!-- Prev / Next Navigation -->
-      <PrevNextNav prev={prev} next={next} collection="projects" />
-
-      <!-- Related Content -->
-      <RelatedContent
-        currentId={id}
-        collection="projects"
-        tags={skills}
-      />
-
-      <!-- Giscus Comments -->
-      <Giscus />
-
-      <!-- Divider -->
-      <div class="divider mt-12"></div>
-
-      <!-- Back to projects link -->
-      <div class="text-center mt-8">
-        <a href={projectsListUrl} class="btn btn-primary">
-          {t("project.seeAllBottom")}
-        </a>
-      </div>
-    </div>
-    </div>
-    </div>
-
-    {
-      hasToc && (
-        <aside class="hidden lg:block">
-          <div class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain pb-4">
-            <TableOfContents headings={headings} sidebar={true} />
-          </div>
-        </aside>
-      )
-    }
     </div>
   </main>
 </Layout>

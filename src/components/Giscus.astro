@@ -1,10 +1,23 @@
 ---
 // Giscus.astro
+const isEn = (Astro.currentLocale ?? "ja") === "en";
+const commentsTitle = isEn ? "Comments" : "コメント";
+const commentsDescription = isEn
+    ? "GitHub Discussions comments are loaded only when you open them."
+    : "GitHub Discussions のコメント欄は、開いたときだけ読み込みます。";
+const commentsButton = isEn ? "Load comments" : "コメントを読み込む";
 ---
 
 <div class="giscus-container mt-16 max-w-4xl mx-auto px-4 w-full">
+    <div class="border border-base-200 rounded-lg bg-base-100 p-5 text-center" data-giscus-placeholder>
+        <h2 class="text-sm font-bold tracking-widest text-primary uppercase mb-2">{commentsTitle}</h2>
+        <p class="text-sm text-base-content/60 mb-4">{commentsDescription}</p>
+        <button class="btn btn-soft btn-sm" type="button" data-giscus-load>{commentsButton}</button>
+    </div>
     <div class="giscus"></div>
     <script is:inline>
+        let giscusLoaded = false;
+
         function getGiscusTheme() {
             const theme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('theme');
             const darkThemes = ['dark', 'synthwave', 'dim', 'halloween', 'night', 'coffee', 'luxury'];
@@ -12,6 +25,7 @@
         }
 
         function loadGiscus() {
+            if (giscusLoaded || document.querySelector('iframe.giscus-frame')) return;
             const theme = getGiscusTheme();
             const script = document.createElement('script');
             script.src = 'https://giscus.app/client.js';
@@ -31,7 +45,9 @@
             
             const container = document.querySelector('.giscus');
             if (container) {
+                document.querySelector('[data-giscus-placeholder]')?.remove();
                 container.appendChild(script);
+                giscusLoaded = true;
             }
         }
 
@@ -75,18 +91,24 @@
         startObserver();
 
         // Run on page load
+        function initGiscusLoader() {
+            const button = document.querySelector('[data-giscus-load]');
+            if (button) {
+                button.addEventListener('click', loadGiscus, { once: true });
+            }
+        }
+
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadGiscus);
+            document.addEventListener('DOMContentLoaded', initGiscusLoader);
         } else {
-            loadGiscus();
+            initGiscusLoader();
         }
 
         // For Astro view transitions
         document.addEventListener('astro:after-swap', () => {
             startObserver();
-            if (!document.querySelector('iframe.giscus-frame')) {
-                loadGiscus();
-            } else {
+            initGiscusLoader();
+            if (document.querySelector('iframe.giscus-frame')) {
                 updateGiscusTheme();
             }
         });

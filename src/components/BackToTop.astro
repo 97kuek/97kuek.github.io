@@ -2,11 +2,19 @@
 // BackToTop.astro
 ---
 
-<div class="tooltip tooltip-left fixed bottom-8 right-8 z-50 translate-y-24 opacity-0 transition-all duration-300" id="back-to-top-wrapper" data-tip="長押しで目次を表示">
+<div
+  class="tooltip tooltip-left fixed bottom-5 right-5 md:bottom-8 md:right-8 z-50 translate-y-24 opacity-0 transition-all duration-300"
+  id="back-to-top-wrapper"
+  aria-hidden="true"
+  hidden
+>
 <button
   id="back-to-top"
   class="btn btn-circle btn-primary shadow-lg hover:scale-110 active:scale-95"
   aria-label="トップへ戻る"
+  aria-haspopup="dialog"
+  aria-controls="toc-popup"
+  tabindex="-1"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +35,8 @@
 <!-- 長押しヒント (初回表示時のみ) -->
 <div
   id="toc-hint"
-  class="fixed bottom-9 right-20 z-50 opacity-0 translate-x-2 transition-all duration-300 pointer-events-none"
+  class="fixed bottom-6 right-20 md:bottom-9 md:right-20 z-50 opacity-0 translate-x-2 transition-all duration-300 pointer-events-none"
+  hidden
 >
   <div class="bg-base-100 border border-base-300 text-base-content/70 text-xs rounded-full px-3 py-1.5 shadow-lg whitespace-nowrap">
     長押しで目次
@@ -37,9 +46,11 @@
 <!-- TOC popup (long-press) -->
 <div
   id="toc-popup"
-  class="fixed bottom-24 right-8 w-72 max-h-96 overflow-y-auto bg-base-100 border border-base-300 rounded-2xl shadow-xl z-50 opacity-0 scale-95 pointer-events-none transition-all duration-200 origin-bottom-right"
+  class="fixed bottom-20 right-4 left-4 md:left-auto md:bottom-24 md:right-8 md:w-72 max-h-96 overflow-y-auto bg-base-100 border border-base-300 rounded-2xl shadow-xl z-50 opacity-0 scale-95 pointer-events-none transition-all duration-200 origin-bottom-right"
   role="dialog"
   aria-label="目次"
+  aria-hidden="true"
+  hidden
 >
   <div class="p-4">
     <p class="text-xs font-semibold uppercase tracking-widest text-base-content/40 mb-3 flex items-center gap-2">
@@ -54,6 +65,7 @@
 
 <script>
   const LONG_PRESS_MS = 500;
+  const TOOLTIP_LABEL = '長押しで目次を表示';
 
   const initBackToTop = () => {
     const wrapper = document.getElementById('back-to-top-wrapper');
@@ -68,24 +80,38 @@
     const showHint = () => {
       if (hintShown || !hint) return;
       hintShown = true;
+      hint.hidden = false;
       hint.classList.remove('opacity-0', 'translate-x-2');
       hint.classList.add('opacity-100', 'translate-x-0');
       setTimeout(() => {
         hint.classList.add('opacity-0', 'translate-x-2');
         hint.classList.remove('opacity-100', 'translate-x-0');
+        hint.hidden = true;
       }, 2500);
     };
 
     // --- visibility toggle ---
     const toggleVisible = () => {
       if (window.scrollY > 300) {
+        wrapper.hidden = false;
+        wrapper.setAttribute('data-tip', TOOLTIP_LABEL);
         wrapper.classList.remove('translate-y-24', 'opacity-0');
         wrapper.classList.add('translate-y-0', 'opacity-100');
+        wrapper.setAttribute('aria-hidden', 'false');
+        button.removeAttribute('tabindex');
         showHint();
       } else {
         wrapper.classList.add('translate-y-24', 'opacity-0');
         wrapper.classList.remove('translate-y-0', 'opacity-100');
+        wrapper.removeAttribute('data-tip');
+        wrapper.setAttribute('aria-hidden', 'true');
+        button.setAttribute('tabindex', '-1');
         closeToc();
+        setTimeout(() => {
+          if (wrapper.getAttribute('aria-hidden') === 'true') {
+            wrapper.hidden = true;
+          }
+        }, 300);
       }
     };
 
@@ -116,13 +142,21 @@
 
     const openToc = () => {
       if (!buildList()) return;
+      popup.hidden = false;
       popup.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
       popup.classList.add('opacity-100', 'scale-100');
+      popup.setAttribute('aria-hidden', 'false');
+      button.setAttribute('aria-expanded', 'true');
     };
 
     const closeToc = () => {
       popup.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
       popup.classList.remove('opacity-100', 'scale-100');
+      popup.setAttribute('aria-hidden', 'true');
+      button.setAttribute('aria-expanded', 'false');
+      setTimeout(() => {
+        if (!isTocOpen()) popup.hidden = true;
+      }, 200);
     };
 
     const isTocOpen = () => popup.classList.contains('opacity-100');

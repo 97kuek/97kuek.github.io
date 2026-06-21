@@ -19,6 +19,14 @@ const isHome =
   pathname === "/en" ||
   pathname === "/en/";
 
+const normalizePath = (value: string) => {
+  const pathOnly = value.split("#")[0].split("?")[0];
+  const withSlash = pathOnly.endsWith("/") ? pathOnly : `${pathOnly}/`;
+  return withSlash === "//" ? "/" : withSlash;
+};
+
+const currentPath = normalizePath(pathname);
+
 const homeNavLinks = [
   { href: "#about", label: "About" },
   { href: "#projects", label: "Projects" },
@@ -39,6 +47,14 @@ const navLinks = isHome ? homeNavLinks : nonHomeNavLinks;
 
 const langToggleHref = locale === "en" ? "/" : "/en/";
 const searchHref = locale === "en" ? `${base}en/search` : `${base}search`;
+
+const isActiveHref = (href: string) => {
+  if (isHome || href.startsWith("#")) return false;
+  const target = normalizePath(href);
+  if (target === "/" || target === "/en/") return currentPath === target;
+  return currentPath === target || currentPath.startsWith(target);
+};
+const isSearchActive = currentPath === normalizePath(searchHref);
 ---
 
 <header
@@ -55,6 +71,8 @@ const searchHref = locale === "en" ? `${base}en/search` : `${base}search`;
       {navLinks.map((link) => (
         <a
           href={link.href}
+          aria-current={isActiveHref(link.href) ? "page" : undefined}
+          data-active={isActiveHref(link.href) ? "" : undefined}
           class="btn btn-ghost btn-sm text-base-content/70 hover:text-base-content data-[active]:text-primary data-[active]:font-semibold"
         >
           {link.label}
@@ -75,7 +93,15 @@ const searchHref = locale === "en" ? `${base}en/search` : `${base}search`;
     </a>
 
     <!-- 検索ボタン -->
-    <a href={searchHref} class="btn btn-ghost btn-square btn-sm" aria-label={t("nav.search")}>
+    <a
+      href={searchHref}
+      class:list={[
+        "btn btn-ghost btn-square btn-sm",
+        isSearchActive && "text-primary",
+      ]}
+      aria-label={t("nav.search")}
+      aria-current={isSearchActive ? "page" : undefined}
+    >
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"></circle>
         <path d="m21 21-4.35-4.35"></path>
@@ -97,7 +123,14 @@ const searchHref = locale === "en" ? `${base}en/search` : `${base}search`;
       >
         {navLinks.map((link) => (
           <li>
-            <a href={link.href} class="text-base-content/80">
+            <a
+              href={link.href}
+              class:list={[
+                "text-base-content/80",
+                isActiveHref(link.href) && "text-primary font-semibold",
+              ]}
+              aria-current={isActiveHref(link.href) ? "page" : undefined}
+            >
               {link.label}
             </a>
           </li>

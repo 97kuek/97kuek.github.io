@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
+    "audit:ui": "playwright test tools/ui-audit.spec.ts",
     "astro": "astro"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",
+    "@playwright/test": "^1.56.1",
     "pagefind": "^1.5.2",
     "typescript": "^5.9.3"
   }

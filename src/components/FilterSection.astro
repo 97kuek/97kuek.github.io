@@ -20,7 +20,7 @@ const itemsSuffix = t("filter.items");
   <button
     id={`filter-toggle-${containerId}`}
     class="flex items-center justify-between w-full mb-4 px-2 py-1 group hover:bg-base-200/50 rounded-lg transition-colors duration-200"
-    aria-expanded="false"
+    aria-expanded="true"
     aria-controls={`filter-content-${containerId}`}
   >
     <div class="flex items-center gap-2">
@@ -39,13 +39,13 @@ const itemsSuffix = t("filter.items");
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      class="chevron transition-transform duration-300 -rotate-90"
+      class="chevron transition-transform duration-300"
     >
       <polyline points="6 9 12 15 18 9"></polyline>
     </svg>
   </button>
 
-  <div id={`filter-content-${containerId}`} class="transition-all duration-300 ease-in-out overflow-hidden opacity-0 max-h-0">
+  <div id={`filter-content-${containerId}`} class="transition-all duration-300 ease-in-out overflow-hidden">
     <div class="flex flex-wrap gap-2 mb-4" id={`filter-${containerId}`}>
       <button
         class="btn btn-sm btn-primary filter-btn active"
@@ -84,7 +84,12 @@ const itemsSuffix = t("filter.items");
 </div>
 
 <script define:vars={{ containerId, itemsSuffix }}>
+  let cleanupFilter;
+
   const initFilter = () => {
+    cleanupFilter?.();
+    cleanupFilter = undefined;
+
     const filterRoot = document.getElementById(`filter-section-${containerId}`);
     const filterSection = document.getElementById(`filter-${containerId}`);
     const container = document.getElementById(containerId);
@@ -92,31 +97,57 @@ const itemsSuffix = t("filter.items");
     const noResults = document.getElementById(`no-results-${containerId}`);
 
     if (filterSection && container && countDisplay && noResults) {
+      const cleanups = [];
       const toggle = document.getElementById(`filter-toggle-${containerId}`);
       const content = document.getElementById(`filter-content-${containerId}`);
       const chevron = toggle?.querySelector('.chevron');
 
       const buttons = filterSection.querySelectorAll('.filter-btn');
+      const prefersCollapsed = window.matchMedia('(max-width: 767px)');
 
-      if (toggle && content && chevron) {
-        toggle.addEventListener('click', () => {
-          const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-          toggle.setAttribute('aria-expanded', (!isExpanded).toString());
+      const setExpanded = (expanded, focusFirst = false) => {
+        if (!toggle || !content || !chevron) return;
+        toggle.setAttribute('aria-expanded', expanded.toString());
+        content.toggleAttribute('inert', !expanded);
 
-          if (isExpanded) {
-            content.style.maxHeight = '0px';
-            content.style.opacity = '0';
-            chevron.classList.add('-rotate-90');
-          } else {
-            content.style.maxHeight = content.scrollHeight + 'px';
-            content.style.opacity = '1';
-            chevron.classList.remove('-rotate-90');
+        if (expanded) {
+          content.hidden = false;
+          content.style.maxHeight = content.scrollHeight + 'px';
+          content.style.opacity = '1';
+          chevron.classList.remove('-rotate-90');
+          if (focusFirst) {
             setTimeout(() => {
               const firstBtn = content.querySelector('.filter-btn');
               if (firstBtn) firstBtn.focus();
-            }, 300);
+            }, 200);
           }
-        });
+        } else {
+          content.style.maxHeight = '0px';
+          content.style.opacity = '0';
+          chevron.classList.add('-rotate-90');
+          setTimeout(() => {
+            if (toggle.getAttribute('aria-expanded') !== 'true') {
+              content.hidden = true;
+            }
+          }, 300);
+        }
+      };
+
+      if (toggle && content && chevron) {
+        setExpanded(!prefersCollapsed.matches);
+
+        const onToggleClick = () => {
+          const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+          setExpanded(!isExpanded, !isExpanded);
+        };
+        toggle.addEventListener('click', onToggleClick);
+        cleanups.push(() => toggle.removeEventListener('click', onToggleClick));
+
+        const onMediaChange = (event) => {
+          setExpanded(!event.matches);
+        };
+        prefersCollapsed.addEventListener('change', onMediaChange);
+        cleanups.push(() => prefersCollapsed.removeEventListener('change', onMediaChange));
       }
 
       const resetBtn = filterRoot.querySelector('.reset-filters');
@@ -146,6 +177,10 @@ const itemsSuffix = t("filter.items");
             }
           }
         });
+
+        if (content && toggle?.getAttribute('aria-expanded') === 'true') {
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
 
         items.forEach(item => {
           const itemTags = item.getAttribute('data-filter-tags').split(',').map(t => t.trim().toLowerCase());
@@ -192,16 +227,20 @@ const itemsSuffix = t("filter.items");
       };
 
       buttons.forEach(button => {
-        button.addEventListener('click', () => {
+        const onButtonClick = () => {
           toggleTag(button.getAttribute('data-tag'));
-        });
+        };
+        button.addEventListener('click', onButtonClick);
+        cleanups.push(() => button.removeEventListener('click', onButtonClick));
       });
 
       if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
+        const onResetClick = () => {
           activeTags.clear();
           updateUI();
-        });
+        };
+        resetBtn.addEventListener('click', onResetClick);
+        cleanups.push(() => resetBtn.removeEventListener('click', onResetClick));
       }
 
       const syncFromUrl = () => {
@@ -218,15 +257,21 @@ const itemsSuffix = t("filter.items");
         updateUI(false);
       };
 
-      window.addEventListener('popstate', () => {
+      const onPopState = () => {
         syncFromUrl();
-      });
+      };
+      window.addEventListener('popstate', onPopState);
+      cleanups.push(() => window.removeEventListener('popstate', onPopState));
 
       syncFromUrl();
+      cleanupFilter = () => {
+        cleanups.forEach((cleanup) => cleanup());
+      };
     }
   };
 
   document.addEventListener('astro:page-load', initFilter);
+  document.addEventListener('astro:before-swap', () => cleanupFilter?.());
 </script>
 
 <style>

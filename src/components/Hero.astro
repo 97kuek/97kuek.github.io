@@ -19,14 +19,20 @@ interface Props {
 }
 
 const { hero } = Astro.props;
+const isEn = (Astro.currentLocale ?? "ja") === "en";
+const primaryLinks = [
+  { href: "#projects", label: isEn ? "View projects" : "プロジェクトを見る", variant: "btn-primary" },
+  ...(isEn ? [] : [{ href: "#blog", label: "記事を読む", variant: "btn-soft" }]),
+  { href: "#contact", label: isEn ? "Contact" : "連絡する", variant: "btn-ghost" },
+];
 ---
 
-<section class="hero min-h-[72vh] md:min-h-screen">
-  <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl w-full gap-12 lg:gap-24 py-24">
+<section class="hero min-h-[calc(100svh-5rem)] lg:min-h-[78vh]">
+  <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl w-full gap-8 lg:gap-20 pt-24 pb-12 md:pt-28 md:pb-16">
 
     <!-- Avatar -->
     <div class="shrink-0">
-      <div class="w-52 lg:w-72 rounded-full overflow-hidden ring-2 ring-primary/20 ring-offset-2">
+      <div class="w-44 sm:w-52 lg:w-64 rounded-full overflow-hidden ring-2 ring-primary/20 ring-offset-2">
         {
           typeof hero.avatar === "string" ? (
             <img src={hero.avatar} alt={hero.name} class="w-full h-full object-cover" fetchpriority="high" />
@@ -54,12 +60,22 @@ const { hero } = Astro.props;
         )
       }
 
-      <p class="text-base leading-relaxed mb-8 text-base-content/75 whitespace-pre-line">
+      <p class="text-base leading-relaxed mb-6 text-base-content/75 whitespace-pre-line">
         {hero.description}
       </p>
 
+      <div class="flex flex-wrap gap-3 justify-center lg:justify-start mb-6">
+        {
+          primaryLinks.map((link) => (
+            <a href={link.href} class={`btn btn-sm sm:btn-md ${link.variant}`}>
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+
       <!-- Social links -->
-      <div class="flex flex-wrap gap-3 justify-center lg:justify-start mb-8">
+      <div class="flex flex-wrap gap-2 justify-center lg:justify-start">
         {
           hero.socialLinks.map((link) => {
             const IconComponent = getIcon(link.icon);

@@ -13,7 +13,6 @@ Keitaro Ueki のポートフォリオサイト。Astro + Markdoc ベースの静
 | スタイル | TailwindCSS 4 + daisyUI 5 |
 | コードハイライト | astro-expressive-code（Shiki ベース） |
 | 数式 | KaTeX（remark-math + rehype-katex） |
-| CMS | Keystatic（管理画面: `localhost:4321/keystatic`） |
 | ホスティング | GitHub Pages / GitHub Actions |
 
 ## セットアップ
@@ -23,6 +22,7 @@ npm install       # 依存関係のインストール
 npm run dev       # 開発サーバー起動（localhost:4321）
 npm run build     # 本番ビルド
 npm run preview   # ビルド結果のプレビュー
+npm run audit:ui  # Playwright による代表画面のUI監査
 ```
 
 ## デプロイ
@@ -36,7 +36,7 @@ npm run preview   # ビルド結果のプレビュー
 ├── src/
 │   ├── content/        # コンテンツ（Astro Content Collections）
 │   │   ├── blog/       # ブログ記事（.mdoc）
-│   │   ├── projects/   # プロジェクト（.md）
+│   │   ├── projects/   # プロジェクト（.mdoc）
 │   │   ├── work/       # 職務経歴（.md）
 │   │   ├── education/  # 経歴（.md）
 │   │   └── hero/       # ヒーロー情報（.yaml）
@@ -47,9 +47,12 @@ npm run preview   # ビルド結果のプレビュー
 ├── public/             # 静的ファイル（そのままコピー）
 ├── docs/               # 開発ドキュメント
 │   ├── spec.md         # プロジェクト仕様
-│   └── git-conventions.md # Git 運用ルール
-├── CLAUDE.md           # AI アシスタント向けガイド
-├── keystatic.config.ts # Keystatic 設定
+│   ├── components.md   # コンポーネント一覧
+│   ├── content-guide.md # コンテンツ執筆ガイド
+│   └── CONTRIBUTING.md # Git 運用ルール
+├── AGENTS.md           # Codex / AI エージェント向けガイド
+├── CLAUDE.md           # Claude Code 向け入口
+├── markdoc.config.mjs  # Markdoc 設定
 └── astro.config.mjs    # Astro 設定
 ```
 
@@ -68,4 +71,4 @@ tags: ["tag1", "tag2"]
 ---
 ```
 
-詳細は [docs/spec.md](docs/spec.md)、Git 運用は [docs/git-conventions.md](docs/git-conventions.md) を参照。
+詳細は [docs/spec.md](docs/spec.md)、コンテンツ執筆は [docs/content-guide.md](docs/content-guide.md)、Git 運用は [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) を参照。

@@ -53,7 +53,7 @@ main          ← 本番（GitHub Pages にデプロイされる）
 | `perf` | パフォーマンス改善（画像最適化・ビルド高速化） |
 | `refactor` | 機能変更を伴わないコードの整理・構造変更 |
 | `style` | CSS・見た目のみの変更（ロジック変更なし） |
-| `docs` | ドキュメント（README、CLAUDE.md 等）の更新 |
+| `docs` | ドキュメント（README、AGENTS.md、CLAUDE.md 等）の更新 |
 | `chore` | 依存関係の更新・設定変更・その他雑務 |
 | `ci` | GitHub Actions 等 CI/CD の変更 |
 
@@ -99,6 +99,26 @@ markdownコードブロック内にネストした```が含まれていたため
 3. `npm run build` でビルドエラーがないことを確認
 4. GitHub で PR を作成（タイトルはコミットメッセージと同じ形式）
 5. セルフレビューして `main` にマージ
+
+---
+
+## UI 変更時の確認
+
+UI・レイアウト・導線を変更した場合は、ビルドに加えて Playwright MCP で代表画面を確認する。
+
+- desktop: `1440x900`
+- mobile: `390x844`
+- 対象: `/`, `/projects/`, 代表的な記事ページ、`/search/`, `/en/`
+- 確認観点: ファーストビュー、ナビゲーション、フィルター、TOC、検索、言語切り替え、テキストの重なりやはみ出し
+
+Windows PowerShell で `npm` が実行ポリシーにより止まる場合は、`npm.cmd run build` のように `npm.cmd` を使う。
+
+自動監査は以下の順に実行する。
+
+```bash
+npm run build
+npm run audit:ui
+```
 
 ---
 
