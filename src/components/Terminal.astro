@@ -1,0 +1,73 @@
+---
+// Reusable terminal-window frame.
+// Palette is locked to the same github-dark tones used by expressive-code
+// terminal frames (see global.css), so it matches the site's code blocks
+// in both light and dark themes.
+interface Props {
+  title?: string;
+  class?: string;
+}
+const { title = "keitaro@portfolio:~", class: className = "" } = Astro.props;
+---
+
+<div class={`term-window ${className}`}>
+  <div class="term-titlebar">
+    <span class="term-dots" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </span>
+    <span class="term-title">{title}</span>
+  </div>
+  <div class="term-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .term-window {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #1b1f23;
+    background: #1f2428;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+    text-align: left;
+  }
+  .term-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #24292e;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #1b1f23;
+  }
+  .term-dots {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .term-dots > span {
+    width: 0.72rem;
+    height: 0.72rem;
+    border-radius: 9999px;
+    display: block;
+  }
+  .term-dots > span:nth-child(1) {
+    background: #ff5f56;
+  }
+  .term-dots > span:nth-child(2) {
+    background: #ffbd2e;
+  }
+  .term-dots > span:nth-child(3) {
+    background: #27c93f;
+  }
+  .term-title {
+    color: #e1e4e8;
+    font-size: 0.8rem;
+    opacity: 0.75;
+    margin-left: 0.25rem;
+  }
+  .term-body {
+    color: #e1e4e8;
+    padding: 1.1rem 1.25rem;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+</style>

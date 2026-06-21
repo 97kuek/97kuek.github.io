@@ -60,9 +60,10 @@ const primaryLinks = [
         )
       }
 
-      <p class="text-base leading-relaxed mb-6 text-base-content/75 whitespace-pre-line">
-        {hero.description}
-      </p>
+      <p
+        class="text-base leading-relaxed mb-6 text-base-content/75 whitespace-pre-line"
+        data-hero-desc
+      >{hero.description}<span class="hero-cursor" aria-hidden="true">▋</span></p>
 
       <div class="flex flex-wrap gap-3 justify-center lg:justify-start mb-6">
         {
@@ -99,3 +100,59 @@ const primaryLinks = [
     </div>
   </div>
 </section>
+
+<style>
+  .hero-cursor {
+    display: inline-block;
+    margin-left: 0.1em;
+    font-weight: 400;
+    color: var(--color-primary);
+    transform: translateY(0.04em);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-cursor {
+      animation: hero-blink 1.1s step-end infinite;
+    }
+  }
+  @keyframes hero-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener("astro:page-load", function () {
+    var el = document.querySelector("[data-hero-desc]");
+    if (!el || el.dataset.streamed === "done") return;
+
+    var reduce =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    var textNode = el.firstChild;
+    var full = textNode && textNode.nodeType === 3 ? textNode.textContent : "";
+    el.dataset.streamed = "done";
+
+    // Reduced motion or empty: leave the server-rendered text as-is.
+    if (reduce || !full) return;
+
+    // Lock height first to prevent layout shift while the text streams in.
+    el.style.minHeight = el.offsetHeight + "px";
+
+    var typed = document.createElement("span");
+    textNode.replaceWith(typed);
+
+    // Tokenize as "leading whitespace + word" so the line never ends on a
+    // lone space: the cursor stays glued to the last word and won't break
+    // onto its own line between ticks.
+    var tokens = full.match(/\s*\S+/g) || [full];
+    var i = 0;
+    function step() {
+      if (i >= tokens.length) return;
+      typed.textContent += tokens[i++];
+      setTimeout(step, 18 + Math.random() * 45);
+    }
+    step();
+  });
+</script>

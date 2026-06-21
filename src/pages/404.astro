@@ -1,31 +1,50 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Terminal from "../components/Terminal.astro";
 import { House, FolderOpen } from "@lucide/astro";
 ---
 
-<Layout>
-  <main id="main-content" class="min-h-screen flex items-center justify-center px-4 py-20">
-    <div class="text-center max-w-2xl mx-auto">
-      <h1 class="text-9xl font-bold text-primary mb-4 animate-bounce">404</h1>
+<Layout title="404 - Not Found">
+  <main
+    id="main-content"
+    class="min-h-[calc(100svh-5rem)] flex items-center justify-center px-4 py-20"
+  >
+    <div class="w-full max-w-xl mx-auto">
+      <Terminal title="keitaro@portfolio:~ — zsh">
+        <!-- Japanese (default) -->
+        <div id="term-ja" class="term-log">
+          <p><span class="prompt">keitaro@portfolio:~$</span> cat <span class="req-path">/…</span></p>
+          <p class="err">cat: <span class="req-path">/…</span>: No such file or directory</p>
+          <p class="muted">exit status 1 (404)</p>
+          <p class="spacer">&nbsp;</p>
+          <p class="comment"># お探しのページは存在しないか、移動した可能性があります。</p>
+          <p><span class="prompt">keitaro@portfolio:~$</span> <span class="cursor">▋</span></p>
+        </div>
 
-      <!-- Japanese (default) -->
-      <div id="content-ja">
-        <h2 class="text-4xl font-bold mb-4">ページが見つかりません</h2>
-        <p class="text-xl mb-8 text-base-content/70">
-          お探しのページは存在しないか、移動した可能性があります。
-        </p>
-        <div class="divider"></div>
-        <div class="flex gap-4 justify-center flex-wrap mt-8">
-          <a href={import.meta.env.BASE_URL} class="btn btn-primary gap-2">
+        <!-- English -->
+        <div id="term-en" class="term-log hidden">
+          <p><span class="prompt">keitaro@portfolio:~$</span> cat <span class="req-path">/…</span></p>
+          <p class="err">cat: <span class="req-path">/…</span>: No such file or directory</p>
+          <p class="muted">exit status 1 (404)</p>
+          <p class="spacer">&nbsp;</p>
+          <p class="comment"># The page you are looking for does not exist or has been moved.</p>
+          <p><span class="prompt">keitaro@portfolio:~$</span> <span class="cursor">▋</span></p>
+        </div>
+      </Terminal>
+
+      <!-- Japanese actions -->
+      <div id="actions-ja" class="mt-8">
+        <div class="flex gap-3 justify-center flex-wrap">
+          <a href={import.meta.env.BASE_URL} class="btn btn-primary btn-sm sm:btn-md gap-2">
             <House class="size-5" />
             ホームに戻る
           </a>
-          <a href={`${import.meta.env.BASE_URL}#projects`} class="btn btn-outline gap-2">
+          <a href={`${import.meta.env.BASE_URL}#projects`} class="btn btn-outline btn-sm sm:btn-md gap-2">
             <FolderOpen class="size-5" />
             プロジェクトを見る
           </a>
         </div>
-        <div class="flex flex-col items-center gap-3 mt-12">
+        <div class="flex flex-col items-center gap-3 mt-8">
           <p class="text-sm text-base-content/60">こちらのリンクもお探しですか？</p>
           <div class="flex gap-3 justify-center flex-wrap text-sm">
             <a href={`${import.meta.env.BASE_URL}blog`} class="link link-hover">ブログ</a>
@@ -37,24 +56,19 @@ import { House, FolderOpen } from "@lucide/astro";
         </div>
       </div>
 
-      <!-- English -->
-      <div id="content-en" class="hidden">
-        <h2 class="text-4xl font-bold mb-4">Page Not Found</h2>
-        <p class="text-xl mb-8 text-base-content/70">
-          The page you are looking for does not exist or has been moved.
-        </p>
-        <div class="divider"></div>
-        <div class="flex gap-4 justify-center flex-wrap mt-8">
-          <a href="/en/" class="btn btn-primary gap-2">
+      <!-- English actions -->
+      <div id="actions-en" class="mt-8 hidden">
+        <div class="flex gap-3 justify-center flex-wrap">
+          <a href="/en/" class="btn btn-primary btn-sm sm:btn-md gap-2">
             <House class="size-5" />
             Back to Home
           </a>
-          <a href="/en/#projects" class="btn btn-outline gap-2">
+          <a href="/en/#projects" class="btn btn-outline btn-sm sm:btn-md gap-2">
             <FolderOpen class="size-5" />
             See Projects
           </a>
         </div>
-        <div class="flex flex-col items-center gap-3 mt-12">
+        <div class="flex flex-col items-center gap-3 mt-8">
           <p class="text-sm text-base-content/60">Looking for something else?</p>
           <div class="flex gap-3 justify-center flex-wrap text-sm">
             <a href="/en/#about" class="link link-hover">About</a>
@@ -67,9 +81,63 @@ import { House, FolderOpen } from "@lucide/astro";
   </main>
 </Layout>
 
-<script is:inline>
-  if (window.location.pathname.startsWith('/en')) {
-    document.getElementById('content-ja').classList.add('hidden');
-    document.getElementById('content-en').classList.remove('hidden');
+<style>
+  .term-log p {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-all;
   }
+  .term-log .prompt {
+    color: #27c93f;
+  }
+  .term-log .err {
+    color: #ff6b6b;
+  }
+  .term-log .muted {
+    color: #8b949e;
+  }
+  .term-log .comment {
+    color: #8b949e;
+  }
+  .term-log .req-path {
+    color: #e1e4e8;
+  }
+  .term-log .spacer {
+    line-height: 0.6;
+  }
+  .term-log .cursor {
+    color: #e1e4e8;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .term-log .cursor {
+      animation: term-blink 1.1s step-end infinite;
+    }
+  }
+  @keyframes term-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var isEn = window.location.pathname.replace(/^\/+/, "").startsWith("en");
+    if (isEn) {
+      ["term-ja", "actions-ja"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+      });
+      ["term-en", "actions-en"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.remove("hidden");
+      });
+    }
+    // Show the actual requested path in the fake `cat` command.
+    var path = window.location.pathname || "/";
+    if (path.length > 48) path = path.slice(0, 47) + "…";
+    document.querySelectorAll(".req-path").forEach(function (el) {
+      el.textContent = path;
+    });
+  })();
 </script>
