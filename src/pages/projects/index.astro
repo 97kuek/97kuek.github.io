@@ -14,13 +14,16 @@ const sortedProjects = projects.sort((a, b) => {
 });
 
 // Get unique skills and counts
-const allSkills = [...new Set(projects.flatMap(p => p.data.skills))].sort();
 const skillCounts = projects.reduce((acc, project) => {
   project.data.skills.forEach(skill => {
     acc[skill] = (acc[skill] || 0) + 1;
   });
   return acc;
 }, {} as Record<string, number>);
+// Sort by frequency (desc), then alphabetically — most useful tags surface first.
+const allSkills = [...new Set(projects.flatMap(p => p.data.skills))].sort(
+  (a, b) => (skillCounts[b] - skillCounts[a]) || a.localeCompare(b),
+);
 ---
 
 <Layout

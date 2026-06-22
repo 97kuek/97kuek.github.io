@@ -3,9 +3,24 @@ const { label = "コードを表示" } = Astro.props;
 ---
 
 <details class="details-block not-prose my-6 group">
-  <summary class="cursor-pointer select-none list-none flex items-center gap-2 text-sm font-mono px-4 py-2 rounded-lg group-open:rounded-b-none bg-[#161b22] text-[#8b949e] hover:text-[#c9d1d9] transition-colors border border-[#30363d]">
-    <span class="group-open:hidden">▶ {label}</span>
-    <span class="hidden group-open:inline">▼ 折りたたむ</span>
+  <summary class="cursor-pointer select-none list-none flex items-center gap-2 text-sm font-mono px-4 py-2.5 rounded-lg group-open:rounded-b-none bg-[#1b1f23] text-[#8b949e] hover:text-[#e1e4e8] transition-colors border border-[#30363d] group-open:border-b-0">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="shrink-0 transition-transform duration-200 group-open:rotate-90"
+      aria-hidden="true"
+    >
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+    <span class="group-open:hidden">{label}</span>
+    <span class="hidden group-open:inline">折りたたむ</span>
   </summary>
   <slot />
 </details>

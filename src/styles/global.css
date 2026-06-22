@@ -71,6 +71,15 @@ The name should be the same as the theme name below.
   /* Amber kept as a rare tertiary highlight */
   --color-accent: oklch(64% 0.15 75);
   --color-accent-content: oklch(20% 0.05 75);
+  /* Semantic — tuned warm so callout boxes sit on cream without clashing */
+  --color-info: oklch(60% 0.085 192);
+  --color-info-content: oklch(98% 0.01 192);
+  --color-success: oklch(64% 0.13 150);
+  --color-success-content: oklch(98% 0.02 150);
+  --color-warning: oklch(72% 0.12 80);
+  --color-warning-content: oklch(24% 0.05 80);
+  --color-error: oklch(56% 0.16 25);
+  --color-error-content: oklch(98% 0.02 25);
   /* Editorial radii */
   --radius-selector: 0.5rem;
   --radius-field: 0.5rem;
@@ -89,6 +98,15 @@ The name should be the same as the theme name below.
   --color-secondary-content: oklch(24% 0.03 190);
   --color-accent: oklch(75% 0.13 75);
   --color-accent-content: oklch(22% 0.05 75);
+  /* Semantic — lifted for dark surfaces */
+  --color-info: oklch(74% 0.09 192);
+  --color-info-content: oklch(22% 0.03 192);
+  --color-success: oklch(74% 0.13 150);
+  --color-success-content: oklch(22% 0.04 150);
+  --color-warning: oklch(80% 0.12 80);
+  --color-warning-content: oklch(24% 0.05 80);
+  --color-error: oklch(68% 0.16 25);
+  --color-error-content: oklch(20% 0.04 25);
   --radius-selector: 0.5rem;
   --radius-field: 0.5rem;
   --radius-box: 0.75rem;
@@ -101,6 +119,14 @@ The name should be the same as the theme name below.
 
 .prose strong {
   color: var(--color-primary);
+}
+
+/* Inline article links use the teal secondary (interactive), keeping coral
+   reserved for brand / CTA / emphasis. */
+.prose a {
+  color: var(--color-secondary);
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
 }
 
 /* Unlayered rule: beats @layer utilities so max-width always applies on mobile */

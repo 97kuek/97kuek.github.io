@@ -6,14 +6,21 @@ interface Props {
   containerId: string;
   tagCounts?: Record<string, number>;
   totalCount?: number;
+  /** How many tags to show before collapsing the rest behind "show all". */
+  initialVisible?: number;
 }
 
-const { tags, containerId, tagCounts, totalCount } = Astro.props;
+const { tags, containerId, tagCounts, totalCount, initialVisible = 10 } = Astro.props;
+const isEn = (Astro.currentLocale ?? "ja") === "en";
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 
 const noResultsMsg = t("filter.noResults");
 const resetLabel = t("filter.reset");
 const itemsSuffix = t("filter.items");
+
+const extraCount = Math.max(0, tags.length - initialVisible);
+const moreLabel = isEn ? `Show all tags (+${extraCount})` : `すべてのタグ (+${extraCount})`;
+const lessLabel = isEn ? "Show less" : "閉じる";
 ---
 
 <div class="mb-8" id={`filter-section-${containerId}`}>
@@ -54,14 +61,29 @@ const itemsSuffix = t("filter.items");
         All {totalCount !== undefined && <span class="opacity-70">({totalCount})</span>}
       </button>
       {
-        tags.map((tag) => (
+        tags.map((tag, i) => (
           <button
-            class="btn btn-sm btn-outline btn-ghost filter-btn"
+            class:list={[
+              "btn btn-sm btn-outline btn-ghost filter-btn",
+              i >= initialVisible && "filter-tag-extra hidden",
+            ]}
             data-tag={tag.toLowerCase()}
           >
             {tag} {tagCounts?.[tag] !== undefined && <span class="opacity-70">({tagCounts[tag]})</span>}
           </button>
         ))
+      }
+      {
+        extraCount > 0 && (
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost text-base-content/60 toggle-more-tags"
+            data-more-label={moreLabel}
+            data-less-label={lessLabel}
+          >
+            {moreLabel}
+          </button>
+        )
       }
     </div>
   </div>
@@ -150,6 +172,25 @@ const itemsSuffix = t("filter.items");
         cleanups.push(() => prefersCollapsed.removeEventListener('change', onMediaChange));
       }
 
+      // "Show all tags" toggle — reveals the overflow tags and re-measures the
+      // collapsible panel height so the open animation stays correct.
+      const moreBtn = filterRoot.querySelector('.toggle-more-tags');
+      if (moreBtn) {
+        const onMoreClick = () => {
+          const extras = filterSection.querySelectorAll('.filter-tag-extra');
+          const willShow = extras.length > 0 && extras[0].classList.contains('hidden');
+          extras.forEach((el) => el.classList.toggle('hidden', !willShow));
+          moreBtn.textContent = willShow
+            ? moreBtn.getAttribute('data-less-label')
+            : moreBtn.getAttribute('data-more-label');
+          if (content && toggle?.getAttribute('aria-expanded') === 'true') {
+            content.style.maxHeight = content.scrollHeight + 'px';
+          }
+        };
+        moreBtn.addEventListener('click', onMoreClick);
+        cleanups.push(() => moreBtn.removeEventListener('click', onMoreClick));
+      }
+
       const resetBtn = filterRoot.querySelector('.reset-filters');
       const items = container.querySelectorAll('[data-filter-tags]');
       let activeTags = new Set();
@@ -168,11 +209,12 @@ const itemsSuffix = t("filter.items");
               btn.classList.add('btn-outline', 'btn-ghost');
             }
           } else {
+            // Selected content tags use the teal secondary; coral stays for "All".
             if (activeTags.has(btnTag)) {
-              btn.classList.add('btn-primary', 'active');
+              btn.classList.add('btn-secondary', 'active');
               btn.classList.remove('btn-outline', 'btn-ghost');
             } else {
-              btn.classList.remove('btn-primary', 'active');
+              btn.classList.remove('btn-secondary', 'active');
               btn.classList.add('btn-outline', 'btn-ghost');
             }
           }
@@ -254,6 +296,15 @@ const itemsSuffix = t("filter.items");
             activeTags.add(lowerTag);
           }
         });
+        // If a deep-linked tag lives in the collapsed overflow, reveal it.
+        const anyHiddenActive = Array.from(activeTags).some((tag) => {
+          const btn = Array.from(buttons).find((b) => b.getAttribute('data-tag') === tag);
+          return btn && btn.classList.contains('filter-tag-extra');
+        });
+        if (anyHiddenActive && moreBtn) {
+          filterSection.querySelectorAll('.filter-tag-extra').forEach((el) => el.classList.remove('hidden'));
+          moreBtn.textContent = moreBtn.getAttribute('data-less-label');
+        }
         updateUI(false);
       };
 

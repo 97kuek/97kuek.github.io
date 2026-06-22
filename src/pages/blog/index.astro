@@ -12,13 +12,16 @@ const sortedPosts = [...blogPosts].sort(
 );
 
 // Get unique tags and counts
-const allTags = [...new Set(blogPosts.flatMap(post => post.data.tags || []))].sort();
 const tagCounts = blogPosts.reduce((acc, post) => {
   (post.data.tags || []).forEach(tag => {
     acc[tag] = (acc[tag] || 0) + 1;
   });
   return acc;
 }, {} as Record<string, number>);
+// Sort by frequency (desc), then alphabetically — most useful tags surface first.
+const allTags = [...new Set(blogPosts.flatMap(post => post.data.tags || []))].sort(
+  (a, b) => (tagCounts[b] - tagCounts[a]) || a.localeCompare(b),
+);
 
 ---
 
