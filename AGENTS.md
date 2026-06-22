@@ -23,6 +23,19 @@ npm run audit:ui # Playwright による代表画面の UI 監査（事前に npm
 
 ## デザイン規則（必ず守る）
 
+### 配色（パレット）
+
+warm-editorial 配色。[docs/DESIGN.md](docs/DESIGN.md)（Claude.com のデザイン記述）に着想を得ているが、まるかぶりを避けるため値は独自にずらしている。定義は `src/styles/global.css` の `[data-theme="light"]` / `[data-theme="dark"]`。
+
+- **デフォルトテーマはライト（cream）**。ダークは warm-ink の第2テーマ（`Layout.astro` で `localStorage` 優先、無ければ `light`）。
+- **canvas = cream**（`base-100` ~#faf8f1）、**text = warm ink**（`base-content`）。純白・クールグレーは使わない。
+- **役割分担**: **coral（primary）= ブランド/CTA・セクション見出し・`prose strong`・アバターのリング等**。**teal（secondary）= タグ・バッジ・リンク等インタラクティブ**（`prose a`・SkillBadge・BlogCard タグ・フィルタ選択タグ・検索結果リンク）。
+- **amber（accent）** は稀なアクセント（FabFlower の FAB、DiagramNode）。3アクセントを乱用しない。
+- **セマンティック色**（info=teal 系 / success / warning / error）は cream と両立するよう暖色寄りに調整済み（Box で使用）。
+- **radius** は `--radius-field` 8px（ボタン・入力）/ `--radius-box` 12px（カード）のスクエア寄り。
+- **コントラスト**: ライトの coral/teal は本文で WCAG AA(4.5:1) を満たす値にしてある（coral 4.87 / teal 4.65）。色を変える際は `node tools/contrast.mjs` で再検算する。
+- ブランド記号として Anthropic の spike-mark（アスタリスク）や Copernicus セリフは**使わない**。識別性はターミナル/ストリーミング Hero のモチーフが担う。
+
 ### カード
 
 shadow 禁止（フローティングボタン・ドロップダウン等の UI 要素は除く）。フラットカードが基本:
@@ -45,9 +58,9 @@ pill バッジ・グラデーション下線禁止。統一パターン:
 - **`<a>` ラップ**: カード内リンクが1つの場合
 - **stretched-link**: カード内に複数リンクがある場合（ProjectCard）。タイトル `<a>` に `after:absolute after:inset-0 after:content-['']`、card に `relative`、追加ボタンに `relative z-10`
 
-### prose の strong
+### prose の strong / リンク
 
-`color: var(--color-primary)` のみ。背景ハイライト禁止（`global.css` 定義済み）。
+`strong` は `color: var(--color-primary)`（coral）のみ。背景ハイライト禁止。`prose a` は `var(--color-secondary)`（teal）。いずれも `global.css` 定義済み。
 
 ### 図解
 
@@ -57,7 +70,7 @@ ASCII アート・Mermaid 禁止。`DiagramFlow` + `DiagramNode` を使う → [
 
 ## 重要な制約
 
-- **Primary カラー**は `src/styles/global.css` と `src/components/OgPlaceholder.astro` の両方に定義。変更時は両方更新する
+- **配色トークン**は `src/styles/global.css` が一次定義（→ 上記「配色（パレット）」）。`src/components/OgPlaceholder.astro` は coral アクセント（`#cf7551`）と cream 背景を **ハードコード**しているので、パレット変更時は両方更新する
 - **コードブロック**は空・未知の言語識別子でビルドエラー。不明な言語は `text` を使う
 - **日付フォーマット**は必ず `src/utils/formatDate.ts` の関数を使う。各コンポーネントに独自定義しない
   - 例外: `Hackathons.astro` は日時まで含む独自フォーマット（短期イベント向け、意図的）

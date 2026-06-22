@@ -65,8 +65,9 @@ The name should be the same as the theme name below.
   /* Coral primary (~#cf7551) */
   --color-primary: oklch(55% 0.155 43);
   --color-primary-content: oklch(98% 0.02 43);
-  /* Teal secondary (~#3f9d8e) */
-  --color-secondary: oklch(58% 0.095 192);
+  /* Teal secondary (~#36907f) — darkened to clear WCAG AA (4.5:1) on cream
+     for inline body links while staying vivid. */
+  --color-secondary: oklch(53% 0.10 192);
   --color-secondary-content: oklch(98% 0.01 192);
   /* Amber kept as a rare tertiary highlight */
   --color-accent: oklch(64% 0.15 75);
