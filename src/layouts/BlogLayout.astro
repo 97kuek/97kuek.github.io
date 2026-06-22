@@ -4,6 +4,7 @@ import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import SkillBadge from "../components/SkillBadge.astro";
 import Giscus from "../components/Giscus.astro";
+import ShareBar from "../components/ShareBar.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import RelatedContent from "../components/RelatedContent.astro";
 import PrevNextNav from "../components/PrevNextNav.astro";
@@ -142,6 +143,8 @@ const blogSchema = {
                 </div>
               )
             }
+
+            <ShareBar title={title} description={description} url={Astro.url.href} />
           </header>
 
           <!-- Divider -->

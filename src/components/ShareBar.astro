@@ -1,0 +1,139 @@
+---
+import { Check, Copy, Share2 } from "@lucide/astro";
+import { useTranslations, type Lang } from "../i18n/ui";
+import Bluesky from "./icons/Bluesky.astro";
+import Twitter from "./icons/Twitter.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  url: string;
+}
+
+const { title, description = "", url } = Astro.props;
+const locale = (Astro.currentLocale ?? "ja") as Lang;
+const t = useTranslations(locale);
+
+const encodedUrl = encodeURIComponent(url);
+const xHref = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodeURIComponent(title)}`;
+const blueskyHref = `https://bsky.app/intent/compose?text=${encodeURIComponent(`${title}\n${url}`)}`;
+---
+
+<div
+  class="not-prose mt-6 border-t border-base-200 pt-4"
+  data-share-bar
+  data-share-title={title}
+  data-share-text={description}
+  data-share-url={url}
+  data-share-copy={t("share.copy")}
+  data-share-copied={t("share.copied")}
+>
+  <div class="flex flex-wrap items-center gap-3">
+    <p class="text-xs font-bold tracking-widest text-primary uppercase">{t("share.title")}</p>
+    <div class="flex flex-wrap items-center gap-2">
+      <button
+        class="btn btn-soft btn-sm hidden"
+        type="button"
+        data-native-share
+        aria-label={t("share.native")}
+        title={t("share.native")}
+      >
+        <Share2 size={16} aria-hidden="true" />
+        <span class="hidden sm:inline">{t("share.native")}</span>
+      </button>
+      <button
+        class="btn btn-soft btn-sm"
+        type="button"
+        data-copy-share
+        aria-label={t("share.copy")}
+        title={t("share.copy")}
+      >
+        <Copy size={16} aria-hidden="true" data-copy-icon />
+        <Check size={16} aria-hidden="true" class="hidden" data-copied-icon />
+        <span data-copy-label>{t("share.copy")}</span>
+      </button>
+      <a
+        class="btn btn-soft btn-sm"
+        href={xHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={t("share.x")}
+        title={t("share.x")}
+      >
+        <Twitter class="size-4" />
+        <span class="hidden sm:inline">X</span>
+      </a>
+      <a
+        class="btn btn-soft btn-sm"
+        href={blueskyHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={t("share.bluesky")}
+        title={t("share.bluesky")}
+      >
+        <Bluesky class="size-4" />
+        <span class="hidden sm:inline">Bluesky</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initShareBars() {
+    document.querySelectorAll("[data-share-bar]").forEach((bar) => {
+      const nativeButton = bar.querySelector("[data-native-share]");
+      const copyButton = bar.querySelector("[data-copy-share]");
+      const copyLabel = bar.querySelector("[data-copy-label]");
+      const copyIcon = bar.querySelector("[data-copy-icon]");
+      const copiedIcon = bar.querySelector("[data-copied-icon]");
+
+      const title = bar.getAttribute("data-share-title") ?? document.title;
+      const text = bar.getAttribute("data-share-text") ?? "";
+      const url = bar.getAttribute("data-share-url") ?? window.location.href;
+      const copyText = bar.getAttribute("data-share-copy") ?? "";
+      const copiedText = bar.getAttribute("data-share-copied") ?? "";
+
+      if (nativeButton instanceof HTMLButtonElement && "share" in navigator) {
+        nativeButton.classList.remove("hidden");
+        if (!nativeButton.dataset.bound) {
+          nativeButton.dataset.bound = "true";
+          nativeButton.addEventListener("click", async () => {
+            try {
+              await navigator.share({ title, text, url });
+            } catch {
+              // User cancellation does not need UI feedback.
+            }
+          });
+        }
+      }
+
+      if (!(copyButton instanceof HTMLButtonElement) || copyButton.dataset.bound) return;
+
+      copyButton.dataset.bound = "true";
+      copyButton.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(url);
+        copyButton.setAttribute("aria-label", copiedText);
+        copyButton.setAttribute("title", copiedText);
+        if (copyLabel) copyLabel.textContent = copiedText;
+        copyIcon?.classList.add("hidden");
+        copiedIcon?.classList.remove("hidden");
+
+        window.setTimeout(() => {
+          copyButton.setAttribute("aria-label", copyText);
+          copyButton.setAttribute("title", copyText);
+          if (copyLabel) copyLabel.textContent = copyText;
+          copyIcon?.classList.remove("hidden");
+          copiedIcon?.classList.add("hidden");
+        }, 1800);
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initShareBars);
+  } else {
+    initShareBars();
+  }
+
+  document.addEventListener("astro:after-swap", initShareBars);
+</script>
