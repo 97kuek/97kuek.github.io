@@ -49,7 +49,7 @@ const hasTranslation =
 ---
 
 <!doctype html>
-<html lang={locale} data-theme="dark">
+<html lang={locale} data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -78,8 +78,8 @@ const hasTranslation =
       (function () {
         function applyTheme() {
           var stored = localStorage.getItem("theme");
-          // Default to dark when the visitor hasn't picked a theme yet.
-          var theme = stored || "dark";
+          // Default to the warm cream (light) theme when no choice is stored.
+          var theme = stored || "light";
           document.documentElement.setAttribute("data-theme", theme);
         }
         applyTheme();

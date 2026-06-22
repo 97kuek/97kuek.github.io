@@ -48,11 +48,11 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
   style="display:block;width:100%;height:100%;"
   aria-hidden="true"
 >
-  <!-- Background -->
-  <rect width="800" height="450" fill={minimal ? "#edf1f7" : "#f8fafc"} />
+  <!-- Background (warm cream to match the site canvas) -->
+  <rect width="800" height="450" fill={minimal ? "#efe9de" : "#faf8f1"} />
 
   <!-- Subtle border -->
-  <rect width="800" height="450" fill="none" stroke={minimal ? "#cfd7e6" : "#e2e8f0"} stroke-width="2" />
+  <rect width="800" height="450" fill="none" stroke={minimal ? "#e2d9c9" : "#e6dfd0"} stroke-width="2" />
 
   {minimal && label && (
     <Fragment>
@@ -61,7 +61,7 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
         y="225"
         text-anchor="middle"
         dominant-baseline="middle"
-        fill="#4a5568"
+        fill="#6c6a64"
         font-size="44"
         font-family="system-ui,-apple-system,sans-serif"
         font-weight="700"
@@ -74,15 +74,15 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
 
   {!minimal && showText && (
     <Fragment>
-      <!-- Left accent bar -->
-      <rect x="52" y="60" width="4" height="36" rx="2" fill="#4a5568" />
+      <!-- Left accent bar (coral brand touch) -->
+      <rect x="52" y="60" width="4" height="36" rx="2" fill="#cf7551" />
 
       <!-- Label -->
       {label && (
         <text
           x="66"
           y="84"
-          fill="#4a5568"
+          fill="#6c6a64"
           font-size="13"
           font-family="system-ui,-apple-system,sans-serif"
           font-weight="700"
@@ -97,7 +97,7 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
         <text
           x="52"
           y={startY + i * lineHeight}
-          fill="#1e293b"
+          fill="#1f1d1a"
           font-size="34"
           font-weight="700"
           font-family="system-ui,-apple-system,sans-serif"
@@ -118,13 +118,13 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
               width="136"
               height="26"
               rx="13"
-              fill="#e2e8f0"
+              fill="#ebe3d4"
             />
             <text
               x={x + 68}
               y="407"
               text-anchor="middle"
-              fill="#475569"
+              fill="#6c6a64"
               font-size="12"
               font-family="system-ui,-apple-system,sans-serif"
             >

@@ -44,22 +44,54 @@ The name should be the same as the theme name below.
   themes: light --default, dark --prefersdark;
 }
 
-/* Primary = Claude-style orange (~#d97757), Accent = amber (#b5832a).
-   Light: a touch deeper/more saturated so links & buttons stay legible on white.
-   Dark: lifted lightness so the orange pops on dark surfaces. */
+/* ---------------------------------------------------------------------------
+   Palette: warm-editorial, inspired by Claude.com but deliberately NOT a copy.
+   - Cream canvas, but our own slightly-warmer value (not Claude's #faf9f5).
+   - Coral primary, nudged a touch more orange than Claude's #cc785c.
+   - Teal as our signature secondary — Claude only uses teal sparingly, so it
+     becomes our differentiator (coral × teal = warm/cool contrast).
+   - Squared editorial radii (8px fields, 12px cards).
+   No Anthropic spike-mark, no Copernicus serif — identity carried by the
+   warm palette + the terminal / streaming-Hero motif.
+--------------------------------------------------------------------------- */
+
+/* Light = the hero theme: warm cream canvas + warm-ink text. */
 [data-theme="light"] {
-  --color-primary: oklch(56% 0.16 46);
-  --color-primary-content: oklch(98% 0.02 46);
+  /* Surfaces */
+  --color-base-100: oklch(97.8% 0.009 85); /* cream canvas (~#faf8f1) */
+  --color-base-200: oklch(93.5% 0.015 84); /* card cream (~#f0eadd) */
+  --color-base-300: oklch(89% 0.018 84); /* hairline (~#e6dfd0) */
+  --color-base-content: oklch(23% 0.008 70); /* warm ink (~#1f1d1a) */
+  /* Coral primary (~#cf7551) */
+  --color-primary: oklch(55% 0.155 43);
+  --color-primary-content: oklch(98% 0.02 43);
+  /* Teal secondary (~#3f9d8e) */
+  --color-secondary: oklch(58% 0.095 192);
+  --color-secondary-content: oklch(98% 0.01 192);
+  /* Amber kept as a rare tertiary highlight */
   --color-accent: oklch(64% 0.15 75);
   --color-accent-content: oklch(20% 0.05 75);
+  /* Editorial radii */
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
 }
 
-/* Dark theme: same hue, lifted lightness for contrast on dark surfaces */
+/* Dark = warm-ink companion (not cool navy), lifted accents for contrast. */
 [data-theme="dark"] {
-  --color-primary: oklch(74% 0.135 50);
-  --color-primary-content: oklch(22% 0.045 50);
+  --color-base-100: oklch(20.5% 0.007 70); /* warm ink (~#1a1815) */
+  --color-base-200: oklch(24.5% 0.008 70);
+  --color-base-300: oklch(30% 0.009 70);
+  --color-base-content: oklch(94% 0.012 85); /* cream text (~#f3efe6) */
+  --color-primary: oklch(74% 0.135 48);
+  --color-primary-content: oklch(24% 0.04 48);
+  --color-secondary: oklch(74% 0.10 190);
+  --color-secondary-content: oklch(24% 0.03 190);
   --color-accent: oklch(75% 0.13 75);
   --color-accent-content: oklch(22% 0.05 75);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
 }
 
 
