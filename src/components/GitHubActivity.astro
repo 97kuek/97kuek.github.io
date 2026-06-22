@@ -1,25 +1,28 @@
 ---
 import { Github, ArrowRight } from "@lucide/astro";
+import SectionHeader from "./SectionHeader.astro";
+import { FLAT_CARD_CLASS } from "../utils/classes";
+import { SITE } from "../utils/site";
+import { useTranslations, type Lang } from "../i18n/ui";
 
-const USERNAME = "97kuek";
+const USERNAME = SITE.githubUsername;
 const PROFILE_URL = `https://github.com/${USERNAME}`;
 // 3D contribution graph generated in the GitHub profile repository (97kuek/97kuek)
 const GRAPH_3D = `https://raw.githubusercontent.com/${USERNAME}/${USERNAME}/main/profile-3d-contrib/profile-season-animate.svg`;
 
-const isJa = (Astro.currentLocale ?? "ja") === "ja";
+const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 ---
 
 <section id="github" class="py-16 px-4 bg-base-200">
   <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-14">
-      <h2 class="text-base font-bold tracking-widest text-primary uppercase mb-3">GITHUB</h2>
-      <p class="text-base text-base-content/60">
-        {isJa ? "GitHub での活動" : "My activity on GitHub"}
-      </p>
-    </div>
+    <SectionHeader
+      label="GITHUB"
+      subtitle={t("github.subtitle")}
+      subtitleClass="text-base text-base-content/60"
+    />
 
     <div
-      class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200"
+      class={FLAT_CARD_CLASS}
     >
       <div class="card-body items-center">
         <img
@@ -41,7 +44,7 @@ const isJa = (Astro.currentLocale ?? "ja") === "ja";
         class="btn btn-primary btn-outline gap-2"
       >
         <Github class="size-4" />
-        {isJa ? "GitHub を見る" : "View GitHub"}
+        {t("github.view")}
         <ArrowRight class="size-4" />
       </a>
     </div>

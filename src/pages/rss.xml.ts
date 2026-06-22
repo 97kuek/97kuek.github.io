@@ -1,6 +1,7 @@
 import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
 import type { APIContext } from "astro";
+import { SITE } from "../utils/site";
 
 export async function GET(context: APIContext) {
   const blogPosts = await getCollection("blog");
@@ -9,7 +10,7 @@ export async function GET(context: APIContext) {
   );
 
   return rss({
-    title: "Keitaro Ueki のブログ",
+    title: `${SITE.ownerName} のブログ`,
     description: "開発、デザイン、テクノロジーに関する考えや学びを記録しています。",
     site: context.site!,
     items: sortedPosts.map((post) => ({

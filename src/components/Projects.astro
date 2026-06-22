@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import ProjectCard from "./ProjectCard.astro";
 import { ArrowRight } from "@lucide/astro";
 import { useTranslations, type Lang } from "../i18n/ui";
+import SectionHeader from "./SectionHeader.astro";
 
 const projectEntries = await getCollection("projects");
 
@@ -25,12 +26,7 @@ const featuredProjects = projectEntries
 
 <section id="projects" class="py-16 px-4">
   <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-14">
-      <h2 class="text-base font-bold tracking-widest text-primary uppercase mb-3">PROJECTS</h2>
-      <p class="text-lg text-base-content/60">
-        {t("projects.subtitle")}
-      </p>
-    </div>
+    <SectionHeader label="PROJECTS" subtitle={t("projects.subtitle")} />
 
     {
       featuredProjects.length === 0 ? (

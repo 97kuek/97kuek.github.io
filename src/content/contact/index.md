@@ -1,10 +1,9 @@
 ---
 icon: Email
 linkUrl: mailto:keitaro.ueki@asagi.waseda.jp
-linkText: メールアドレス
 footerIcon: Pickaxe
-footerText: 97kuekにより制作
-footerLinkText: 97kuek
-footerLinkUrl: https://97kuek.github.io/
+footerText: Keitaro Ueki
+footerLinkText: GitHub
+footerLinkUrl: https://github.com/97kuek
 ---
-連絡等はこちらでお願いします
+制作・開発・研究活動に関するご連絡はこちらからお願いします。

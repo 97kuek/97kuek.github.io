@@ -172,7 +172,6 @@ const contact = defineCollection({
   schema: z.object({
     icon: z.enum(["MessageCircleCode", "Mail", "Phone", "Email"]),
     linkUrl: z.string(),
-    linkText: z.string(),
     footerIcon: z.enum(["Pickaxe", "Hammer", "Heart"]),
     footerText: z.string(),
     footerLinkText: z.string(),

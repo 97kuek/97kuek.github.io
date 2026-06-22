@@ -4,6 +4,7 @@ import type { CollectionEntry } from "astro:content";
 import OgPlaceholder from "./OgPlaceholder.astro";
 import { formatDate, calcReadingTime } from "../utils/formatDate";
 import { useTranslations, type Lang } from "../i18n/ui";
+import { FLAT_CARD_CLASS } from "../utils/classes";
 
 interface Props {
   post: CollectionEntry<"blog">;
@@ -24,7 +25,7 @@ const tags = post.data.tags ?? [];
 ---
 
 <article
-  class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200 h-full relative group"
+  class={`${FLAT_CARD_CLASS} h-full relative group`}
   data-filter-tags={tags.join(",")}
 >
   <figure class="aspect-video overflow-hidden flex-none">

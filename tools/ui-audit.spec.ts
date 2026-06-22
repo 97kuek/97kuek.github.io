@@ -14,7 +14,7 @@ test.describe("portfolio UI audit", () => {
     await expect(page.getByRole("heading", { level: 1, name: "Keitaro Ueki" })).toBeVisible();
 
     const projectsLink = testInfo.project.name === "desktop"
-      ? page.locator("#site-navbar").getByRole("link", { name: "Projects" })
+      ? page.locator("#site-navbar").getByRole("link", { name: "プロジェクト" })
       : page.getByRole("link", { name: "プロジェクトを見る", exact: true });
     await expect(projectsLink).toBeVisible();
 

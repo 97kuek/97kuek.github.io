@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BlogCard from "./BlogCard.astro";
 import { ArrowRight } from "@lucide/astro";
 import { useTranslations, type Lang } from "../i18n/ui";
+import SectionHeader from "./SectionHeader.astro";
 
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 
@@ -17,12 +18,7 @@ const latestPosts = sortedPosts.slice(0, 3);
 
 <section id="blog" class="py-16 px-4 bg-base-200">
   <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-14">
-      <h2 class="text-base font-bold tracking-widest text-primary uppercase mb-3">BLOG</h2>
-      <p class="text-lg text-base-content/60">
-        {t("blog.subtitle")}
-      </p>
-    </div>
+    <SectionHeader label="BLOG" subtitle={t("blog.subtitle")} />
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {latestPosts.map((post) => <BlogCard post={post} />)}

@@ -1,6 +1,7 @@
 ---
 import { getEntry, render } from "astro:content";
 import { getIcon } from "../utils/iconMapper";
+import { useTranslations, type Lang } from "../i18n/ui";
 
 const locale = Astro.currentLocale ?? "ja";
 const contactId = locale === "en" ? "en" : "index";
@@ -11,50 +12,102 @@ const { Content } = await render(contactEntry);
 const SectionIcon = getIcon(contact.icon);
 const FooterIcon = getIcon(contact.footerIcon);
 
-const base = import.meta.env.BASE_URL;
-const isEn = locale === "en";
-const footerLinks = [
-  { href: isEn ? "/en/" : base, label: isEn ? "Home" : "ホーム" },
-  ...(isEn ? [] : [{ href: `${base}blog`, label: "Blog" }]),
-  { href: isEn ? `${base}en/projects` : `${base}projects`, label: "Projects" },
-  { href: isEn ? `${base}en/search` : `${base}search`, label: isEn ? "Search" : "検索" },
-  { href: `${base}rss.xml`, label: "RSS" },
-];
+const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
+const contactEmail = contact.linkUrl.replace(/^mailto:/, "");
 ---
 
-<footer id="contact" class="footer footer-horizontal footer-center bg-base-200 py-10">
-  <nav class="flex flex-wrap gap-x-6 gap-y-2 justify-center" aria-label={isEn ? "Footer" : "フッターナビゲーション"}>
-    {footerLinks.map((link) => (
-      <a href={link.href} class="link link-hover text-sm text-base-content/70 hover:text-base-content">
-        {link.label}
-      </a>
-    ))}
-  </nav>
-  <aside>
-    <SectionIcon class="inline-block size-14" />
-    <p class="max-w-xl m-auto text-lg">
-      <Content />
-      <a
-        href={contact.linkUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="link link-hover text-primary"
-      >
-        {contact.linkText}
-      </a>
-    </p>
-    <p class="flex items-center space-x-1 text-base-content/60">
-      <span>Copyright &copy; {new Date().getFullYear()} - {contact.footerText}</span
-      >
-      <a
-        class="link link-hover inline-flex justify-center items-center"
-        href={contact.footerLinkUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <FooterIcon class="size-3 inline-block mr-1" />
-        {contact.footerLinkText}
-      </a>
-    </p>
-  </aside>
+<footer id="contact" class="bg-base-200 px-4 py-16">
+  <div class="max-w-5xl mx-auto grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] items-start">
+    <section class="space-y-5">
+      <p class="text-base font-bold tracking-widest text-primary uppercase">{t("contact.title")}</p>
+      <div class="flex items-center gap-4">
+        <SectionIcon class="size-12 text-primary" />
+        <div class="prose max-w-none text-base-content/75">
+          <Content />
+        </div>
+      </div>
+      <a href={contact.linkUrl} class="link link-hover text-secondary">{contactEmail}</a>
+    </section>
+
+    <form
+      class="grid gap-4"
+      data-contact-form
+      data-contact-email={contactEmail}
+      data-default-subject={t("contact.defaultSubject")}
+      data-name-label={t("contact.name")}
+      data-email-label={t("contact.email")}
+    >
+      <div class="grid gap-2">
+        <label class="text-sm font-semibold" for="contact-name">{t("contact.name")}</label>
+        <input id="contact-name" name="name" type="text" required autocomplete="name" class="input input-bordered w-full" />
+      </div>
+
+      <div class="grid gap-2">
+        <label class="text-sm font-semibold" for="contact-email">{t("contact.email")}</label>
+        <input id="contact-email" name="email" type="email" required autocomplete="email" class="input input-bordered w-full" />
+      </div>
+
+      <div class="grid gap-2">
+        <label class="text-sm font-semibold" for="contact-subject">{t("contact.subject")}</label>
+        <input id="contact-subject" name="subject" type="text" required class="input input-bordered w-full" />
+      </div>
+
+      <div class="grid gap-2">
+        <label class="text-sm font-semibold" for="contact-message">{t("contact.message")}</label>
+        <textarea id="contact-message" name="message" required rows="7" class="textarea textarea-bordered w-full resize-y"></textarea>
+      </div>
+
+      <div class="flex justify-end">
+        <button type="submit" class="btn btn-primary">{t("contact.submit")}</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="max-w-5xl mx-auto mt-12 pt-6 border-t border-base-300 text-sm text-base-content/60 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+    <span>Copyright &copy; {new Date().getFullYear()} - {contact.footerText}</span>
+    <a
+      class="link link-hover inline-flex justify-center items-center"
+      href={contact.footerLinkUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <FooterIcon class="size-3 inline-block mr-1" />
+      {contact.footerLinkText}
+    </a>
+  </div>
 </footer>
+
+<script>
+  const initContactForms = () => {
+    document.querySelectorAll<HTMLFormElement>("[data-contact-form]").forEach((form) => {
+      if (form.dataset.bound === "true") return;
+      form.dataset.bound = "true";
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+
+        const data = new FormData(form);
+        const to = form.dataset.contactEmail ?? "";
+        const defaultSubject = form.dataset.defaultSubject ?? "";
+        const subject = String(data.get("subject") || defaultSubject || "");
+        const name = String(data.get("name") || "");
+        const email = String(data.get("email") || "");
+        const message = String(data.get("message") || "");
+        const nameLabel = form.dataset.nameLabel ?? "Name";
+        const emailLabel = form.dataset.emailLabel ?? "Email";
+        const body = [
+          `${nameLabel}: ${name}`,
+          `${emailLabel}: ${email}`,
+          "",
+          message,
+        ].join("\n");
+
+        window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      });
+    });
+  };
+
+  initContactForms();
+  document.addEventListener("astro:after-swap", initContactForms);
+</script>

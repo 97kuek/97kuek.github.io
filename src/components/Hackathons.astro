@@ -3,8 +3,12 @@ import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import SkillBadge from "./SkillBadge.astro";
 import FilterSection from "./FilterSection.astro";
+import SectionHeader from "./SectionHeader.astro";
+import { FLAT_CARD_CLASS } from "../utils/classes";
+import { useTranslations, type Lang } from "../i18n/ui";
 
 const hackathonEntries = await getCollection("hackathons");
+const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 
 // Sort by start date, most recent first
 const sortedHackathons = hackathonEntries.sort(
@@ -39,12 +43,11 @@ function formatPeriod(startDate: Date, endDate?: Date) {
 
 <section id="hackathons" class="py-20 px-4">
   <div class="max-w-4xl mx-auto">
-    <div class="text-center mb-12">
-      <h2 class="text-base font-bold tracking-widest text-primary uppercase mb-3">HACKATHONS</h2>
-      <p class="text-lg text-base-content/60">
-        大学在学中に複数のハッカソンに参加しました。短い期間でチームとともにプロダクトを作り上げる経験を通じて、技術の可能性と協働の大切さを学びました。
-      </p>
-    </div>
+    <SectionHeader
+      label="HACKATHONS"
+      subtitle={t("hackathons.subtitle")}
+      class="text-center mb-12"
+    />
 
     <FilterSection tags={allSkills} tagCounts={skillCounts} containerId="hackathons-list" />
 
@@ -52,7 +55,7 @@ function formatPeriod(startDate: Date, endDate?: Date) {
       {
         sortedHackathons.map((hackathon) => (
           <div
-            class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200"
+            class={FLAT_CARD_CLASS}
             data-filter-tags={(hackathon.data.skills || []).join(",")}
           >
             <div class="card-body">
@@ -101,7 +104,7 @@ function formatPeriod(startDate: Date, endDate?: Date) {
                         rel="noopener noreferrer"
                         class="btn btn-sm btn-outline btn-primary"
                       >
-                        プロジェクトを見る
+                        {t("hackathons.viewProject")}
                       </a>
                     </div>
                   )}

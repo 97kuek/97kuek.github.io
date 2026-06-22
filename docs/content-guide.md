@@ -34,7 +34,7 @@ image: "@assets/blog/記事名/thumbnail.png"  # 省略可
 
 ### プロジェクトファイル
 
-`src/content/projects/<プロジェクト名>.md`（Markdown 形式）
+`src/content/projects/<プロジェクト名>.mdoc`（Markdoc 形式）
 
 ### プロジェクトフロントマター
 
@@ -111,22 +111,24 @@ sourceLink: "https://..."   # 省略可
 | `{% LinkCard url="..." /%}` | リンクカード |
 | `{% Math %}...{% /Math %}` | TeX 数式（ブロック） |
 | `{% InlineMath %}...{% /InlineMath %}` | TeX 数式（インライン） |
-| `{% YouTube id="..." /%}` | YouTube 埋め込み |
+| `{% YouTube id="..." /%}` / `{% YouTube url="..." /%}` | YouTube 埋め込み |
 | `{% Spotify url="..." /%}` | Spotify 埋め込み |
 | `{% Twitter url="..." /%}` | ツイート埋め込み |
-| `{% SpeakerDeck url="..." /%}` | Speaker Deck スライド埋め込み |
+| `{% SpeakerDeck id="..." /%}` | Speaker Deck スライド埋め込み |
+| `{% Carousel interval=4000 %}...{% /Carousel %}` | 画像カルーセル |
+| `{% CarouselSlide src="..." alt="..." /%}` | カルーセル内の個別スライド |
 | `{% Gallery cols=3 caption="..." %}...{% /Gallery %}` | 写真グリッドギャラリー |
 | `{% GalleryImage src="..." alt="..." /%}` | ギャラリー内の個別写真 |
 
 ### Gallery の使い方
 
-写真は `public/` 以下に置き、`/` から始まるパスで参照する（例: `public/projects/wasa/photo1.jpg` → `src="/projects/wasa/photo1.jpg"`）。
+写真は原則として `src/assets/` 以下に置き、`@assets/...` 形式で参照する。`public/` は最適化せずそのまま配信したい静的ファイルだけに使う。
 
 ```markdoc
 {% Gallery cols=3 caption="フライト写真" %}
-  {% GalleryImage src="/projects/wasa/photo1.jpg" alt="機体全景" /%}
-  {% GalleryImage src="/projects/wasa/photo2.jpg" alt="翼断面" /%}
-  {% GalleryImage src="/projects/wasa/photo3.jpg" alt="フライト中" /%}
+  {% GalleryImage src="@assets/projects/wasa/photo1.jpg" alt="機体全景" /%}
+  {% GalleryImage src="@assets/projects/wasa/photo2.jpg" alt="翼断面" /%}
+  {% GalleryImage src="@assets/projects/wasa/photo3.jpg" alt="フライト中" /%}
 {% /Gallery %}
 ```
 

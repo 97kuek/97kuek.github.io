@@ -1,4 +1,6 @@
 ---
+import { OG_COLORS, wrapTitle } from "../utils/ogImage";
+
 interface Props {
   id: string;
   title: string;
@@ -10,32 +12,11 @@ interface Props {
 
 const { id, title, tags = [], label, showText = true, minimal = false } = Astro.props;
 
-function wrapTitle(text: string, maxWidth = 16): string[] {
-  const isCJK = (ch: string) =>
-    /[⺀-鿿豈-﫿︰-﹏！-｠￠-￦]/.test(ch);
-  const lines: string[] = [];
-  let cur = "";
-  let curW = 0;
-  for (const ch of text) {
-    const w = isCJK(ch) ? 1 : 0.55;
-    if (curW + w > maxWidth && cur.length > 0) {
-      lines.push(cur);
-      cur = ch;
-      curW = w;
-    } else {
-      cur += ch;
-      curW += w;
-    }
-  }
-  if (cur) lines.push(cur);
-  return lines;
-}
-
 const lines = wrapTitle(title);
 
 const maxLines = 3;
 const capped = lines.slice(0, maxLines);
-if (lines.length > maxLines) capped[maxLines - 1] += "…";
+if (lines.length > maxLines) capped[maxLines - 1] += "...";
 
 const lineHeight = 46;
 const totalH = capped.length * lineHeight;
@@ -49,10 +30,10 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
   aria-hidden="true"
 >
   <!-- Background (warm cream to match the site canvas) -->
-  <rect width="800" height="450" fill={minimal ? "#efe9de" : "#faf8f1"} />
+  <rect width="800" height="450" fill={minimal ? OG_COLORS.surface : OG_COLORS.canvas} />
 
   <!-- Subtle border -->
-  <rect width="800" height="450" fill="none" stroke={minimal ? "#e2d9c9" : "#e6dfd0"} stroke-width="2" />
+  <rect width="800" height="450" fill="none" stroke={minimal ? OG_COLORS.divider : OG_COLORS.border} stroke-width="2" />
 
   {minimal && label && (
     <Fragment>
@@ -61,7 +42,7 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
         y="225"
         text-anchor="middle"
         dominant-baseline="middle"
-        fill="#6c6a64"
+        fill={OG_COLORS.muted}
         font-size="44"
         font-family="system-ui,-apple-system,sans-serif"
         font-weight="700"
@@ -75,14 +56,14 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
   {!minimal && showText && (
     <Fragment>
       <!-- Left accent bar (coral brand touch) -->
-      <rect x="52" y="60" width="4" height="36" rx="2" fill="#cf7551" />
+      <rect x="52" y="60" width="4" height="36" rx="2" fill={OG_COLORS.label} />
 
       <!-- Label -->
       {label && (
         <text
           x="66"
           y="84"
-          fill="#6c6a64"
+          fill={OG_COLORS.muted}
           font-size="13"
           font-family="system-ui,-apple-system,sans-serif"
           font-weight="700"
@@ -97,7 +78,7 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
         <text
           x="52"
           y={startY + i * lineHeight}
-          fill="#1f1d1a"
+          fill={OG_COLORS.title}
           font-size="34"
           font-weight="700"
           font-family="system-ui,-apple-system,sans-serif"
@@ -109,7 +90,7 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
       <!-- Tag badges -->
       {tags.slice(0, 5).map((tag, i) => {
         const x = 52 + i * 148;
-        const displayTag = tag.length > 14 ? tag.slice(0, 13) + "…" : tag;
+        const displayTag = tag.length > 14 ? tag.slice(0, 13) + "..." : tag;
         return (
           <g>
             <rect
@@ -118,13 +99,13 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
               width="136"
               height="26"
               rx="13"
-              fill="#ebe3d4"
+              fill={OG_COLORS.tag}
             />
             <text
               x={x + 68}
               y="407"
               text-anchor="middle"
-              fill="#6c6a64"
+              fill={OG_COLORS.tagText}
               font-size="12"
               font-family="system-ui,-apple-system,sans-serif"
             >

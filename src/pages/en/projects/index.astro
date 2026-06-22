@@ -3,6 +3,10 @@ import Layout from "../../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import ProjectCard from "../../../components/ProjectCard.astro";
 import FilterSection from "../../../components/FilterSection.astro";
+import { SITE } from "../../../utils/site";
+import { useTranslations } from "../../../i18n/ui";
+
+const t = useTranslations("en");
 
 const projects = await getCollection("projects");
 
@@ -24,7 +28,7 @@ const allSkills = [...new Set(projects.flatMap(p => p.data.skills))].sort(
 ---
 
 <Layout
-  title="Projects - Keitaro Ueki"
+  title={`Projects - ${SITE.ownerName}`}
   description="A collection of web apps, tools, and programs I have built."
 >
   <main id="main-content" class="max-w-6xl mx-auto px-4 py-20">
@@ -43,7 +47,7 @@ const allSkills = [...new Set(projects.flatMap(p => p.data.skills))].sort(
         >
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        Back to Home
+        {t("404.backHome")}
       </a>
     </div>
 

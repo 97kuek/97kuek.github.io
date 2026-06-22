@@ -2,6 +2,11 @@
 import Layout from "../../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import BlogCard from "../../../components/BlogCard.astro";
+import SectionHeader from "../../../components/SectionHeader.astro";
+import { SITE } from "../../../utils/site";
+import { useTranslations } from "../../../i18n/ui";
+
+const t = useTranslations("ja");
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -21,7 +26,7 @@ const posts = allPosts
 ---
 
 <Layout
-  title={`#${tag} - ブログ - 植木敬太郎`}
+  title={`#${tag} - ブログ - ${SITE.ownerNameJa}`}
   description={`「${tag}」タグの記事一覧（${posts.length}件）`}
 >
   <main id="main-content" class="max-w-6xl mx-auto px-4 py-20">
@@ -40,12 +45,12 @@ const posts = allPosts
         >
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        ブログ一覧へ
+        {t("blog.backToList")}
       </a>
     </div>
 
     <div class="mb-16">
-      <p class="text-base font-bold tracking-widest text-primary uppercase mb-3">TAG</p>
+      <SectionHeader label="TAG" class="mb-0" />
       <h1 class="text-3xl font-bold mb-2">#{tag}</h1>
       <p class="text-base-content/60">{posts.length}件の記事</p>
     </div>

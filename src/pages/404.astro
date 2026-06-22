@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Terminal from "../components/Terminal.astro";
 import { House, FolderOpen } from "@lucide/astro";
+import { SITE } from "../utils/site";
 ---
 
 <Layout title="404 - Not Found">
@@ -10,25 +11,25 @@ import { House, FolderOpen } from "@lucide/astro";
     class="min-h-[calc(100svh-5rem)] flex items-center justify-center px-4 py-20"
   >
     <div class="w-full max-w-xl mx-auto">
-      <Terminal title="keitaro@portfolio:~ — zsh">
+      <Terminal title={`${SITE.terminalUser}:~ - zsh`}>
         <!-- Japanese (default) -->
         <div id="term-ja" class="term-log">
-          <p><span class="prompt">keitaro@portfolio:~$</span> cat <span class="req-path">/…</span></p>
+          <p><span class="prompt">{SITE.terminalUser}:~$</span> cat <span class="req-path">/...</span></p>
           <p class="err">cat: <span class="req-path">/…</span>: No such file or directory</p>
           <p class="muted">exit status 1 (404)</p>
           <p class="spacer">&nbsp;</p>
           <p class="comment"># お探しのページは存在しないか、移動した可能性があります。</p>
-          <p><span class="prompt">keitaro@portfolio:~$</span> <span class="cursor">▋</span></p>
+          <p><span class="prompt">{SITE.terminalUser}:~$</span> <span class="cursor">|</span></p>
         </div>
 
         <!-- English -->
         <div id="term-en" class="term-log hidden">
-          <p><span class="prompt">keitaro@portfolio:~$</span> cat <span class="req-path">/…</span></p>
+          <p><span class="prompt">{SITE.terminalUser}:~$</span> cat <span class="req-path">/...</span></p>
           <p class="err">cat: <span class="req-path">/…</span>: No such file or directory</p>
           <p class="muted">exit status 1 (404)</p>
           <p class="spacer">&nbsp;</p>
           <p class="comment"># The page you are looking for does not exist or has been moved.</p>
-          <p><span class="prompt">keitaro@portfolio:~$</span> <span class="cursor">▋</span></p>
+          <p><span class="prompt">{SITE.terminalUser}:~$</span> <span class="cursor">|</span></p>
         </div>
       </Terminal>
 
@@ -88,25 +89,25 @@ import { House, FolderOpen } from "@lucide/astro";
     word-break: break-all;
   }
   .term-log .prompt {
-    color: #27c93f;
+    color: var(--terminal-green);
   }
   .term-log .err {
-    color: #ff6b6b;
+    color: var(--terminal-red);
   }
   .term-log .muted {
-    color: #8b949e;
+    color: var(--terminal-muted);
   }
   .term-log .comment {
-    color: #8b949e;
+    color: var(--terminal-muted);
   }
   .term-log .req-path {
-    color: #e1e4e8;
+    color: var(--terminal-text);
   }
   .term-log .spacer {
     line-height: 0.6;
   }
   .term-log .cursor {
-    color: #e1e4e8;
+    color: var(--terminal-text);
   }
   @media (prefers-reduced-motion: no-preference) {
     .term-log .cursor {
@@ -135,7 +136,7 @@ import { House, FolderOpen } from "@lucide/astro";
     }
     // Show the actual requested path in the fake `cat` command.
     var path = window.location.pathname || "/";
-    if (path.length > 48) path = path.slice(0, 47) + "…";
+    if (path.length > 48) path = path.slice(0, 47) + "...";
     document.querySelectorAll(".req-path").forEach(function (el) {
       el.textContent = path;
     });

@@ -13,6 +13,7 @@ import PrevNextNav from "../components/PrevNextNav.astro";
 import ReadingProgress from "../components/ReadingProgress.astro";
 import BackToTop from "../components/BackToTop.astro";
 import TableOfContents from "../components/TableOfContents.astro";
+import { SITE } from "../utils/site";
 
 interface NavEntry {
   title: string;
@@ -92,7 +93,7 @@ const projectSchema = {
   "description": description,
   "dateCreated": startDate.toISOString(),
   ...(endDate ? { "dateModified": endDate.toISOString() } : {}),
-  "author": { "@type": "Person", "name": "Keitaro Ueki", "url": Astro.url.origin },
+  "author": { "@type": "Person", "name": SITE.ownerName, "url": Astro.url.origin },
   "url": Astro.url.href,
   "image": ogImage,
   ...(skills && skills.length > 0 ? { "keywords": skills.join(", ") } : {}),
@@ -100,7 +101,7 @@ const projectSchema = {
 ---
 
 <Layout
-  title={`${title} - ${isEn ? "Keitaro Ueki" : "植木敬太郎"}`}
+  title={`${title} - ${isEn ? SITE.ownerName : SITE.ownerNameJa}`}
   description={description}
   ogImage={ogImage}
   ogImageWidth={800}

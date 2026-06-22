@@ -26,8 +26,8 @@ const { title = "keitaro@portfolio:~", class: className = "" } = Astro.props;
   .term-window {
     border-radius: 0.5rem;
     overflow: hidden;
-    border: 1px solid #1b1f23;
-    background: #1f2428;
+    border: 1px solid var(--terminal-border);
+    background: var(--terminal-body);
     font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
     text-align: left;
   }
@@ -35,9 +35,9 @@ const { title = "keitaro@portfolio:~", class: className = "" } = Astro.props;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: #24292e;
+    background: var(--terminal-titlebar);
     padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid #1b1f23;
+    border-bottom: 1px solid var(--terminal-border);
   }
   .term-dots {
     display: flex;
@@ -50,22 +50,22 @@ const { title = "keitaro@portfolio:~", class: className = "" } = Astro.props;
     display: block;
   }
   .term-dots > span:nth-child(1) {
-    background: #ff5f56;
+    background: var(--terminal-dot-red);
   }
   .term-dots > span:nth-child(2) {
-    background: #ffbd2e;
+    background: var(--terminal-dot-yellow);
   }
   .term-dots > span:nth-child(3) {
-    background: #27c93f;
+    background: var(--terminal-green);
   }
   .term-title {
-    color: #e1e4e8;
+    color: var(--terminal-text);
     font-size: 0.8rem;
     opacity: 0.75;
     margin-left: 0.25rem;
   }
   .term-body {
-    color: #e1e4e8;
+    color: var(--terminal-text);
     padding: 1.1rem 1.25rem;
     font-size: 0.9rem;
     line-height: 1.7;

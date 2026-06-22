@@ -1,11 +1,14 @@
 ---
 // Giscus.astro
+import { SITE } from "../utils/site";
+
 const isEn = (Astro.currentLocale ?? "ja") === "en";
 const commentsTitle = isEn ? "Comments" : "コメント";
 const commentsDescription = isEn
     ? "GitHub Discussions comments are loaded only when you open them."
     : "GitHub Discussions のコメント欄は、開いたときだけ読み込みます。";
 const commentsButton = isEn ? "Load comments" : "コメントを読み込む";
+const giscusLang = isEn ? "en" : "ja";
 ---
 
 <div class="giscus-container mt-16 max-w-4xl mx-auto px-4 w-full">
@@ -15,7 +18,7 @@ const commentsButton = isEn ? "Load comments" : "コメントを読み込む";
         <button class="btn btn-soft btn-sm" type="button" data-giscus-load>{commentsButton}</button>
     </div>
     <div class="giscus"></div>
-    <script is:inline>
+    <script define:vars={{ giscusRepo: SITE.repository, giscusLang }}>
         let giscusLoaded = false;
 
         function getGiscusTheme() {
@@ -29,7 +32,7 @@ const commentsButton = isEn ? "Load comments" : "コメントを読み込む";
             const theme = getGiscusTheme();
             const script = document.createElement('script');
             script.src = 'https://giscus.app/client.js';
-            script.setAttribute('data-repo', '97kuek/97kuek.github.io');
+            script.setAttribute('data-repo', giscusRepo);
             script.setAttribute('data-repo-id', 'R_kgDORh6lYA');
             script.setAttribute('data-category', 'General');
             script.setAttribute('data-category-id', 'DIC_kwDORh6lYM4C3_9j');
@@ -39,7 +42,7 @@ const commentsButton = isEn ? "Load comments" : "コメントを読み込む";
             script.setAttribute('data-emit-metadata', '0');
             script.setAttribute('data-input-position', 'bottom');
             script.setAttribute('data-theme', theme);
-            script.setAttribute('data-lang', 'ja');
+            script.setAttribute('data-lang', giscusLang);
             script.setAttribute('crossorigin', 'anonymous');
             script.async = true;
             

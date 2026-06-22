@@ -25,6 +25,26 @@ kbd {
   font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
 }
 
+:root {
+  --terminal-border: #1b1f23;
+  --terminal-border-soft: #30363d;
+  --terminal-titlebar: #24292e;
+  --terminal-body: #1f2428;
+  --terminal-input: #0d1117;
+  --terminal-text: #e1e4e8;
+  --terminal-result-text: #c9d1d9;
+  --terminal-muted: #8b949e;
+  --terminal-placeholder: #6e7681;
+  --terminal-green: #27c93f;
+  --terminal-red: #ff6b6b;
+  --terminal-dot-red: #ff5f56;
+  --terminal-dot-yellow: #ffbd2e;
+  --terminal-teal: #5db8a6;
+  --terminal-coral: #e0986a;
+  --terminal-mark-bg: #bb800944;
+  --terminal-mark-text: #ffe9b3;
+}
+
 .prose {
   line-height: 1.9;
 }
@@ -143,36 +163,36 @@ The name should be the same as the theme name below.
    --code-background → --ec-frm-trmBg/edBg instead of --ec-codeBg for pre background. */
 :root[data-theme] .expressive-code {
   /* base */
-  --ec-brdCol: #1b1f23;
-  --ec-codeBg: #24292e;
-  --ec-codeFg: #e1e4e8;
+  --ec-brdCol: var(--terminal-border);
+  --ec-codeBg: var(--terminal-titlebar);
+  --ec-codeFg: var(--terminal-text);
   --ec-codeSelBg: #3392ff44;
   --ec-gtrFg: #727980;
   --ec-gtrBrdCol: #72798033;
   --ec-gtrHlFg: #e1e4e896;
   --ec-uiSelBg: #39414a;
-  --ec-uiSelFg: #e1e4e8;
+  --ec-uiSelFg: var(--terminal-text);
   --ec-focusBrd: #005cc5;
   --ec-sbThumbCol: #6a737d33;
   --ec-sbThumbHoverCol: #6a737dd1;
   /* editor frame (has-title) */
-  --ec-frm-edBg: #24292e;
-  --ec-frm-edActTabBg: #24292e;
-  --ec-frm-edActTabFg: #e1e4e8;
-  --ec-frm-edActTabIndBtmCol: #24292e;
-  --ec-frm-edTabBarBg: #1f2428;
-  --ec-frm-edTabBarBrdCol: #1b1f23;
-  --ec-frm-edTabBarBrdBtmCol: #1b1f23;
+  --ec-frm-edBg: var(--terminal-titlebar);
+  --ec-frm-edActTabBg: var(--terminal-titlebar);
+  --ec-frm-edActTabFg: var(--terminal-text);
+  --ec-frm-edActTabIndBtmCol: var(--terminal-titlebar);
+  --ec-frm-edTabBarBg: var(--terminal-body);
+  --ec-frm-edTabBarBrdCol: var(--terminal-border);
+  --ec-frm-edTabBarBrdBtmCol: var(--terminal-border);
   /* terminal frame (bash/shell, is-terminal) — trmTtbBg was the "white mist" */
-  --ec-frm-trmTtbFg: #e1e4e8;
-  --ec-frm-trmTtbDotsFg: #e1e4e8;
-  --ec-frm-trmTtbBg: #24292e;
-  --ec-frm-trmTtbBrdBtmCol: #1b1f23;
-  --ec-frm-trmBg: #1f2428;
+  --ec-frm-trmTtbFg: var(--terminal-text);
+  --ec-frm-trmTtbDotsFg: var(--terminal-text);
+  --ec-frm-trmTtbBg: var(--terminal-titlebar);
+  --ec-frm-trmTtbBrdBtmCol: var(--terminal-border);
+  --ec-frm-trmBg: var(--terminal-body);
   /* inline buttons */
-  --ec-frm-inlBtnFg: #e1e4e8;
-  --ec-frm-inlBtnBg: #e1e4e8;
-  --ec-frm-inlBtnBrd: #e1e4e8;
+  --ec-frm-inlBtnFg: var(--terminal-text);
+  --ec-frm-inlBtnBg: var(--terminal-text);
+  --ec-frm-inlBtnBrd: var(--terminal-text);
 }
 
 /* Force dark syntax highlight token colors; EC's (0,2,1) span rule loses to our (0,3,1). */
@@ -183,4 +203,3 @@ The name should be the same as the theme name below.
   font-weight: var(--0fw, inherit);
   text-decoration: var(--0td, inherit);
 }
-

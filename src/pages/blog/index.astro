@@ -3,6 +3,10 @@ import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import BlogCard from "../../components/BlogCard.astro";
 import FilterSection from "../../components/FilterSection.astro";
+import { SITE } from "../../utils/site";
+import { useTranslations } from "../../i18n/ui";
+
+const t = useTranslations("ja");
 
 const blogPosts = await getCollection("blog");
 
@@ -26,7 +30,7 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.data.tags || []))].so
 ---
 
 <Layout
-  title="ブログ - 植木敬太郎"
+  title={`ブログ - ${SITE.ownerNameJa}`}
   description="最新の技術記事や開発の記録を掲載しています"
 >
   <main id="main-content" class="max-w-6xl mx-auto px-4 py-20">
@@ -46,7 +50,7 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.data.tags || []))].so
         >
           <path d="m15 18-6-6 6-6"></path>
         </svg>
-        ホームに戻る
+        {t("404.backHome")}
       </a>
     </div>
 

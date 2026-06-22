@@ -1,0 +1,137 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Terminal from "./Terminal.astro";
+import { useTranslations, type Lang } from "../i18n/ui";
+import { SITE } from "../utils/site";
+import { SECTION_EYEBROW_CLASS } from "../utils/classes";
+
+const locale = (Astro.currentLocale ?? "ja") as Lang;
+const isEn = locale === "en";
+const t = useTranslations(locale);
+const title = `${t("search.title")} - ${isEn ? SITE.ownerName : SITE.ownerNameJa}`;
+const description = t("search.description");
+const devNotice = t("search.devNotice");
+---
+
+<Layout title={title} description={description}>
+  <Fragment slot="head">
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  </Fragment>
+
+  <main id="main-content" class="max-w-3xl mx-auto px-4 py-20">
+    <div class="text-center mb-10">
+      <p class={SECTION_EYEBROW_CLASS}>SEARCH</p>
+      <h1 class="text-3xl font-bold mb-2">{t("search.title")}</h1>
+      <p class="text-base text-base-content/60">{description}</p>
+    </div>
+
+    <Terminal title={`${SITE.terminalUser}:~/search - pagefind`}>
+      <p class="search-prompt">
+        <span class="g">{SITE.terminalUser}</span><span class="muted">:</span><span class="b">~/search</span><span class="muted">$</span> pagefind --query
+      </p>
+      <div id="search"></div>
+    </Terminal>
+  </main>
+</Layout>
+
+<style>
+  .search-prompt {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+  }
+  .search-prompt .g {
+    color: var(--terminal-green);
+  }
+  .search-prompt .b {
+    color: var(--terminal-teal);
+  }
+  .search-prompt .muted {
+    color: var(--terminal-muted);
+  }
+</style>
+
+<style is:global>
+  #search {
+    --pagefind-ui-primary: var(--terminal-coral);
+    --pagefind-ui-text: var(--terminal-text);
+    --pagefind-ui-background: var(--terminal-body);
+    --pagefind-ui-border: var(--terminal-border-soft);
+    --pagefind-ui-tag: var(--terminal-titlebar);
+    --pagefind-ui-font: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    --pagefind-ui-border-radius: 0.375rem;
+    --pagefind-ui-border-width: 1px;
+  }
+  #search .pagefind-ui__search-input {
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--terminal-input);
+    color: var(--terminal-text);
+    caret-color: var(--terminal-green);
+    font-size: 16px;
+  }
+  #search .pagefind-ui__search-input::placeholder {
+    color: var(--terminal-placeholder);
+  }
+  #search .pagefind-ui__search-clear {
+    color: var(--terminal-muted);
+    background: transparent;
+  }
+  #search .pagefind-ui__message {
+    color: var(--terminal-muted);
+  }
+  #search .pagefind-ui__message::before {
+    content: "-> ";
+    color: var(--terminal-green);
+  }
+  #search .pagefind-ui__result {
+    border-color: var(--terminal-border-soft);
+  }
+  #search .pagefind-ui__result-link {
+    color: var(--terminal-teal);
+  }
+  #search .pagefind-ui__result-excerpt {
+    color: var(--terminal-result-text);
+  }
+  #search .pagefind-ui__result-excerpt mark,
+  #search mark {
+    background: var(--terminal-mark-bg);
+    color: var(--terminal-mark-text);
+  }
+  #search .pagefind-ui__button {
+    color: var(--terminal-text);
+    border-color: var(--terminal-border-soft);
+  }
+</style>
+
+<script is:inline define:vars={{ devNotice }}>
+  document.addEventListener("astro:page-load", function () {
+    if (!document.getElementById("search")) return;
+    var script = document.createElement("script");
+    script.src = "/pagefind/pagefind-ui.js";
+    script.onload = function () {
+      new PagefindUI({
+        element: "#search",
+        showImages: false,
+        showEmptyFilters: false,
+      });
+    };
+    script.onerror = function () {
+      var el = document.getElementById("search");
+      if (el) {
+        el.innerHTML =
+          '<p class="pagefind-dev-notice">' +
+          devNotice.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") +
+          "</p>";
+      }
+    };
+    document.head.appendChild(script);
+  });
+</script>
+
+<style is:global>
+  #search .pagefind-dev-notice {
+    text-align: center;
+    color: var(--terminal-muted);
+    padding: 2rem 0;
+  }
+</style>

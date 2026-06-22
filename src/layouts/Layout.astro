@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar.astro";
 import ImageLightbox from "../components/ImageLightbox.astro";
 import { ClientRouter } from "astro:transitions";
 import { getEntry } from "astro:content";
+import { SITE } from "../utils/site";
 
 // Load general singleton
 const generalEntry = (await getEntry("general", "index"))!;
@@ -20,10 +21,10 @@ interface Props {
 }
 
 const isEn = (Astro.currentLocale ?? "ja") === "en";
-const defaultTitle = isEn ? "Keitaro Ueki - Portfolio" : "植木敬太郎 - Portfolio";
+const defaultTitle = isEn ? `${SITE.ownerName} - Portfolio` : `${SITE.ownerNameJa} - Portfolio`;
 const defaultDescription = isEn
-  ? "Portfolio of Keitaro Ueki (植木敬太郎), software engineering student at Waseda University."
-  : "植木敬太郎（Keitaro Ueki）のポートフォリオ。早稲田大学基幹理工学部在籍。プロジェクトや技術ブログを公開中。";
+  ? `Portfolio of ${SITE.ownerName} (${SITE.ownerNameJa}), software engineering student at Waseda University.`
+  : `${SITE.ownerNameJa}（${SITE.ownerName}）のポートフォリオ。早稲田大学基幹理工学部在籍。プロジェクトや技術ブログを公開中。`;
 
 const {
   title = defaultTitle,
@@ -54,7 +55,7 @@ const hasTranslation =
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="author" content="植木敬太郎 Keitaro Ueki" />
+    <meta name="author" content={`${SITE.ownerNameJa} ${SITE.ownerName}`} />
     <link
       rel="icon"
       type="image/svg+xml"
@@ -112,7 +113,7 @@ const hasTranslation =
     <!-- Google Search Console -->
     <meta name="google-site-verification" content="IdV4d4hYTHpXQOAso7eobHRcWXJw_-bXMiMWMRdth3k" />
     <!-- RSS Feed -->
-    <link rel="alternate" type="application/rss+xml" title="Keitaro Ueki のブログ" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.ownerName} のブログ`} href="/rss.xml" />
     <ClientRouter />
     <slot name="head" />
   </head>
@@ -149,4 +150,3 @@ const hasTranslation =
     <ImageLightbox />
   </body>
 </html>
-

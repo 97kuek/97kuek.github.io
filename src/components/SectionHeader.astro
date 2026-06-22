@@ -1,0 +1,26 @@
+---
+import { SECTION_EYEBROW_CLASS } from "../utils/classes";
+
+interface Props {
+  label: string;
+  subtitle?: string;
+  class?: string;
+  subtitleClass?: string;
+  as?: "h1" | "h2" | "p";
+}
+
+const {
+  label,
+  subtitle,
+  class: className = "text-center mb-14",
+  subtitleClass = "text-lg text-base-content/60",
+  as = "h2",
+} = Astro.props;
+const Heading = as;
+---
+
+<div class={className}>
+  <Heading class={SECTION_EYEBROW_CLASS}>{label}</Heading>
+  {subtitle && <p class={subtitleClass}>{subtitle}</p>}
+</div>
+
