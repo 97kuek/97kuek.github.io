@@ -17,6 +17,7 @@ import { useTranslations, type Lang } from "../i18n/ui";
 import BackLink from "../components/BackLink.astro";
 import ContentHeader from "../components/ContentHeader.astro";
 import type { NavEntry } from "../utils/content";
+import { CONTENT_IMAGE_HEIGHT, CONTENT_IMAGE_WIDTH } from "../utils/constants";
 
 interface Props {
   id: string;
@@ -85,8 +86,8 @@ const blogSchema = {
                 src={image}
                 alt={title}
                 class="w-full aspect-video object-cover"
-                width={1200}
-                height={630}
+                width={CONTENT_IMAGE_WIDTH}
+                height={CONTENT_IMAGE_HEIGHT}
               />
               </figure>
             )}

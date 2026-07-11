@@ -1,26 +1,16 @@
 ---
-const { label = "コードを表示" } = Astro.props;
+import { ChevronRight } from "@lucide/astro";
+import { useTranslations, type Lang } from "../i18n/ui";
+
+const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
+const { label = t("details.showCode") } = Astro.props;
 ---
 
 <details class="details-block not-prose my-6 group">
   <summary class="cursor-pointer select-none list-none flex items-center gap-2 text-sm font-mono px-4 py-2.5 rounded-lg group-open:rounded-b-none bg-[var(--terminal-border)] text-[var(--terminal-muted)] hover:text-[var(--terminal-text)] transition-colors border border-[var(--terminal-border-soft)] group-open:border-b-0">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      class="shrink-0 transition-transform duration-200 group-open:rotate-90"
-      aria-hidden="true"
-    >
-      <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
+    <ChevronRight class="size-3.5 shrink-0 transition-transform duration-200 group-open:rotate-90" aria-hidden="true" />
     <span class="group-open:hidden">{label}</span>
-    <span class="hidden group-open:inline">折りたたむ</span>
+    <span class="hidden group-open:inline">{t("details.close")}</span>
   </summary>
   <slot />
 </details>

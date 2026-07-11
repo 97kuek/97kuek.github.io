@@ -4,6 +4,10 @@ import Terminal from "../components/Terminal.astro";
 import { House, FolderOpen } from "@lucide/astro";
 import { SITE } from "../utils/site";
 import { REQUEST_PATH_MAX_LENGTH } from "../utils/constants";
+import { useTranslations } from "../i18n/ui";
+
+const tJa = useTranslations("ja");
+const tEn = useTranslations("en");
 ---
 
 <Layout title="404 - Not Found">
@@ -19,7 +23,7 @@ import { REQUEST_PATH_MAX_LENGTH } from "../utils/constants";
           <p class="err">cat: <span class="req-path">/…</span>: No such file or directory</p>
           <p class="muted">exit status 1 (404)</p>
           <p class="spacer">&nbsp;</p>
-          <p class="comment"># お探しのページは存在しないか、移動した可能性があります。</p>
+          <p class="comment"># {tJa("404.description")}</p>
           <p><span class="prompt">{SITE.terminalUser}:~$</span> <span class="cursor">|</span></p>
         </div>
 
@@ -29,7 +33,7 @@ import { REQUEST_PATH_MAX_LENGTH } from "../utils/constants";
           <p class="err">cat: <span class="req-path">/…</span>: No such file or directory</p>
           <p class="muted">exit status 1 (404)</p>
           <p class="spacer">&nbsp;</p>
-          <p class="comment"># The page you are looking for does not exist or has been moved.</p>
+          <p class="comment"># {tEn("404.description")}</p>
           <p><span class="prompt">{SITE.terminalUser}:~$</span> <span class="cursor">|</span></p>
         </div>
       </Terminal>
@@ -39,21 +43,21 @@ import { REQUEST_PATH_MAX_LENGTH } from "../utils/constants";
         <div class="flex gap-3 justify-center flex-wrap">
           <a href={import.meta.env.BASE_URL} class="btn btn-primary btn-sm sm:btn-md gap-2">
             <House class="size-5" />
-            ホームに戻る
+            {tJa("404.backHome")}
           </a>
           <a href={`${import.meta.env.BASE_URL}#projects`} class="btn btn-outline btn-sm sm:btn-md gap-2">
             <FolderOpen class="size-5" />
-            プロジェクトを見る
+            {tJa("404.seeProjects")}
           </a>
         </div>
         <div class="flex flex-col items-center gap-3 mt-8">
-          <p class="text-sm text-base-content/60">こちらのリンクもお探しですか？</p>
+          <p class="text-sm text-base-content/60">{tJa("404.also")}</p>
           <div class="flex gap-3 justify-center flex-wrap text-sm">
-            <a href={`${import.meta.env.BASE_URL}blog`} class="link link-hover">ブログ</a>
+            <a href={`${import.meta.env.BASE_URL}blog`} class="link link-hover">{tJa("404.blog")}</a>
             <span class="text-base-content/30">&bull;</span>
-            <a href={`${import.meta.env.BASE_URL}#about`} class="link link-hover">プロフィール</a>
+            <a href={`${import.meta.env.BASE_URL}#about`} class="link link-hover">{tJa("404.about")}</a>
             <span class="text-base-content/30">&bull;</span>
-            <a href={`${import.meta.env.BASE_URL}#contact`} class="link link-hover">お問い合わせ</a>
+            <a href={`${import.meta.env.BASE_URL}#contact`} class="link link-hover">{tJa("404.contact")}</a>
           </div>
         </div>
       </div>
@@ -63,19 +67,19 @@ import { REQUEST_PATH_MAX_LENGTH } from "../utils/constants";
         <div class="flex gap-3 justify-center flex-wrap">
           <a href="/en/" class="btn btn-primary btn-sm sm:btn-md gap-2">
             <House class="size-5" />
-            Back to Home
+            {tEn("404.backHome")}
           </a>
           <a href="/en/#projects" class="btn btn-outline btn-sm sm:btn-md gap-2">
             <FolderOpen class="size-5" />
-            See Projects
+            {tEn("404.seeProjects")}
           </a>
         </div>
         <div class="flex flex-col items-center gap-3 mt-8">
-          <p class="text-sm text-base-content/60">Looking for something else?</p>
+          <p class="text-sm text-base-content/60">{tEn("404.also")}</p>
           <div class="flex gap-3 justify-center flex-wrap text-sm">
-            <a href="/en/#about" class="link link-hover">About</a>
+            <a href="/en/#about" class="link link-hover">{tEn("404.about")}</a>
             <span class="text-base-content/30">&bull;</span>
-            <a href="/en/#contact" class="link link-hover">Contact</a>
+            <a href="/en/#contact" class="link link-hover">{tEn("404.contact")}</a>
           </div>
         </div>
       </div>

@@ -2,6 +2,11 @@
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import { getIcon } from "../utils/iconMapper";
+import { MapPin } from "@lucide/astro";
+import {
+  HERO_STREAM_BASE_DELAY_MS,
+  HERO_STREAM_RANDOM_DELAY_MS,
+} from "../utils/constants";
 
 interface Props {
   hero: {
@@ -54,7 +59,7 @@ const primaryLinks = [
       {
         hero.location && (
           <p class="text-base-content/50 mb-5 flex items-center gap-1.5 justify-center lg:justify-start text-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <MapPin class="size-3.5" aria-hidden="true" />
             {hero.location}
           </p>
         )
@@ -121,7 +126,7 @@ const primaryLinks = [
   }
 </style>
 
-<script is:inline>
+<script is:inline define:vars={{ HERO_STREAM_BASE_DELAY_MS, HERO_STREAM_RANDOM_DELAY_MS }}>
   document.addEventListener("astro:page-load", function () {
     var el = document.querySelector("[data-hero-desc]");
     if (!el || el.dataset.streamed === "done") return;
@@ -151,7 +156,7 @@ const primaryLinks = [
     function step() {
       if (i >= tokens.length) return;
       typed.textContent += tokens[i++];
-      setTimeout(step, 55 + Math.random() * 70);
+      setTimeout(step, HERO_STREAM_BASE_DELAY_MS + Math.random() * HERO_STREAM_RANDOM_DELAY_MS);
     }
     step();
   });

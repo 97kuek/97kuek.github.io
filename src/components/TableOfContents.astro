@@ -1,5 +1,6 @@
 ---
 import { useTranslations, type Lang } from "../i18n/ui";
+import { ChevronDown, List } from "@lucide/astro";
 
 interface Props {
   headings: { depth: number; slug: string; text: string }[];
@@ -18,7 +19,7 @@ if (filteredHeadings.length === 0) return null;
 {sidebar ? (
   <nav class="toc-sidebar" aria-label={tocTitle}>
     <p class="text-xs font-semibold uppercase tracking-widest text-base-content/40 mb-4 flex items-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      <List class="size-3.5" aria-hidden="true" />
       {tocTitle}
     </p>
     <ul class="space-y-0.5 text-sm">
@@ -44,23 +45,10 @@ if (filteredHeadings.length === 0) return null;
       aria-controls="toc-content"
     >
       <div class="flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+        <List class="size-5 text-primary" aria-hidden="true" />
         <h2 class="text-lg font-bold">{tocTitle}</h2>
       </div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="chevron transition-transform duration-300 -rotate-90"
-      >
-        <polyline points="6 9 12 15 18 9"></polyline>
-      </svg>
+      <ChevronDown class="chevron size-5 transition-transform duration-300 -rotate-90" aria-hidden="true" />
     </button>
 
     <div id="toc-content" class="px-6 pb-0 transition-all duration-300 ease-in-out opacity-0 max-h-0">

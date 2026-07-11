@@ -1,6 +1,7 @@
 ---
 import { useTranslations, type Lang } from "../i18n/ui";
 import { INITIAL_VISIBLE_FILTER_TAGS } from "../utils/constants";
+import { ChevronDown, Funnel } from "@lucide/astro";
 
 interface Props {
   tags: string[];
@@ -29,7 +30,13 @@ const moreLabel = t("filter.showAllTags").replace("{n}", String(extraCount));
 const lessLabel = t("filter.showLess");
 ---
 
-<div class="mb-8" id={`filter-section-${containerId}`}>
+<div
+  class="mb-8"
+  id={`filter-section-${containerId}`}
+  data-filter-root
+  data-filter-container-id={containerId}
+  data-items-suffix={itemsSuffix}
+>
   <button
     id={`filter-toggle-${containerId}`}
     class="flex items-center justify-between w-full mb-4 px-2 py-1 group hover:bg-base-200/50 rounded-lg transition-colors duration-200"
@@ -37,25 +44,10 @@ const lessLabel = t("filter.showLess");
     aria-controls={`filter-content-${containerId}`}
   >
     <div class="flex items-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
-        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-      </svg>
+      <Funnel class="size-[18px] text-primary" aria-hidden="true" />
       <span class="font-bold text-sm tracking-wide uppercase">Tags</span>
     </div>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      class="chevron transition-transform duration-300"
-    >
-      <polyline points="6 9 12 15 18 9"></polyline>
-    </svg>
+    <ChevronDown class="chevron size-[18px] transition-transform duration-300" aria-hidden="true" />
   </button>
 
   <div id={`filter-content-${containerId}`} class="transition-all duration-300 ease-in-out overflow-hidden">
@@ -111,222 +103,11 @@ const lessLabel = t("filter.showLess");
   </div>
 </div>
 
-<script define:vars={{ containerId, itemsSuffix }}>
-  let cleanupFilter;
+<script>
+  import { cleanupFilterSections, initFilterSections } from "../scripts/filter-section";
 
-  const initFilter = () => {
-    cleanupFilter?.();
-    cleanupFilter = undefined;
-
-    const filterRoot = document.getElementById(`filter-section-${containerId}`);
-    const filterSection = document.getElementById(`filter-${containerId}`);
-    const container = document.getElementById(containerId);
-    const countDisplay = document.getElementById(`results-count-${containerId}`);
-    const noResults = document.getElementById(`no-results-${containerId}`);
-
-    if (filterSection && container && countDisplay && noResults) {
-      const cleanups = [];
-      const toggle = document.getElementById(`filter-toggle-${containerId}`);
-      const content = document.getElementById(`filter-content-${containerId}`);
-      const chevron = toggle?.querySelector('.chevron');
-
-      const buttons = filterSection.querySelectorAll('.filter-btn');
-      const prefersCollapsed = window.matchMedia('(max-width: 767px)');
-
-      const setExpanded = (expanded, focusFirst = false) => {
-        if (!toggle || !content || !chevron) return;
-        toggle.setAttribute('aria-expanded', expanded.toString());
-        content.toggleAttribute('inert', !expanded);
-
-        if (expanded) {
-          content.hidden = false;
-          content.style.maxHeight = content.scrollHeight + 'px';
-          content.style.opacity = '1';
-          chevron.classList.remove('-rotate-90');
-          if (focusFirst) {
-            setTimeout(() => {
-              const firstBtn = content.querySelector('.filter-btn');
-              if (firstBtn) firstBtn.focus();
-            }, 200);
-          }
-        } else {
-          content.style.maxHeight = '0px';
-          content.style.opacity = '0';
-          chevron.classList.add('-rotate-90');
-          setTimeout(() => {
-            if (toggle.getAttribute('aria-expanded') !== 'true') {
-              content.hidden = true;
-            }
-          }, 300);
-        }
-      };
-
-      if (toggle && content && chevron) {
-        setExpanded(!prefersCollapsed.matches);
-
-        const onToggleClick = () => {
-          const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-          setExpanded(!isExpanded, !isExpanded);
-        };
-        toggle.addEventListener('click', onToggleClick);
-        cleanups.push(() => toggle.removeEventListener('click', onToggleClick));
-
-        const onMediaChange = (event) => {
-          setExpanded(!event.matches);
-        };
-        prefersCollapsed.addEventListener('change', onMediaChange);
-        cleanups.push(() => prefersCollapsed.removeEventListener('change', onMediaChange));
-      }
-
-      const resizeContent = () => {
-        if (content && toggle?.getAttribute('aria-expanded') === 'true') {
-          content.style.maxHeight = content.scrollHeight + 'px';
-        }
-      };
-
-      const setButtonState = (btn, isActive) => {
-        const btnTag = btn.getAttribute('data-tag');
-        if (btnTag === 'all') {
-          btn.classList.toggle('btn-primary', isActive);
-          btn.classList.toggle('active', isActive);
-          btn.classList.toggle('btn-outline', !isActive);
-          btn.classList.toggle('btn-ghost', !isActive);
-          return;
-        }
-        btn.classList.toggle('btn-secondary', isActive);
-        btn.classList.toggle('active', isActive);
-        btn.classList.toggle('btn-outline', !isActive);
-        btn.classList.toggle('btn-ghost', !isActive);
-      };
-
-      const moreBtn = filterRoot.querySelector('.toggle-more-tags');
-      if (moreBtn) {
-        const onMoreClick = () => {
-          const extras = filterSection.querySelectorAll('.filter-tag-extra');
-          const willShow = extras.length > 0 && extras[0].classList.contains('hidden');
-          extras.forEach((el) => el.classList.toggle('hidden', !willShow));
-          moreBtn.textContent = willShow
-            ? moreBtn.getAttribute('data-less-label')
-            : moreBtn.getAttribute('data-more-label');
-          resizeContent();
-        };
-        moreBtn.addEventListener('click', onMoreClick);
-        cleanups.push(() => moreBtn.removeEventListener('click', onMoreClick));
-      }
-
-      const resetBtn = filterRoot.querySelector('.reset-filters');
-      const items = container.querySelectorAll('[data-filter-tags]');
-      let activeTags = new Set();
-
-      const updateUI = (updateUrl = true) => {
-        let visibleCount = 0;
-
-        buttons.forEach(btn => {
-          const btnTag = btn.getAttribute('data-tag');
-          setButtonState(btn, btnTag === 'all' ? activeTags.size === 0 : activeTags.has(btnTag));
-        });
-
-        resizeContent();
-
-        items.forEach(item => {
-          const itemTags = item.getAttribute('data-filter-tags').split(',').map(t => t.trim().toLowerCase());
-          const isVisible = activeTags.size === 0 || Array.from(activeTags).every(tag => itemTags.includes(tag));
-
-          if (isVisible) {
-            item.style.display = '';
-            visibleCount++;
-          } else {
-            item.style.display = 'none';
-          }
-        });
-
-        countDisplay.textContent = `${visibleCount}${itemsSuffix}`;
-        if (visibleCount === 0) {
-          noResults.classList.remove('hidden');
-          container.classList.add('hidden');
-        } else {
-          noResults.classList.add('hidden');
-          container.classList.remove('hidden');
-        }
-
-        if (updateUrl) {
-          const url = new URL(window.location.href);
-          url.searchParams.delete('tag');
-          activeTags.forEach(tag => url.searchParams.append('tag', tag));
-          if (url.toString() !== window.location.href) {
-            window.history.pushState({ tags: Array.from(activeTags) }, '', url);
-          }
-        }
-      };
-
-      const toggleTag = (tag) => {
-        if (tag === 'all') {
-          activeTags.clear();
-        } else {
-          if (activeTags.has(tag)) {
-            activeTags.delete(tag);
-          } else {
-            activeTags.add(tag);
-          }
-        }
-        updateUI();
-      };
-
-      buttons.forEach(button => {
-        const onButtonClick = () => {
-          toggleTag(button.getAttribute('data-tag'));
-        };
-        button.addEventListener('click', onButtonClick);
-        cleanups.push(() => button.removeEventListener('click', onButtonClick));
-      });
-
-      if (resetBtn) {
-        const onResetClick = () => {
-          activeTags.clear();
-          updateUI();
-        };
-        resetBtn.addEventListener('click', onResetClick);
-        cleanups.push(() => resetBtn.removeEventListener('click', onResetClick));
-      }
-
-      const syncFromUrl = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlTags = urlParams.getAll('tag');
-        activeTags.clear();
-        urlTags.forEach(tag => {
-          const lowerTag = tag.toLowerCase();
-          const targetBtn = Array.from(buttons).find(btn => btn.getAttribute('data-tag') === lowerTag);
-          if (targetBtn) {
-            activeTags.add(lowerTag);
-          }
-        });
-        // If a deep-linked tag lives in the collapsed overflow, reveal it.
-        const anyHiddenActive = Array.from(activeTags).some((tag) => {
-          const btn = Array.from(buttons).find((b) => b.getAttribute('data-tag') === tag);
-          return btn && btn.classList.contains('filter-tag-extra');
-        });
-        if (anyHiddenActive && moreBtn) {
-          filterSection.querySelectorAll('.filter-tag-extra').forEach((el) => el.classList.remove('hidden'));
-          moreBtn.textContent = moreBtn.getAttribute('data-less-label');
-        }
-        updateUI(false);
-      };
-
-      const onPopState = () => {
-        syncFromUrl();
-      };
-      window.addEventListener('popstate', onPopState);
-      cleanups.push(() => window.removeEventListener('popstate', onPopState));
-
-      syncFromUrl();
-      cleanupFilter = () => {
-        cleanups.forEach((cleanup) => cleanup());
-      };
-    }
-  };
-
-  document.addEventListener('astro:page-load', initFilter);
-  document.addEventListener('astro:before-swap', () => cleanupFilter?.());
+  document.addEventListener("astro:page-load", initFilterSections);
+  document.addEventListener("astro:before-swap", cleanupFilterSections);
 </script>
 
 <style>

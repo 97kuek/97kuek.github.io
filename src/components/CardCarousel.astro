@@ -1,6 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import {
+  CARD_CAROUSEL_DEFAULT_INTERVAL_MS,
+  CAROUSEL_SWIPE_THRESHOLD_PX,
+} from '../utils/constants';
 
 interface Props {
   images: ImageMetadata[];
@@ -8,13 +12,14 @@ interface Props {
   interval?: number;
 }
 
-const { images, alt, interval = 3500 } = Astro.props;
+const { images, alt, interval = CARD_CAROUSEL_DEFAULT_INTERVAL_MS } = Astro.props;
 ---
 
 <div
   class="card-carousel relative w-full h-full overflow-hidden"
   data-card-carousel
   data-interval={interval}
+  data-swipe-threshold={CAROUSEL_SWIPE_THRESHOLD_PX}
 >
   {images.map((img, i) => (
     <div
@@ -52,7 +57,8 @@ const { images, alt, interval = 3500 } = Astro.props;
     const slides = el.querySelectorAll<HTMLElement>('[data-card-slide]');
     const dotsEl = el.querySelector<HTMLElement>('[data-card-dots]');
     const dots = dotsEl ? dotsEl.querySelectorAll<HTMLButtonElement>('button') : null;
-    const intervalMs = parseInt(el.dataset.interval ?? '3500', 10);
+    const intervalMs = parseInt(el.dataset.interval ?? '0', 10);
+    const swipeThreshold = parseInt(el.dataset.swipeThreshold ?? '0', 10);
 
     if (slides.length <= 1) return;
 
@@ -99,7 +105,7 @@ const { images, alt, interval = 3500 } = Astro.props;
     el.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
     el.addEventListener('touchend', (e) => {
       const diff = touchStartX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 40) { stop(); goTo(current + (diff > 0 ? 1 : -1)); start(); }
+      if (Math.abs(diff) > swipeThreshold) { stop(); goTo(current + (diff > 0 ? 1 : -1)); start(); }
     });
 
     start();

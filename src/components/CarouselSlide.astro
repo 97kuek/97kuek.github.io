@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import { CONTENT_IMAGE_WIDTH, PROJECT_IMAGE_HEIGHT } from '../utils/constants';
 
 const { src, alt = '' } = Astro.props;
 
@@ -29,8 +30,8 @@ const strSrc = typeof resolvedSrc === 'string'
       src={resolvedSrc as ImageMetadata}
       alt={alt}
       class="w-full h-full object-cover"
-      width={1200}
-      height={675}
+      width={CONTENT_IMAGE_WIDTH}
+      height={PROJECT_IMAGE_HEIGHT}
     />
   )}
 </div>

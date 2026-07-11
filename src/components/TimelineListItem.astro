@@ -1,0 +1,63 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+
+type TimelineEntry = CollectionEntry<"work"> | CollectionEntry<"education">;
+
+interface Props {
+  entry: TimelineEntry;
+  Content: any;
+  period: string;
+  duration: string | null;
+  color: string;
+  linkLabel: string;
+}
+
+const { entry, Content, period, duration, color, linkLabel } = Astro.props;
+---
+
+<li class="border-b hover:opacity-85 transition-opacity border-base-300 last:border-b-0">
+  <details class="collapse">
+    <summary class="collapse-title pe-2 sm:pe-5">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 w-full">
+        <div class="flex items-center gap-3 sm:gap-4 flex-1">
+          {entry.data.logo && (
+            <div class="avatar shrink-0">
+              <div class="w-10 mask mask-squircle">
+                <Image src={entry.data.logo} alt={entry.data.title} inferSize={true} />
+              </div>
+            </div>
+          )}
+          <div class="min-w-0">
+            <h3 class="font-bold text-lg leading-tight mb-1">{entry.data.title}</h3>
+            <p style={`color: var(--color-${color})`} class="font-semibold text-sm">
+              {entry.data.subtitle}
+            </p>
+          </div>
+        </div>
+        <div class="text-xs sm:text-sm text-base-content/70 font-mono sm:whitespace-nowrap shrink-0 pl-13 sm:pl-0">
+          {period}
+          {duration && <span class="ml-1 text-base-content/50">{duration}</span>}
+        </div>
+      </div>
+    </summary>
+    <div class="collapse-content">
+      <div class="prose prose-sm max-w-none">
+        <Content />
+      </div>
+      {entry.data.link && (
+        <div class="flex justify-end mt-2">
+          <a
+            href={entry.data.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link link-hover text-sm"
+          >
+            {linkLabel}
+          </a>
+        </div>
+      )}
+    </div>
+  </details>
+</li>
+

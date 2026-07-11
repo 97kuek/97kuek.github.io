@@ -1,11 +1,18 @@
 ---
-const { interval = 4000 } = Astro.props;
+import { ChevronLeft, ChevronRight } from "@lucide/astro";
+import {
+  CAROUSEL_DEFAULT_INTERVAL_MS,
+  CAROUSEL_SWIPE_THRESHOLD_PX,
+} from "../utils/constants";
+
+const { interval = CAROUSEL_DEFAULT_INTERVAL_MS } = Astro.props;
 ---
 
 <div
   class="group not-prose my-8 relative overflow-hidden rounded-xl bg-base-200 max-w-3xl mx-auto"
   data-carousel
   data-interval={interval}
+  data-swipe-threshold={CAROUSEL_SWIPE_THRESHOLD_PX}
 >
   <div
     class="flex will-change-transform"
@@ -20,7 +27,7 @@ const { interval = 4000 } = Astro.props;
     data-carousel-prev
     aria-label="前へ"
   >
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    <ChevronLeft class="size-4" aria-hidden="true" />
   </button>
 
   <button
@@ -28,7 +35,7 @@ const { interval = 4000 } = Astro.props;
     data-carousel-next
     aria-label="次へ"
   >
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    <ChevronRight class="size-4" aria-hidden="true" />
   </button>
 
   <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10" data-carousel-dots></div>
@@ -41,7 +48,8 @@ const { interval = 4000 } = Astro.props;
     const dotsEl = el.querySelector<HTMLElement>('[data-carousel-dots]')!;
     const prevBtn = el.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
     const nextBtn = el.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
-    const intervalMs = parseInt(el.dataset.interval ?? '4000', 10);
+    const intervalMs = parseInt(el.dataset.interval ?? '0', 10);
+    const swipeThreshold = parseInt(el.dataset.swipeThreshold ?? '0', 10);
 
     if (slides.length === 0) return;
 
@@ -97,7 +105,7 @@ const { interval = 4000 } = Astro.props;
     el.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
     el.addEventListener('touchend', (e) => {
       const diff = touchStartX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 40) { stop(); goTo(current + (diff > 0 ? 1 : -1)); start(); }
+      if (Math.abs(diff) > swipeThreshold) { stop(); goTo(current + (diff > 0 ? 1 : -1)); start(); }
     });
 
     // ウィンドウリサイズ時に幅を再計算

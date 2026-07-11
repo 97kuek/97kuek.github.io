@@ -4,7 +4,7 @@ import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import Carousel from "../components/Carousel.astro";
 import SkillBadge from "../components/SkillBadge.astro";
-import { ExternalLink } from "@lucide/astro";
+import { ExternalLink, Github } from "@lucide/astro";
 import { formatDate, formatPeriod } from "../utils/formatDate";
 import { useTranslations, type Lang } from "../i18n/ui";
 import Giscus from "../components/Giscus.astro";
@@ -16,7 +16,12 @@ import TableOfContents from "../components/TableOfContents.astro";
 import { SITE } from "../utils/site";
 import BackLink from "../components/BackLink.astro";
 import ContentHeader from "../components/ContentHeader.astro";
-import { PROJECT_CAROUSEL_INTERVAL_MS } from "../utils/constants";
+import {
+  CONTENT_IMAGE_HEIGHT,
+  CONTENT_IMAGE_WIDTH,
+  PROJECT_CAROUSEL_INTERVAL_MS,
+  PROJECT_IMAGE_HEIGHT,
+} from "../utils/constants";
 
 interface NavEntry {
   title: string;
@@ -135,8 +140,8 @@ const projectSchema = {
                           src={img}
                           alt={title}
                           class="w-full h-full object-cover"
-                          width={1200}
-                          height={675}
+                          width={CONTENT_IMAGE_WIDTH}
+                          height={PROJECT_IMAGE_HEIGHT}
                         />
                       </div>
                     ))}
@@ -146,8 +151,8 @@ const projectSchema = {
                     src={image}
                     alt={title}
                     class="w-full aspect-video object-cover"
-                    width={1200}
-                    height={630}
+                    width={CONTENT_IMAGE_WIDTH}
+                    height={CONTENT_IMAGE_HEIGHT}
                   />
                 ) : null}
               </figure>
@@ -200,16 +205,7 @@ const projectSchema = {
                       rel="noopener noreferrer"
                       class="btn btn-soft gap-2"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 32 32"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path d="M16,2.345c7.735,0,14,6.265,14,14-.002,6.015-3.839,11.359-9.537,13.282-.7,.14-.963-.298-.963-.665,0-.473,.018-1.978,.018-3.85,0-1.312-.437-2.152-.945-2.59,3.115-.35,6.388-1.54,6.388-6.912,0-1.54-.543-2.783-1.435-3.762,.14-.35,.63-1.785-.14-3.71,0,0-1.173-.385-3.85,1.435-1.12-.315-2.31-.472-3.5-.472s-2.38,.157-3.5,.472c-2.677-1.802-3.85-1.435-3.85-1.435-.77,1.925-.28,3.36-.14,3.71-.892,.98-1.435,2.24-1.435,3.762,0,5.355,3.255,6.563,6.37,6.913-.403,.35-.77,.963-.893,1.872-.805,.368-2.818,.963-4.077-1.155-.263-.42-1.05-1.452-2.152-1.435-1.173,.018-.472,.665,.017,.927,.595,.332,1.277,1.575,1.435,1.978,.28,.787,1.19,2.293,4.707,1.645,0,1.173,.018,2.275,.018,2.607,0,.368-.263,.787-.963,.665-5.719-1.904-9.576-7.255-9.573-13.283,0-7.735,6.265-14,14-14Z" />
-                      </svg>
+                      <Github class="size-5" aria-hidden="true" />
                       {t("project.sourceCode")}
                     </a>
                   )}
