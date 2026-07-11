@@ -4,6 +4,7 @@ export const FEATURED_BLOG_TOPIC_LIMIT = 6;
 export const RELATED_CONTENT_LIMIT = 3;
 export const BLOG_CARD_TAG_LIMIT = 3;
 export const INITIAL_VISIBLE_FILTER_TAGS = 10;
+export const LIST_PAGE_SIZE = 6;
 export const NAVBAR_SCROLL_THRESHOLD_PX = 10;
 export const NAVBAR_SECTION_OFFSET_PX = 120;
 export const CAROUSEL_DEFAULT_INTERVAL_MS = 4000;

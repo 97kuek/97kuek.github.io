@@ -1,28 +1,40 @@
 ---
+import type { GetStaticPaths } from "astro";
 import Layout from "../../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import ProjectCard from "../../../components/ProjectCard.astro";
 import FilterSection from "../../../components/FilterSection.astro";
+import Pagination from "../../../components/Pagination.astro";
 import BackLink from "../../../components/BackLink.astro";
 import PageHeader from "../../../components/PageHeader.astro";
 import { SITE } from "../../../utils/site";
 import { useTranslations } from "../../../i18n/ui";
 import { getHomeUrl, getTagSummary, sortProjectsByDisplayDate } from "../../../utils/content";
+import { LIST_PAGE_SIZE } from "../../../utils/constants";
 
 const t = useTranslations("en");
 
-const projects = await getCollection("projects");
-const sortedProjects = sortProjectsByDisplayDate(projects);
+export const getStaticPaths = (async ({ paginate }) => {
+  const projects = await getCollection("projects");
+  const sortedProjects = sortProjectsByDisplayDate(projects);
+  return paginate(sortedProjects, { pageSize: LIST_PAGE_SIZE });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const projects = page.data;
+
 const { tags: allSkills, tagCounts: skillCounts } = getTagSummary(
   projects,
   (project) => project.data.skills,
 );
+
+const title =
+  page.currentPage > 1
+    ? `Projects (${page.currentPage}/${page.lastPage}) - ${SITE.ownerName}`
+    : `Projects - ${SITE.ownerName}`;
 ---
 
-<Layout
-  title={`Projects - ${SITE.ownerName}`}
-  description={t("projects.metaDescription")}
->
+<Layout title={title} description={t("projects.metaDescription")}>
   <main id="main-content" class="max-w-6xl mx-auto px-4 py-20">
     <div class="mb-8">
       <BackLink href={getHomeUrl("en")} label={t("404.backHome")} />
@@ -30,20 +42,28 @@ const { tags: allSkills, tagCounts: skillCounts } = getTagSummary(
 
     <PageHeader title={t("projects.pageTitle")} description={t("projects.pageDescription")} />
 
-    <FilterSection tags={allSkills} tagCounts={skillCounts} totalCount={sortedProjects.length} containerId="projects-grid" />
+    <FilterSection tags={allSkills} tagCounts={skillCounts} totalCount={projects.length} containerId="projects-grid" />
 
     {
-      sortedProjects.length === 0 ? (
+      projects.length === 0 ? (
         <div class="text-center py-20">
           <p class="text-2xl text-base-content/60">{t("projects.empty")}</p>
         </div>
       ) : (
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
-          {sortedProjects.map((project) => (
+          {projects.map((project) => (
             <ProjectCard project={project} />
           ))}
         </div>
       )
     }
+
+    <Pagination
+      currentPage={page.currentPage}
+      lastPage={page.lastPage}
+      basePath={`${import.meta.env.BASE_URL}en/projects`}
+      prevUrl={page.url.prev}
+      nextUrl={page.url.next}
+    />
   </main>
 </Layout>

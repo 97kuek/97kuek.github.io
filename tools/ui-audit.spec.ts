@@ -28,15 +28,15 @@ test.describe("portfolio UI audit", () => {
 
     if (testInfo.project.name === "desktop") {
       await expect(toggle).toHaveAttribute("aria-expanded", "true");
-      await page.getByRole("button", { name: "Python (4)" }).click();
+      await page.getByRole("button", { name: "Python (3)" }).click();
       await expect(page).toHaveURL(/tag=python/);
-      await expect(page.getByText("4件")).toBeVisible();
+      await expect(page.getByText("3件")).toBeVisible();
     } else {
       await expect(toggle).toHaveAttribute("aria-expanded", "false");
-      await expect(page.getByRole("button", { name: "Python (4)" })).toBeHidden();
+      await expect(page.getByRole("button", { name: "Python (3)" })).toBeHidden();
       await toggle.click();
       await expect(toggle).toHaveAttribute("aria-expanded", "true");
-      await expect(page.getByRole("button", { name: "Python (4)" })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Python (3)" })).toBeVisible();
     }
 
     await expectNoHorizontalOverflow(page);

@@ -76,3 +76,34 @@ if (error instanceof Error) {
     </div>
   </div>
 </Layout>
+
+<script is:inline>
+  (function () {
+    // Like 404.astro: this page is a single static file built with the ja locale
+    // (Astro.currentLocale can't know the visited path for a static fallback page),
+    // so the navbar renders Japanese labels/links even when the visitor hit a
+    // broken /en/ URL. Correct it client-side using the real pathname.
+    var isEn = window.location.pathname.replace(/^\/+/, "").startsWith("en");
+    if (!isEn) return;
+
+    var navFixes = {
+      home: { href: "/en/", text: "Home" },
+      projects: { href: "/en/projects", text: "Projects" },
+      contact: { href: "/en/#contact", text: "Contact" },
+      search: { href: "/en/search" },
+      lang: { href: "/", text: "JA", aria: "日本語に切り替え" },
+      brand: { href: "/en/" },
+    };
+    document.querySelectorAll('[data-nav-key="blog"]').forEach(function (el) {
+      el.style.display = "none";
+    });
+    Object.keys(navFixes).forEach(function (key) {
+      var fix = navFixes[key];
+      document.querySelectorAll('[data-nav-key="' + key + '"]').forEach(function (el) {
+        if (fix.href) el.setAttribute("href", fix.href);
+        if (fix.text) el.textContent = fix.text;
+        if (fix.aria) el.setAttribute("aria-label", fix.aria);
+      });
+    });
+  })();
+</script>
