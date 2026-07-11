@@ -74,7 +74,7 @@ if (id) {
     const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
     const title = getMeta("og:title") || (titleMatch ? titleMatch[1] : url);
     const description = getMeta("og:description") || getMeta("description") || "";
-    const image = getMeta("og:image");
+    const image = getMeta("og:image") ?? undefined;
     const siteName = getMeta("og:site_name") || new URL(url).hostname;
 
     entryData = {

@@ -1,5 +1,6 @@
 export const FEATURED_PROJECT_LIMIT = 3;
 export const LATEST_POST_LIMIT = 3;
+export const FEATURED_BLOG_TOPIC_LIMIT = 6;
 export const RELATED_CONTENT_LIMIT = 3;
 export const BLOG_CARD_TAG_LIMIT = 3;
 export const INITIAL_VISIBLE_FILTER_TAGS = 10;

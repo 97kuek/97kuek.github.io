@@ -163,7 +163,7 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
     const isTocOpen = () => popup.classList.contains('opacity-100');
 
     // --- long-press detection ---
-    let pressTimer: ReturnType<typeof setTimeout> | null = null;
+    let pressTimer = null;
     let didLongPress = false;
 
     const startPress = () => {
@@ -200,7 +200,7 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 
     // close on outside click
     document.addEventListener('pointerdown', (e) => {
-      if (isTocOpen() && !popup.contains(e.target as Node) && e.target !== button) {
+      if (isTocOpen() && e.target instanceof Node && !popup.contains(e.target) && e.target !== button) {
         closeToc();
       }
     });
@@ -213,7 +213,7 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
     };
   };
 
-  let cleanup: (() => void) | undefined;
+  let cleanup;
 
   const init = () => {
     cleanup = initBackToTop() ?? undefined;

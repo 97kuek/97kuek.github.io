@@ -4,9 +4,11 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "check": "astro check",
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "audit:ui": "playwright test tools/ui-audit.spec.ts",
+    "audit:site": "playwright test tools/site-quality.spec.ts --project=desktop",
     "astro": "astro"
   },
   "dependencies": {

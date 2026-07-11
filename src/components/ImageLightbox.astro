@@ -35,12 +35,13 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 </div>
 
 <script define:vars={{ LIGHTBOX_ANIMATION_DURATION_MS }}>
-  const overlay = document.getElementById('lightbox-overlay')!;
-  const lightboxImg = document.getElementById('lightbox-image') as HTMLImageElement;
-  const lightboxCaption = document.getElementById('lightbox-caption')!;
-  const closeBtn = document.getElementById('lightbox-close')!;
+  const overlay = document.getElementById('lightbox-overlay');
+  const lightboxImg = document.getElementById('lightbox-image');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+  const closeBtn = document.getElementById('lightbox-close');
 
-  function openLightbox(src: string, alt: string) {
+  function openLightbox(src, alt) {
+    if (!overlay || !lightboxImg || !lightboxCaption) return;
     lightboxImg.src = src;
     lightboxImg.alt = alt;
     lightboxCaption.textContent = alt || '';
@@ -55,6 +56,7 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
   }
 
   function closeLightbox() {
+    if (!overlay || !lightboxImg) return;
     lightboxImg.classList.remove('scale-100', 'opacity-100');
     lightboxImg.classList.add('scale-95', 'opacity-0');
     setTimeout(() => {
@@ -65,11 +67,11 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
     }, LIGHTBOX_ANIMATION_DURATION_MS);
   }
 
-  overlay.addEventListener('click', (e) => {
+  overlay?.addEventListener('click', (e) => {
     if (e.target === overlay) closeLightbox();
   });
 
-  closeBtn.addEventListener('click', closeLightbox);
+  closeBtn?.addEventListener('click', closeLightbox);
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
@@ -78,7 +80,7 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
   });
 
   function initLightbox() {
-    const proseImages = document.querySelectorAll<HTMLImageElement>(
+    const proseImages = document.querySelectorAll(
       '.prose img:not([data-no-lightbox]), [data-gallery-lightbox]'
     );
     proseImages.forEach((img) => {

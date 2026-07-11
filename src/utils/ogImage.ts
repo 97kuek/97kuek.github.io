@@ -107,11 +107,10 @@ export function renderPngResponse(svg: string, cacheControl = "public, max-age=3
     font: { loadSystemFonts: true },
   });
 
-  return new Response(resvg.render().asPng(), {
+  return new Response(new Uint8Array(resvg.render().asPng()), {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": cacheControl,
     },
   });
 }
-
