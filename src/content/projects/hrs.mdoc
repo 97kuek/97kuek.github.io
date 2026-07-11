@@ -2,7 +2,7 @@
 featured: true
 title: "HRS - ホテル予約管理システム"
 title_en: "HRS - Hotel Reservation System"
-description: "UMLによるオブジェクト指向分析・設計に基づく、ホテル予約からチェックアウトまでを完結できるフルスタックWebアプリケーション。6人チームの開発でDBスキーマ・API・LLM function callingによる予約支援チャットボットを担当。"
+description: "UMLによるオブジェクト指向分析・設計に基づく、ホテル予約からチェックアウトまでを完結できるフルスタックWebアプリケーション。チーム開発でDBスキーマ・API・LLM function callingによる予約支援チャットボットを担当。"
 description_en: "A full-stack hotel reservation web app (design-driven by UML OOAD) covering everything from booking to checkout. In a 6-person team, I owned the DB schema, API/business logic, and a read-only chat assistant built on LLM function calling."
 image: "@assets/projects/hrs/hrs-home.png"
 startDate: "2026-06-19"
@@ -14,19 +14,28 @@ sourceLink: "https://github.com/97kuek/HRS"
 
 ## プロジェクト概要
 
-大学の「ソフトウェア工学」演習で、6人チームで開発したホテル予約管理システムです。ユースケース記述・クラス図・アクティビティ図などのUMLによるオブジェクト指向分析・設計を経て、その設計に基づいてTypeScript / Next.js（App Router）でフルスタック実装まで一貫して行いました。
+大学の講義で、3人チームで開発したホテル予約管理システムです。
 
-利用者は会員登録なしで、予約番号と代表者氏名だけで予約・照会・キャンセル・チェックイン・チェックアウトまでを完結できます。チーム内では**Prisma/DBスキーマ設計**、**API・業務ロジックの実装**、そして**LLM function callingによる予約支援チャットボット**を担当しました。
+ユースケース記述・クラス図・アクティビティ図などのUMLによるオブジェクト指向分析・設計を経て、その設計に基づいてTypeScript / Next.jsでフルスタック実装まで一貫して行いました。
 
-- 使用技術: TypeScript, Next.js (App Router), Prisma, PostgreSQL (Neon), Resend（メール送信）, Vitest
-- デプロイ: Vercel + Neon（`main`更新時に自動ビルド・マイグレーション実行）
-- チーム開発ルール: 1 Issue / 1 成果物 / 1 ブランチ / 1 Pull Requestを徹底
+利用者は会員登録なしで、予約番号と代表者氏名だけで予約・照会・キャンセル・チェックイン・チェックアウトまでを完結できます。
+
+チーム内では**Prisma/DBスキーマ設計**、**API・業務ロジックの実装**、そして**LLM function callingによる予約支援チャットボット**を担当しました。
+
+- 使用技術: TypeScript, Next.js, Prisma, PostgreSQL, Resend, Vitest
+- デプロイ: Vercel + Neon
 
 ## 技術的な工夫とアーキテクチャ
 
 ### 1. UML分析からDBスキーマへの意図的な非機械的変換
 
-クラス図をそのままテーブル化するのではなく、「ユースケース実行後も保持し続ける必要がある情報だけを永続化する」という方針でテーブルを設計しました。たとえば予約時点では部屋タイプのみを確定させ、具体的な部屋番号は`reservations`とは別の`stays`テーブルにチェックイン時点で割り当てる形にすることで、「予約」と「実際の宿泊実績」というライフサイクルの異なる概念を分離しています。UML上のBoundary/Controlクラスはテーブル化せず、Entityクラスと属性・関連のみをテーブルとカラム・外部キーに落とし込むという変換ルールをチームのドキュメントとして明文化し、設計判断の一貫性を保ちました。
+クラス図をそのままテーブル化するのではなく、
+
+**ユースケース実行後も保持し続ける必要がある情報だけを永続化する**という方針でテーブルを設計しました。
+
+たとえば予約時点では部屋タイプのみを確定させ、具体的な部屋番号は`reservations`とは別の`stays`テーブルにチェックイン時点で割り当てる形にすることで、「予約」と「実際の宿泊実績」というライフサイクルの異なる概念を分離しています。
+
+UML上のBoundary/Controlクラスはテーブル化せず、Entityクラスと属性・関連のみをテーブルとカラム・外部キーに落とし込むという変換ルールをチームのドキュメントとして明文化し、設計判断の一貫性を保ちました。
 
 ![ドメイン分析のクラス図](@assets/projects/hrs/class-diagram.png)
 
@@ -52,4 +61,6 @@ sourceLink: "https://github.com/97kuek/HRS"
 
 ## 学び
 
-チーム開発では、UMLによる分析・設計を経由してから実装することで、「なぜこのテーブル構造・API設計になったのか」を後から追跡できるドキュメントが自然に残り、レビューやIssueベースの分業がスムーズになることを実感しました。一方でLLM連携部分では、「AIに全部任せる」のではなく、**確実に処理できる範囲は決定的なロジックで先に処理し、AIは曖昧な入力の解釈だけに使う**という役割分担が、コストと信頼性の両面で有効だと学びました。
+チーム開発では、UMLによる分析・設計を経由してから実装することで、「なぜこのテーブル構造・API設計になったのか」を後から追跡できるドキュメントが自然に残り、レビューやIssueベースの分業がスムーズになることを実感しました。
+
+一方でLLM連携部分では、「AIに全部任せる」のではなく、**確実に処理できる範囲は決定的なロジックで先に処理し、AIは曖昧な入力の解釈だけに使う**という役割分担が、コストと信頼性の両面で有効だと学びました。
