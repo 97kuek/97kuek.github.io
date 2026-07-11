@@ -1,5 +1,6 @@
 ---
 import { useTranslations, type Lang } from "../i18n/ui";
+import { INITIAL_VISIBLE_FILTER_TAGS } from "../utils/constants";
 
 interface Props {
   tags: string[];
@@ -10,8 +11,13 @@ interface Props {
   initialVisible?: number;
 }
 
-const { tags, containerId, tagCounts, totalCount, initialVisible = 10 } = Astro.props;
-const isEn = (Astro.currentLocale ?? "ja") === "en";
+const {
+  tags,
+  containerId,
+  tagCounts,
+  totalCount,
+  initialVisible = INITIAL_VISIBLE_FILTER_TAGS,
+} = Astro.props;
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 
 const noResultsMsg = t("filter.noResults");
@@ -19,8 +25,8 @@ const resetLabel = t("filter.reset");
 const itemsSuffix = t("filter.items");
 
 const extraCount = Math.max(0, tags.length - initialVisible);
-const moreLabel = isEn ? `Show all tags (+${extraCount})` : `すべてのタグ (+${extraCount})`;
-const lessLabel = isEn ? "Show less" : "閉じる";
+const moreLabel = t("filter.showAllTags").replace("{n}", String(extraCount));
+const lessLabel = t("filter.showLess");
 ---
 
 <div class="mb-8" id={`filter-section-${containerId}`}>
@@ -172,8 +178,27 @@ const lessLabel = isEn ? "Show less" : "閉じる";
         cleanups.push(() => prefersCollapsed.removeEventListener('change', onMediaChange));
       }
 
-      // "Show all tags" toggle — reveals the overflow tags and re-measures the
-      // collapsible panel height so the open animation stays correct.
+      const resizeContent = () => {
+        if (content && toggle?.getAttribute('aria-expanded') === 'true') {
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
+      };
+
+      const setButtonState = (btn, isActive) => {
+        const btnTag = btn.getAttribute('data-tag');
+        if (btnTag === 'all') {
+          btn.classList.toggle('btn-primary', isActive);
+          btn.classList.toggle('active', isActive);
+          btn.classList.toggle('btn-outline', !isActive);
+          btn.classList.toggle('btn-ghost', !isActive);
+          return;
+        }
+        btn.classList.toggle('btn-secondary', isActive);
+        btn.classList.toggle('active', isActive);
+        btn.classList.toggle('btn-outline', !isActive);
+        btn.classList.toggle('btn-ghost', !isActive);
+      };
+
       const moreBtn = filterRoot.querySelector('.toggle-more-tags');
       if (moreBtn) {
         const onMoreClick = () => {
@@ -183,9 +208,7 @@ const lessLabel = isEn ? "Show less" : "閉じる";
           moreBtn.textContent = willShow
             ? moreBtn.getAttribute('data-less-label')
             : moreBtn.getAttribute('data-more-label');
-          if (content && toggle?.getAttribute('aria-expanded') === 'true') {
-            content.style.maxHeight = content.scrollHeight + 'px';
-          }
+          resizeContent();
         };
         moreBtn.addEventListener('click', onMoreClick);
         cleanups.push(() => moreBtn.removeEventListener('click', onMoreClick));
@@ -200,29 +223,10 @@ const lessLabel = isEn ? "Show less" : "閉じる";
 
         buttons.forEach(btn => {
           const btnTag = btn.getAttribute('data-tag');
-          if (btnTag === 'all') {
-            if (activeTags.size === 0) {
-              btn.classList.add('btn-primary', 'active');
-              btn.classList.remove('btn-outline', 'btn-ghost');
-            } else {
-              btn.classList.remove('btn-primary', 'active');
-              btn.classList.add('btn-outline', 'btn-ghost');
-            }
-          } else {
-            // Selected content tags use the teal secondary; coral stays for "All".
-            if (activeTags.has(btnTag)) {
-              btn.classList.add('btn-secondary', 'active');
-              btn.classList.remove('btn-outline', 'btn-ghost');
-            } else {
-              btn.classList.remove('btn-secondary', 'active');
-              btn.classList.add('btn-outline', 'btn-ghost');
-            }
-          }
+          setButtonState(btn, btnTag === 'all' ? activeTags.size === 0 : activeTags.has(btnTag));
         });
 
-        if (content && toggle?.getAttribute('aria-expanded') === 'true') {
-          content.style.maxHeight = content.scrollHeight + 'px';
-        }
+        resizeContent();
 
         items.forEach(item => {
           const itemTags = item.getAttribute('data-filter-tags').split(',').map(t => t.trim().toLowerCase());

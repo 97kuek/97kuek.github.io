@@ -1,0 +1,9 @@
+export const FEATURED_PROJECT_LIMIT = 3;
+export const LATEST_POST_LIMIT = 3;
+export const RELATED_CONTENT_LIMIT = 3;
+export const INITIAL_VISIBLE_FILTER_TAGS = 10;
+export const NAVBAR_SCROLL_THRESHOLD_PX = 10;
+export const NAVBAR_SECTION_OFFSET_PX = 120;
+export const PROJECT_CAROUSEL_INTERVAL_MS = 5000;
+export const REQUEST_PATH_MAX_LENGTH = 48;
+

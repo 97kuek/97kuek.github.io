@@ -14,6 +14,9 @@ import ReadingProgress from "../components/ReadingProgress.astro";
 import BackToTop from "../components/BackToTop.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import { SITE } from "../utils/site";
+import BackLink from "../components/BackLink.astro";
+import ContentHeader from "../components/ContentHeader.astro";
+import { PROJECT_CAROUSEL_INTERVAL_MS } from "../utils/constants";
 
 interface NavEntry {
   title: string;
@@ -64,7 +67,7 @@ const projectsListUrl = isEn
 const dateLocale = t("timeline.dateLocale");
 
 // Includes ongoing projects, unlike the utility used for completed date ranges.
-function calculateDuration(startDate: Date, endDate?: Date) {
+function calculateProjectDuration(startDate: Date, endDate?: Date) {
   const end = endDate || new Date();
   const months =
     (end.getFullYear() - startDate.getFullYear()) * 12 +
@@ -115,23 +118,7 @@ const projectSchema = {
 
   <main id="main-content" class="max-w-6xl mx-auto px-4 pt-20 pb-16">
     <div class="mb-8">
-      <a href={projectsListUrl} class="btn btn-soft btn-sm">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="m15 18-6-6 6-6"></path>
-        </svg>
-        {t("project.backToList")}
-      </a>
+      <BackLink href={projectsListUrl} label={t("project.backToList")} class="btn btn-soft btn-sm" />
     </div>
 
     <div class:list={[hasToc && "lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-12 xl:gap-16"]}>
@@ -141,7 +128,7 @@ const projectSchema = {
             ((images && images.length > 1) || image) && (
               <figure class="mb-8 rounded-lg overflow-hidden border border-base-200">
                 {images && images.length > 1 ? (
-                  <Carousel interval={5000}>
+                  <Carousel interval={PROJECT_CAROUSEL_INTERVAL_MS}>
                     {images.map((img) => (
                       <div class="carousel-slide flex-shrink-0 aspect-video">
                         <Image
@@ -167,17 +154,13 @@ const projectSchema = {
             )
           }
 
-          <header class="mb-8 border border-base-200 bg-base-100 rounded-lg p-6 sm:p-8">
-            <p class="text-xs font-bold tracking-widest text-primary uppercase mb-4">PROJECT</p>
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">{title}</h1>
-            <p class="text-base sm:text-lg text-base-content/70 mb-6">{description}</p>
-
+          <ContentHeader eyebrow="PROJECT" title={title} description={description}>
             <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60 mb-6">
               <span class="font-semibold">
                 {formatPeriod(startDate, endDate, dateLocale, t("timeline.present"))}
               </span>
               <span>&bull;</span>
-              <span>{t("project.duration")}: {calculateDuration(startDate, endDate)}</span>
+              <span>{t("project.duration")}: {calculateProjectDuration(startDate, endDate)}</span>
               {
                 !endDate && (
                   <>
@@ -233,7 +216,7 @@ const projectSchema = {
                 </div>
               )
             }
-          </header>
+          </ContentHeader>
 
           {
             skills && skills.length > 0 && (

@@ -1,3 +1,8 @@
+const JAPANESE_CHARS_PER_MINUTE = 500;
+const ENGLISH_WORDS_PER_MINUTE = 200;
+const MIN_READING_TIME_MINUTES = 1;
+const DATE_RANGE_SEPARATOR = "–";
+
 export function formatDate(date: Date, locale: string = "ja-JP"): string {
   return date.toLocaleDateString(locale, {
     year: "numeric",
@@ -9,7 +14,13 @@ export function formatDate(date: Date, locale: string = "ja-JP"): string {
 export function calcReadingTime(body: string): number {
   const japaneseChars = (body.match(/[　-鿿＀-￯]/g) ?? []).length;
   const englishWords = (body.match(/[a-zA-Z]+/g) ?? []).length;
-  return Math.max(1, Math.ceil(japaneseChars / 500 + englishWords / 200));
+  return Math.max(
+    MIN_READING_TIME_MINUTES,
+    Math.ceil(
+      japaneseChars / JAPANESE_CHARS_PER_MINUTE +
+        englishWords / ENGLISH_WORDS_PER_MINUTE,
+    ),
+  );
 }
 
 export function formatPeriod(
@@ -21,7 +32,7 @@ export function formatPeriod(
   const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" };
   const start = startDate.toLocaleDateString(locale, options);
   const end = endDate ? endDate.toLocaleDateString(locale, options) : presentText;
-  return `${start} – ${end}`;
+  return `${start} ${DATE_RANGE_SEPARATOR} ${end}`;
 }
 
 // Returns null when endDate is absent (caller shows "ongoing" state).

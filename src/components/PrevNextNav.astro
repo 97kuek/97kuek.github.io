@@ -1,5 +1,6 @@
 ---
 import { useTranslations, type Lang } from "../i18n/ui";
+import { ChevronLeft, ChevronRight } from "@lucide/astro";
 
 interface NavEntry {
   title: string;
@@ -21,14 +22,14 @@ const nextLabel = collection === "blog" ? t("prevnext.nextBlog") : t("prevnext.n
 
 {
   (prev || next) && (
-    <nav class="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4" aria-label="前後ナビゲーション">
+    <nav class="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4" aria-label={t("prevnext.aria")}>
       {prev && (
         <a
           href={prev.url}
           class="group flex flex-col gap-1 card bg-base-200 hover:bg-base-300 transition-all duration-200 p-5"
         >
           <span class="text-xs text-base-content/50 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            <ChevronLeft class="size-3.5" aria-hidden="true" />
             {prevLabel}
           </span>
           <span class="font-semibold text-sm leading-snug group-hover:text-primary transition-colors line-clamp-2">
@@ -45,7 +46,7 @@ const nextLabel = collection === "blog" ? t("prevnext.nextBlog") : t("prevnext.n
         >
           <span class="text-xs text-base-content/50 flex items-center gap-1 sm:flex-row-reverse">
             {nextLabel}
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            <ChevronRight class="size-3.5" aria-hidden="true" />
           </span>
           <span class="font-semibold text-sm leading-snug group-hover:text-primary transition-colors line-clamp-2">
             {next.title}

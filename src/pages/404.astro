@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Terminal from "../components/Terminal.astro";
 import { House, FolderOpen } from "@lucide/astro";
 import { SITE } from "../utils/site";
+import { REQUEST_PATH_MAX_LENGTH } from "../utils/constants";
 ---
 
 <Layout title="404 - Not Found">
@@ -121,7 +122,7 @@ import { SITE } from "../utils/site";
   }
 </style>
 
-<script is:inline>
+<script is:inline define:vars={{ REQUEST_PATH_MAX_LENGTH }}>
   (function () {
     var isEn = window.location.pathname.replace(/^\/+/, "").startsWith("en");
     if (isEn) {
@@ -136,7 +137,9 @@ import { SITE } from "../utils/site";
     }
     // Show the actual requested path in the fake `cat` command.
     var path = window.location.pathname || "/";
-    if (path.length > 48) path = path.slice(0, 47) + "...";
+    if (path.length > REQUEST_PATH_MAX_LENGTH) {
+      path = path.slice(0, REQUEST_PATH_MAX_LENGTH - 1) + "...";
+    }
     document.querySelectorAll(".req-path").forEach(function (el) {
       el.textContent = path;
     });

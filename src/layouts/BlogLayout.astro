@@ -14,12 +14,9 @@ import "katex/dist/katex.min.css";
 import { formatDate } from "../utils/formatDate";
 import { SITE } from "../utils/site";
 import { useTranslations, type Lang } from "../i18n/ui";
-
-interface NavEntry {
-  title: string;
-  description: string;
-  url: string;
-}
+import BackLink from "../components/BackLink.astro";
+import ContentHeader from "../components/ContentHeader.astro";
+import type { NavEntry } from "../utils/content";
 
 interface Props {
   id: string;
@@ -74,22 +71,7 @@ const blogSchema = {
   <main id="main-content" class="max-w-6xl mx-auto px-4 pt-20 pb-16">
     <!-- Back button -->
     <div class="mb-8">
-      <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-soft btn-sm">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="m15 18-6-6 6-6"></path>
-        </svg>
-        {t("blog.backToList")}
-      </a>
+      <BackLink href={`${import.meta.env.BASE_URL}blog`} label={t("blog.backToList")} class="btn btn-soft btn-sm" />
     </div>
 
     <div class:list={[hasToc && "lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-12 xl:gap-16"]}>
@@ -110,11 +92,7 @@ const blogSchema = {
             )}
 
           <!-- Post Header -->
-          <header class="mb-8 border border-base-200 bg-base-100 rounded-lg p-6 sm:p-8">
-            <p class="text-xs font-bold tracking-widest text-primary uppercase mb-4">BLOG</p>
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">{title}</h1>
-            <p class="text-base sm:text-lg text-base-content/70 mb-4">{description}</p>
-
+          <ContentHeader eyebrow="BLOG" title={title} description={description}>
             <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60">
               <time datetime={publishDate.toISOString()}>
                 {formatDate(publishDate)}
@@ -145,7 +123,7 @@ const blogSchema = {
             }
 
             <ShareBar title={title} description={description} url={Astro.url.href} />
-          </header>
+          </ContentHeader>
 
           <!-- Divider -->
           <div class="divider"></div>

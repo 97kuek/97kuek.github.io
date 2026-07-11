@@ -1,0 +1,17 @@
+---
+import { ArrowLeft } from "@lucide/astro";
+
+interface Props {
+  href: string;
+  label: string;
+  class?: string;
+}
+
+const { href, label, class: className = "btn btn-ghost btn-sm" } = Astro.props;
+---
+
+<a href={href} class:list={[className, "gap-2"]}>
+  <ArrowLeft class="size-4" aria-hidden="true" />
+  {label}
+</a>
+

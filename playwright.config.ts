@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const port = 4321;
+const port = Number(process.env.UI_AUDIT_PORT ?? 4321);
 const baseURL = process.env.UI_AUDIT_BASE_URL ?? `http://127.0.0.1:${port}`;
 
 export default defineConfig({

@@ -3,6 +3,9 @@ import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import { FLAT_CARD_CLASS } from "../utils/classes";
+import { useTranslations, type Lang } from "../i18n/ui";
+import { getLocalizedProject, getProjectDetailUrl } from "../utils/content";
+import { RELATED_CONTENT_LIMIT } from "../utils/constants";
 
 interface Props {
   currentId: string;
@@ -11,12 +14,13 @@ interface Props {
   maxResults?: number;
 }
 
-const { currentId, collection, tags, maxResults = 3 } = Astro.props;
+const { currentId, collection, tags, maxResults = RELATED_CONTENT_LIMIT } = Astro.props;
 
 if (!tags || tags.length === 0) return null;
 
-const isEn = (Astro.currentLocale ?? "ja") === "en";
-// English pages exist for projects only; blog is Japanese-only
+const locale = (Astro.currentLocale ?? "ja") as Lang;
+const isEn = locale === "en";
+const t = useTranslations(locale);
 const collectionBase =
   isEn && collection === "projects"
     ? `${import.meta.env.BASE_URL}en/${collection}`
@@ -45,24 +49,33 @@ const mappedEntries = relatedEntries.map(({ entry }) => {
     title_en?: string;
     description_en?: string;
   };
+  const localizedProject =
+    collection === "projects"
+      ? getLocalizedProject(entry as CollectionEntry<"projects">, locale)
+      : undefined;
   return {
     entry,
     data,
-    displayTitle: isEn && data.title_en ? data.title_en : data.title,
-    displayDescription:
-      isEn && data.description_en ? data.description_en : data.description,
+    url:
+      collection === "projects"
+        ? getProjectDetailUrl(entry.id, locale)
+        : `${collectionBase}/${entry.id}`,
+    displayTitle: localizedProject?.title ?? data.title,
+    displayDescription: localizedProject?.description ?? data.description,
   };
 });
 ---
 
 <section class="mt-20">
-  <h2 class="text-sm font-bold tracking-widest text-primary uppercase mb-6">{collection === "blog" ? "RELATED POSTS" : "RELATED PROJECTS"}</h2>
+  <h2 class="text-sm font-bold tracking-widest text-primary uppercase mb-6">
+    {collection === "blog" ? t("related.blog") : t("related.projects")}
+  </h2>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     {
-      mappedEntries.map(({ entry, data, displayTitle, displayDescription }) => (
+      mappedEntries.map(({ data, url, displayTitle, displayDescription }) => (
         <a
-          href={`${collectionBase}/${entry.id}`}
+          href={url}
           class={`group block ${FLAT_CARD_CLASS} overflow-hidden`}
         >
           {data.image && (

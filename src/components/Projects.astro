@@ -4,24 +4,14 @@ import ProjectCard from "./ProjectCard.astro";
 import { ArrowRight } from "@lucide/astro";
 import { useTranslations, type Lang } from "../i18n/ui";
 import SectionHeader from "./SectionHeader.astro";
+import { getFeaturedProjects, getProjectsUrl } from "../utils/content";
 
 const projectEntries = await getCollection("projects");
 
 const locale = (Astro.currentLocale ?? "ja") as Lang;
 const t = useTranslations(locale);
-const projectsBase =
-  locale === "en"
-    ? `${import.meta.env.BASE_URL}en/projects`
-    : `${import.meta.env.BASE_URL}projects`;
-
-const featuredProjects = projectEntries
-  .filter((project) => project.data.featured === true)
-  .sort((a, b) => {
-    const aTime = a.data.endDate ? a.data.endDate.getTime() : Number.MAX_SAFE_INTEGER;
-    const bTime = b.data.endDate ? b.data.endDate.getTime() : Number.MAX_SAFE_INTEGER;
-    return bTime - aTime;
-  })
-  .slice(0, 3);
+const projectsBase = getProjectsUrl(locale);
+const featuredProjects = getFeaturedProjects(projectEntries);
 ---
 
 <section id="projects" class="py-16 px-4">
