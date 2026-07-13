@@ -1,72 +1,90 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import { ExternalLink } from "@lucide/astro";
 import OgPlaceholder from "./OgPlaceholder.astro";
 import { formatDate, calcReadingTime } from "../utils/formatDate";
 import { useTranslations, type Lang } from "../i18n/ui";
 import { FLAT_CARD_CLASS } from "../utils/classes";
 import { BLOG_CARD_TAG_LIMIT } from "../utils/constants";
+import type { ExternalArticle } from "../utils/externalArticles";
 
 interface Props {
-  post: CollectionEntry<"blog">;
+  post?: CollectionEntry<"blog">;
+  article?: ExternalArticle;
   /** h2 for list pages (under the page h1), h3 under a section h2 */
   headingLevel?: "h2" | "h3";
   /** Tag to highlight as active (used on tag pages) */
   highlightTag?: string;
 }
 
-const { post, headingLevel = "h3", highlightTag } = Astro.props;
+const { post, article, headingLevel = "h3", highlightTag } = Astro.props;
+if (!post && !article) {
+  throw new Error("BlogCard requires either post or article");
+}
 const Heading = headingLevel;
 
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 
-const readingTime = calcReadingTime(post.body ?? "");
+const isExternal = Boolean(article);
+const title = article?.title ?? post!.data.title;
+const description = article?.description ?? post!.data.description;
+const publishDate = article?.publishedAt ?? post!.data.publishDate;
+const readingTime = article?.readingTime ?? calcReadingTime(post?.body ?? "");
 const readingTimeLabel = t("blog.readingTime").replace("{n}", String(readingTime));
-const tags = post.data.tags ?? [];
-const filterDate = post.data.publishDate.getTime();
+const tags = article?.tags ?? post!.data.tags ?? [];
+const filterDate = publishDate.getTime();
+const href = article?.url ?? `${import.meta.env.BASE_URL}blog/${post!.id}`;
+const placeholderId = article?.id ?? post!.id;
+const placeholderLabel = article?.source ?? "BLOG";
 ---
 
 <article
   class={`${FLAT_CARD_CLASS} h-full relative group`}
   data-filter-tags={tags.join(",")}
-  data-filter-title={post.data.title}
-  data-filter-description={post.data.description}
+  data-filter-title={title}
+  data-filter-description={`${description} ${article?.source ?? ""}`}
   data-filter-date={filterDate}
 >
   <figure class="aspect-video overflow-hidden flex-none">
-    {post.data.image ? (
+    {post?.data.image ? (
       <Image
         src={post.data.image}
-        alt={post.data.title}
+        alt={title}
         class="w-full h-full object-cover"
         width={600}
         height={400}
       />
     ) : (
-      <OgPlaceholder id={post.id} title={post.data.title} label="BLOG" minimal={true} />
+      <OgPlaceholder id={placeholderId} title={title} label={placeholderLabel} minimal={true} />
     )}
   </figure>
   <div class="card-body">
     <div class="flex items-center gap-2 text-xs text-base-content/60">
-      <time>{formatDate(post.data.publishDate)}</time>
+      <time>{formatDate(publishDate)}</time>
       <span>&bull;</span>
       <span>{readingTimeLabel}</span>
     </div>
     <Heading class="card-title text-base line-clamp-2">
       <a
-        href={`${import.meta.env.BASE_URL}blog/${post.id}`}
-        class="group-hover:text-primary transition-colors after:absolute after:inset-0 after:content-['']"
-      >{post.data.title}</a>
+        href={href}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        class="group-hover:text-primary transition-colors after:absolute after:inset-0 after:content-[''] inline-flex items-start gap-1"
+      >
+        <span>{title}</span>
+        {isExternal && <ExternalLink class="size-3.5 mt-1 shrink-0" aria-hidden="true" />}
+      </a>
     </Heading>
-    <p class="text-base-content/70 text-sm line-clamp-2">{post.data.description}</p>
+    <p class="text-base-content/70 text-sm line-clamp-2">{description}</p>
     {
       tags.length > 0 && (
         <div class="flex flex-wrap gap-1 mt-1">
           {tags.slice(0, BLOG_CARD_TAG_LIMIT).map((tag) => (
             <a
-              href={`${import.meta.env.BASE_URL}blog/tags/${tag}`}
+              href={`${import.meta.env.BASE_URL}blog/?tag=${encodeURIComponent(tag.toLowerCase())}`}
               class={`text-[0.65rem] leading-none px-1.5 py-0.5 rounded-full border transition-colors relative z-10 ${
-                tag === highlightTag
+                tag.toLowerCase() === highlightTag?.toLowerCase()
                   ? "bg-secondary text-secondary-content border-secondary"
                   : "bg-secondary/10 text-secondary border-secondary/20 hover:bg-secondary/20"
               }`}

@@ -115,6 +115,10 @@ const ui = {
     "contact.subject": "件名",
     "contact.message": "お問い合わせ内容",
     "contact.submit": "送信",
+    "contact.sending": "送信しています...",
+    "contact.success": "送信しました。",
+    "contact.error": "送信できませんでした。時間をおいて再度お試しください。",
+    "contact.mailtoFallback": "メールアプリを開きました。起動しない場合は、表示されているメールアドレス宛に直接ご連絡ください。",
     "contact.defaultSubject": "ポートフォリオサイトからのお問い合わせ",
   },
   en: {
@@ -228,6 +232,10 @@ const ui = {
     "contact.subject": "Subject",
     "contact.message": "Message",
     "contact.submit": "Send",
+    "contact.sending": "Sending...",
+    "contact.success": "Message sent.",
+    "contact.error": "Could not send the message. Please try again later.",
+    "contact.mailtoFallback": "Your mail app has been opened. If it does not start, please email the address shown here directly.",
     "contact.defaultSubject": "Message from portfolio site",
   },
 } as const;

@@ -14,6 +14,10 @@ const X = 52;
 export const OG_COLORS = {
   canvas: "#faf8f1",
   surface: "#efe9de",
+  thumbnail: "#2f2a23",
+  thumbnailText: "#faf8f1",
+  thumbnailMuted: "#d8caba",
+  thumbnailAccent: "#4f9d96",
   border: "#e6dfd0",
   tag: "#ebe3d4",
   tagText: "#6c6a64",

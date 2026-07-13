@@ -38,7 +38,7 @@ Astro Content Collections を使用。各コレクションは `src/content/` �
 | `hero` | `src/content/hero/` | `.yaml` | name, title, description, avatar, socialLinks |
 | `about` | `src/content/about/` | `.md` | title, photo, link |
 | `general` | `src/content/general/` | `.yaml` | トップページのセクション表示フラグ |
-| `contact` | `src/content/contact/` | `.md` | icon, linkUrl, footerText |
+| `contact` | `src/content/contact/` | `.md` | icon, linkUrl, footerText, formAction(optional) |
 
 #### 多言語コンテンツのファイル命名
 
@@ -103,6 +103,18 @@ Astro Content Collections を使用。各コレクションは `src/content/` �
 ---
 
 ## ユーティリティ
+
+### Zenn / Qiita 連携
+
+`src/utils/externalArticles.ts` がビルド時に Zenn / Qiita の公開記事を取得し、ホームの Blog セクション、`/blog/`、RSS に外部記事として混在させる。
+
+- デフォルトユーザー名は `src/utils/site.ts` の `zennUsername` / `qiitaUsername`（未設定時は取得しない）
+- `ZENN_USERNAME` / `QIITA_USERNAME` 環境変数で上書き可能
+- 取得失敗時はビルドを落とさず、ローカル記事のみで継続する
+
+### Contact form
+
+`src/content/contact/*.md` の `formAction` を設定すると、Contact フォームはその URL へ `POST` する。未設定の場合は `linkUrl` のメールアドレスに対する `mailto:` フォールバックを使う。GitHub Pages はサーバー処理を持たないため、実送信には Formspree / FormSubmit / 自前 API などの外部エンドポイントを設定する。
 
 ### formatDate / formatPeriod / calculateDuration（`src/utils/formatDate.ts`）
 

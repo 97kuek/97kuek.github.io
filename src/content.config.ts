@@ -157,6 +157,7 @@ const contact = defineCollection({
     footerText: z.string(),
     footerLinkText: z.string(),
     footerLinkUrl: z.string().url(),
+    formAction: z.string().url().optional(),
   }),
 });
 

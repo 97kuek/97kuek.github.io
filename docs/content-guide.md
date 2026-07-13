@@ -30,6 +30,16 @@ image: "@assets/blog/記事名/thumbnail.png"  # 省略可
 
 ---
 
+## 外部記事連携
+
+Zenn / Qiita の公開記事はビルド時に取得され、ホームの Blog セクション、`/blog/`、RSS に外部記事カードとして表示される。
+
+- 既定値は `src/utils/site.ts` の `zennUsername` / `qiitaUsername`（未設定時は取得しない）
+- 環境変数 `ZENN_USERNAME` / `QIITA_USERNAME` で上書き可能
+- 取得できない場合もビルドは失敗せず、ローカル記事だけを表示する
+
+---
+
 ## プロジェクトの追加
 
 ### プロジェクトファイル
