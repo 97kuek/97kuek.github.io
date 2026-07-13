@@ -57,7 +57,7 @@ const personSchema = {
 
       {/* Blog is Japanese-only — not shown on English page */}
 
-      <GitHubActivity />
+      {general.showGitHubSection && <GitHubActivity />}
 
       {general.showWorkSection && (
         <Timeline

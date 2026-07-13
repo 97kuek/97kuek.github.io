@@ -27,8 +27,6 @@
 | コンポーネント | 役割 |
 | --- | --- |
 | `Navbar.astro` | 固定ヘッダー（言語トグル JA/EN・検索ボタン・スクロール連動スタイル） |
-| `FabFlower.astro` | デスクトップ用フローティングメニュー |
-| `Dock.astro` | モバイル用ドック型ナビ |
 | `BackToTop.astro` | トップへ戻るボタン（長押しで目次ポップアップ） |
 | `PrevNextNav.astro` | 前後記事ナビゲーション |
 
@@ -48,7 +46,7 @@
 | `BlogCard.astro` | ブログ記事カード（stretched-link、タグリンク・`highlightTag`・`headingLevel` 対応。トップ/一覧/タグページ共通） |
 | `ProjectCard.astro` | プロジェクトカード（stretched-link、ロケール別 `title_en`/`description_en` 対応） |
 | `SkillBadge.astro` | スキル・タグのバッジ（リンク付き、teal=secondary） |
-| `FilterSection.astro` | タグフィルター（AND 絞り込み、URL パラメータ同期、i18n 対応）。タグは件数降順で上位 `initialVisible`（既定10）のみ表示し、残りは「すべてのタグ (+N)」で展開。選択タグは teal（secondary）、「All」は coral（primary） |
+| `FilterSection.astro` | 一覧ページの検索・タグフィルター・ソート（AND 絞り込み、`q`/`tag`/`sort` の URL パラメータ同期、i18n 対応）。タグは件数降順で上位 `initialVisible`（既定10）のみ表示し、残りは「すべてのタグ (+N)」で展開。選択タグは teal（secondary）、「All」は coral（primary） |
 | `Terminal.astro` | ターミナルウィンドウ風の枠（信号機ドット＋タイトルバー＋slot）。色は expressive-code のコードブロック（github-dark）と同一パレットで固定。404・検索ページで使用 |
 | `ImageLightbox.astro` | 画像クリックで拡大表示 |
 | `OgPlaceholder.astro` | 画像なし記事の SVG プレースホルダー（暖色 cream 背景＋coral アクセントバー。OG 画像生成にも使用） |

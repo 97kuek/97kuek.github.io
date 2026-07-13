@@ -1,8 +1,7 @@
-extraLinksEnabled: false
-extraLinks: []
 showAboutSection: true
 showProjectsSection: true
 showBlogSection: true
+showGitHubSection: true
 showWorkSection: true
 showEducationSection: true
 showHackathonsSection: false

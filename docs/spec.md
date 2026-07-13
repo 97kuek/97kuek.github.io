@@ -37,7 +37,7 @@ Astro Content Collections を使用。各コレクションは `src/content/` �
 | `hackathons` | `src/content/hackathons/` | `.md` | title, location, description, startDate, skills |
 | `hero` | `src/content/hero/` | `.yaml` | name, title, description, avatar, socialLinks |
 | `about` | `src/content/about/` | `.md` | title, photo, link |
-| `general` | `src/content/general/` | `.yaml` | セクション表示フラグ、extraLinks |
+| `general` | `src/content/general/` | `.yaml` | トップページのセクション表示フラグ |
 | `contact` | `src/content/contact/` | `.md` | icon, linkUrl, footerText |
 
 #### 多言語コンテンツのファイル命名

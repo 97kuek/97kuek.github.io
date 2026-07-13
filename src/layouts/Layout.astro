@@ -1,16 +1,9 @@
 ---
 import "../styles/global.css";
-import FabFlower from "../components/FabFlower.astro";
-import Dock from "../components/Dock.astro";
 import Navbar from "../components/Navbar.astro";
 import ImageLightbox from "../components/ImageLightbox.astro";
 import { ClientRouter } from "astro:transitions";
-import { getEntry } from "astro:content";
 import { SITE } from "../utils/site";
-
-// Load general singleton
-const generalEntry = (await getEntry("general", "index"))!;
-const general = generalEntry.data;
 
 interface Props {
   title?: string;
@@ -126,25 +119,6 @@ const hasTranslation =
     </a>
     <Navbar />
     <slot />
-
-    {
-      general.extraLinksEnabled && (
-        <>
-          {/* FabFlower for desktop - show 'both' and 'fab' items */}
-          <FabFlower
-            extraLinks={general.extraLinks.filter(
-              (link) => link.displayOn !== "dock",
-            )}
-          />
-          {/* Dock for mobile - show 'both' and 'dock' items */}
-          <Dock
-            extraLinks={general.extraLinks.filter(
-              (link) => link.displayOn !== "fab",
-            )}
-          />
-        </>
-      )
-    }
 
     <!-- Image Lightbox -->
     <ImageLightbox />

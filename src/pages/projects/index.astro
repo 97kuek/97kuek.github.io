@@ -1,40 +1,25 @@
 ---
-import type { GetStaticPaths } from "astro";
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import ProjectCard from "../../components/ProjectCard.astro";
 import FilterSection from "../../components/FilterSection.astro";
-import Pagination from "../../components/Pagination.astro";
 import BackLink from "../../components/BackLink.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import { SITE } from "../../utils/site";
 import { useTranslations } from "../../i18n/ui";
 import { getHomeUrl, getTagSummary, sortProjectsByDisplayDate } from "../../utils/content";
-import { LIST_PAGE_SIZE } from "../../utils/constants";
 
 const t = useTranslations("ja");
 
-export const getStaticPaths = (async ({ paginate }) => {
-  const projects = await getCollection("projects");
-  const sortedProjects = sortProjectsByDisplayDate(projects);
-  return paginate(sortedProjects, { pageSize: LIST_PAGE_SIZE });
-}) satisfies GetStaticPaths;
-
-const { page } = Astro.props;
-const projects = page.data;
+const projects = sortProjectsByDisplayDate(await getCollection("projects"));
 
 const { tags: allSkills, tagCounts: skillCounts } = getTagSummary(
   projects,
   (project) => project.data.skills,
 );
-
-const title =
-  page.currentPage > 1
-    ? `プロジェクト (${page.currentPage}/${page.lastPage}) - ${SITE.ownerNameJa}`
-    : `プロジェクト - ${SITE.ownerNameJa}`;
 ---
 
-<Layout title={title} description={t("projects.metaDescription")}>
+<Layout title={`プロジェクト - ${SITE.ownerNameJa}`} description={t("projects.metaDescription")}>
   <main id="main-content" class="max-w-6xl mx-auto px-4 py-20">
     <div class="mb-8">
       <BackLink href={getHomeUrl("ja")} label={t("404.backHome")} />
@@ -57,13 +42,5 @@ const title =
         </div>
       )
     }
-
-    <Pagination
-      currentPage={page.currentPage}
-      lastPage={page.lastPage}
-      basePath={`${import.meta.env.BASE_URL}projects`}
-      prevUrl={page.url.prev}
-      nextUrl={page.url.next}
-    />
   </main>
 </Layout>

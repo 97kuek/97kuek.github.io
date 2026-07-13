@@ -50,6 +50,7 @@ function setButtonState(btn: Element, isActive: boolean) {
 function initFilter(root: HTMLElement) {
   const containerId = root.dataset.filterContainerId;
   const itemsSuffix = root.dataset.itemsSuffix ?? "";
+  const defaultSort = root.dataset.defaultSort ?? "newest";
   if (!containerId) return undefined;
 
   const filterSection = document.getElementById(`filter-${containerId}`);
@@ -66,8 +67,12 @@ function initFilter(root: HTMLElement) {
   const cleanups: Array<() => void> = [];
   const buttons = Array.from(filterSection.querySelectorAll(".filter-btn"));
   const items = Array.from(container.querySelectorAll<HTMLElement>("[data-filter-tags]"));
+  const searchInput = root.querySelector<HTMLInputElement>("[data-filter-search]");
+  const sortSelect = root.querySelector<HTMLSelectElement>("[data-filter-sort]");
   const prefersCollapsed = window.matchMedia("(max-width: 767px)");
   const activeTags = new Set<string>();
+  let query = "";
+  let sort = defaultSort;
 
   const resizeContent = () => {
     if (toggle.getAttribute("aria-expanded") === "true") {
@@ -92,9 +97,13 @@ function initFilter(root: HTMLElement) {
   const updateUrl = () => {
     const url = new URL(window.location.href);
     url.searchParams.delete("tag");
+    url.searchParams.delete("q");
+    url.searchParams.delete("sort");
+    if (query) url.searchParams.set("q", query);
+    if (sort !== defaultSort) url.searchParams.set("sort", sort);
     activeTags.forEach((tag) => url.searchParams.append("tag", tag));
     if (url.toString() !== window.location.href) {
-      window.history.pushState({ tags: Array.from(activeTags) }, "", url);
+      window.history.pushState({ tags: Array.from(activeTags), q: query, sort }, "", url);
     }
   };
 
@@ -110,12 +119,32 @@ function initFilter(root: HTMLElement) {
       const itemTags = (item.getAttribute("data-filter-tags") ?? "")
         .split(",")
         .map((tag) => tag.trim().toLowerCase());
+      const searchable = [
+        item.getAttribute("data-filter-title"),
+        item.getAttribute("data-filter-description"),
+        item.getAttribute("data-filter-tags"),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
       const isVisible =
-        activeTags.size === 0 || Array.from(activeTags).every((tag) => itemTags.includes(tag));
+        (activeTags.size === 0 || Array.from(activeTags).every((tag) => itemTags.includes(tag))) &&
+        (!query || searchable.includes(query));
 
       item.style.display = isVisible ? "" : "none";
       if (isVisible) visibleCount++;
     });
+
+    const sortedItems = [...items].sort((a, b) => {
+      if (sort === "title") {
+        return (a.dataset.filterTitle ?? "").localeCompare(b.dataset.filterTitle ?? "");
+      }
+
+      const aDate = Number(a.dataset.filterDate ?? 0);
+      const bDate = Number(b.dataset.filterDate ?? 0);
+      return sort === "oldest" ? aDate - bDate : bDate - aDate;
+    });
+    sortedItems.forEach((item) => container.appendChild(item));
 
     countDisplay.textContent = `${visibleCount}${itemsSuffix}`;
     noResults.classList.toggle("hidden", visibleCount > 0);
@@ -137,7 +166,14 @@ function initFilter(root: HTMLElement) {
 
   const syncFromUrl = () => {
     activeTags.clear();
-    new URLSearchParams(window.location.search).getAll("tag").forEach((tag) => {
+    const params = new URLSearchParams(window.location.search);
+    query = (params.get("q") ?? "").trim().toLowerCase();
+    sort = params.get("sort") ?? defaultSort;
+    if (!["newest", "oldest", "title"].includes(sort)) sort = defaultSort;
+    if (searchInput) searchInput.value = query;
+    if (sortSelect) sortSelect.value = sort;
+
+    params.getAll("tag").forEach((tag) => {
       const lowerTag = tag.toLowerCase();
       if (buttons.some((btn) => btn.getAttribute("data-tag") === lowerTag)) {
         activeTags.add(lowerTag);
@@ -181,10 +217,33 @@ function initFilter(root: HTMLElement) {
     cleanups.push(() => button.removeEventListener("click", onButtonClick));
   });
 
+  if (searchInput) {
+    const onSearch = () => {
+      query = searchInput.value.trim().toLowerCase();
+      updateUI();
+    };
+    searchInput.addEventListener("input", onSearch);
+    cleanups.push(() => searchInput.removeEventListener("input", onSearch));
+  }
+
+  if (sortSelect) {
+    sortSelect.value = sort;
+    const onSort = () => {
+      sort = sortSelect.value;
+      updateUI();
+    };
+    sortSelect.addEventListener("change", onSort);
+    cleanups.push(() => sortSelect.removeEventListener("change", onSort));
+  }
+
   const resetBtn = root.querySelector(".reset-filters");
   if (resetBtn) {
     const onResetClick = () => {
       activeTags.clear();
+      query = "";
+      sort = defaultSort;
+      if (searchInput) searchInput.value = "";
+      if (sortSelect) sortSelect.value = defaultSort;
       updateUI();
     };
     resetBtn.addEventListener("click", onResetClick);
@@ -210,4 +269,3 @@ export function cleanupFilterSections() {
   cleanupFilters.forEach((cleanup) => cleanup());
   cleanupFilters = [];
 }
-

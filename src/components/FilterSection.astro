@@ -1,13 +1,16 @@
 ---
 import { useTranslations, type Lang } from "../i18n/ui";
 import { INITIAL_VISIBLE_FILTER_TAGS } from "../utils/constants";
-import { ChevronDown, Funnel } from "@lucide/astro";
+import { ChevronDown, Funnel, Search } from "@lucide/astro";
 
 interface Props {
   tags: string[];
   containerId: string;
   tagCounts?: Record<string, number>;
   totalCount?: number;
+  enableSearch?: boolean;
+  enableSort?: boolean;
+  defaultSort?: "newest" | "oldest" | "title";
   /** How many tags to show before collapsing the rest behind "show all". */
   initialVisible?: number;
 }
@@ -17,6 +20,9 @@ const {
   containerId,
   tagCounts,
   totalCount,
+  enableSearch = true,
+  enableSort = true,
+  defaultSort = "newest",
   initialVisible = INITIAL_VISIBLE_FILTER_TAGS,
 } = Astro.props;
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
@@ -36,6 +42,7 @@ const lessLabel = t("filter.showLess");
   data-filter-root
   data-filter-container-id={containerId}
   data-items-suffix={itemsSuffix}
+  data-default-sort={defaultSort}
 >
   <button
     id={`filter-toggle-${containerId}`}
@@ -51,6 +58,33 @@ const lessLabel = t("filter.showLess");
   </button>
 
   <div id={`filter-content-${containerId}`} class="transition-all duration-300 ease-in-out overflow-hidden">
+    {(enableSearch || enableSort) && (
+      <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_14rem] gap-3 mb-4">
+        {enableSearch && (
+          <label class="input input-bordered flex items-center gap-2 bg-base-100">
+            <Search class="size-4 text-base-content/50" aria-hidden="true" />
+            <input
+              id={`filter-search-${containerId}`}
+              type="search"
+              class="grow"
+              placeholder={t("filter.searchPlaceholder")}
+              aria-label={t("filter.searchLabel")}
+              data-filter-search
+            />
+          </label>
+        )}
+        {enableSort && (
+          <label class="select select-bordered bg-base-100 w-full">
+            <span class="label">{t("filter.sortLabel")}</span>
+            <select id={`filter-sort-${containerId}`} data-filter-sort>
+              <option value="newest">{t("filter.sortNewest")}</option>
+              <option value="oldest">{t("filter.sortOldest")}</option>
+              <option value="title">{t("filter.sortTitle")}</option>
+            </select>
+          </label>
+        )}
+      </div>
+    )}
     <div class="flex flex-wrap gap-2 mb-4" id={`filter-${containerId}`}>
       <button
         class="btn btn-sm btn-primary filter-btn active"

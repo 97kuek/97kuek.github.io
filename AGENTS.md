@@ -30,7 +30,7 @@ warm-editorial 配色。[docs/DESIGN.md](docs/DESIGN.md)（Claude.com のデザ�
 - **デフォルトテーマはライト（cream）**。ダークは warm-ink の第2テーマ（`Layout.astro` で `localStorage` 優先、無ければ `light`）。
 - **canvas = cream**（`base-100` ~#faf8f1）、**text = warm ink**（`base-content`）。純白・クールグレーは使わない。
 - **役割分担**: **coral（primary）= ブランド/CTA・セクション見出し・`prose strong`・アバターのリング等**。**teal（secondary）= タグ・バッジ・リンク等インタラクティブ**（`prose a`・SkillBadge・BlogCard タグ・フィルタ選択タグ・検索結果リンク）。
-- **amber（accent）** は稀なアクセント（FabFlower の FAB、DiagramNode）。3アクセントを乱用しない。
+- **amber（accent）** は稀なアクセント（DiagramNode など）。3アクセントを乱用しない。
 - **セマンティック色**（info=teal 系 / success / warning / error）は cream と両立するよう暖色寄りに調整済み（Box で使用）。
 - **radius** は `--radius-field` 8px（ボタン・入力）/ `--radius-box` 12px（カード）のスクエア寄り。
 - **コントラスト**: ライトの coral/teal は本文で WCAG AA(4.5:1) を満たす値にしてある（coral 4.87 / teal 4.65）。色を変える際は `node tools/contrast.mjs` で再検算する。

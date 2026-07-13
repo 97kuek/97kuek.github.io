@@ -1,39 +1,24 @@
 ---
-import type { GetStaticPaths } from "astro";
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import BlogCard from "../../components/BlogCard.astro";
 import FilterSection from "../../components/FilterSection.astro";
-import Pagination from "../../components/Pagination.astro";
 import BackLink from "../../components/BackLink.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import { SITE } from "../../utils/site";
 import { useTranslations } from "../../i18n/ui";
 import { getHomeUrl, getTagSummary } from "../../utils/content";
-import { LIST_PAGE_SIZE } from "../../utils/constants";
 
 const t = useTranslations("ja");
 
-export const getStaticPaths = (async ({ paginate }) => {
-  const blogPosts = await getCollection("blog");
-  const sortedPosts = [...blogPosts].sort(
-    (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime(),
-  );
-  return paginate(sortedPosts, { pageSize: LIST_PAGE_SIZE });
-}) satisfies GetStaticPaths;
-
-const { page } = Astro.props;
-const posts = page.data;
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime(),
+);
 
 const { tags: allTags, tagCounts } = getTagSummary(posts, (post) => post.data.tags);
-
-const title =
-  page.currentPage > 1
-    ? `ブログ (${page.currentPage}/${page.lastPage}) - ${SITE.ownerNameJa}`
-    : `ブログ - ${SITE.ownerNameJa}`;
 ---
 
-<Layout title={title} description={t("blog.metaDescription")}>
+<Layout title={`ブログ - ${SITE.ownerNameJa}`} description={t("blog.metaDescription")}>
   <main id="main-content" class="max-w-6xl mx-auto px-4 py-20">
     <div class="mb-8">
       <BackLink href={getHomeUrl("ja")} label={t("404.backHome")} />
@@ -56,13 +41,5 @@ const title =
         </div>
       )
     }
-
-    <Pagination
-      currentPage={page.currentPage}
-      lastPage={page.lastPage}
-      basePath={`${import.meta.env.BASE_URL}blog`}
-      prevUrl={page.url.prev}
-      nextUrl={page.url.next}
-    />
   </main>
 </Layout>

@@ -157,16 +157,15 @@ The name should be the same as the theme name below.
 }
 
 .prose table {
-  display: block;
   width: 100%;
   max-width: 100%;
-  overflow-x: auto;
   border-collapse: separate;
   border-spacing: 0;
   border: 1px solid var(--color-base-200);
   border-radius: var(--radius-box);
   background: var(--color-base-100);
   font-variant-numeric: tabular-nums;
+  overflow: hidden;
 }
 
 .prose thead {
@@ -176,6 +175,16 @@ The name should be the same as the theme name below.
 .prose th,
 .prose td {
   border-color: var(--color-base-200);
+}
+
+.prose th {
+  background: var(--color-base-200);
+  color: var(--color-base-content);
+  font-weight: 700;
+}
+
+.prose tbody tr:nth-child(even) {
+  background: color-mix(in oklch, var(--color-base-200) 32%, transparent);
 }
 
 .prose strong {

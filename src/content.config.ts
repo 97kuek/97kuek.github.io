@@ -136,29 +136,10 @@ const about = defineCollection({
 const general = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdoc,yaml}", base: "./src/content/general" }),
   schema: z.object({
-    extraLinksEnabled: z.boolean(),
-    extraLinks: z.array(
-      z.object({
-        link: z.string(),
-        icon: z.enum([
-          "Flower2",
-          "BookOpen",
-          "FileText",
-          "CodeXml",
-          "Mail",
-          "Home",
-          "User",
-          "Briefcase",
-          "GraduationCap",
-          "Link",
-        ]),
-        label: z.string(),
-        displayOn: z.enum(["both", "dock", "fab"]).optional().default("both"),
-      })
-    ),
     showAboutSection: z.boolean(),
     showProjectsSection: z.boolean(),
     showBlogSection: z.boolean(),
+    showGitHubSection: z.boolean(),
     showWorkSection: z.boolean(),
     showEducationSection: z.boolean(),
     showHackathonsSection: z.boolean(),

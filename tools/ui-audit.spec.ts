@@ -22,7 +22,7 @@ test.describe("portfolio UI audit", () => {
     await expectNoHorizontalOverflow(page);
   });
 
-  test("project filters reflect expanded state and URL state", async ({ page }, testInfo) => {
+  test("project discovery filters reflect query, tags, sort, and URL state", async ({ page }, testInfo) => {
     await page.goto("/projects/");
     const toggle = page.getByRole("button", { name: "Tags" });
 
@@ -31,6 +31,12 @@ test.describe("portfolio UI audit", () => {
       await page.getByRole("button", { name: "Python (3)" }).click();
       await expect(page).toHaveURL(/tag=python/);
       await expect(page.getByText("3件")).toBeVisible();
+      await page.getByRole("searchbox", { name: "キーワード検索" }).fill("Fusion");
+      await expect(page).toHaveURL(/q=fusion/);
+      await expect(page.getByText("1件")).toBeVisible();
+      await expect(page.getByRole("link", { name: "Fusion Wing Importer" })).toBeVisible();
+      await page.getByRole("combobox", { name: "並び替え" }).selectOption("title");
+      await expect(page).toHaveURL(/sort=title/);
     } else {
       await expect(toggle).toHaveAttribute("aria-expanded", "false");
       await expect(page.getByRole("button", { name: "Python (3)" })).toBeHidden();
@@ -39,6 +45,19 @@ test.describe("portfolio UI audit", () => {
       await expect(page.getByRole("button", { name: "Python (3)" })).toBeVisible();
     }
 
+    await expectNoHorizontalOverflow(page);
+  });
+
+  test("blog discovery restores URL search and tag state", async ({ page }, testInfo) => {
+    await page.goto("/blog/?q=claude&tag=claude&sort=title");
+    if (testInfo.project.name === "mobile") {
+      await page.getByRole("button", { name: "Tags", exact: true }).click();
+    }
+    await expect(page.getByRole("searchbox", { name: "キーワード検索" })).toHaveValue("claude");
+    await expect(page.getByRole("combobox", { name: "並び替え" })).toHaveValue("title");
+    await expect(page.getByRole("button", { name: "Claude (1)" })).toHaveClass(/active/);
+    await expect(page.getByText("1件")).toBeVisible();
+    await expect(page.getByRole("link", { name: /GitHub Issues/ })).toBeVisible();
     await expectNoHorizontalOverflow(page);
   });
 
@@ -84,6 +103,19 @@ test.describe("portfolio UI audit", () => {
     await page.goto("/en/");
     await expect(page.getByRole("link", { name: "View projects" })).toBeVisible();
     await expect(page.getByRole("link", { name: "日本語に切り替え" })).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+  });
+
+  test("english projects expose localized discovery controls", async ({ page }, testInfo) => {
+    await page.goto("/en/projects/?q=hotel&sort=title");
+    await expect(page.getByRole("heading", { level: 1, name: "Projects" })).toBeVisible();
+    if (testInfo.project.name === "mobile") {
+      await page.getByRole("button", { name: "Tags", exact: true }).click();
+    }
+    await expect(page.getByRole("searchbox", { name: "Keyword search" })).toHaveValue("hotel");
+    await expect(page.getByRole("combobox", { name: "Sort" })).toHaveValue("title");
+    await expect(page.getByText("1 items")).toBeVisible();
+    await expect(page.getByRole("link", { name: /Hotel Reservation System/ })).toBeVisible();
     await expectNoHorizontalOverflow(page);
   });
 });

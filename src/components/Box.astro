@@ -11,36 +11,36 @@ type BoxConfig = {
 
 const configs: Record<string, BoxConfig> = {
   info: {
-    wrapper: 'border-base-200 border-l-info/80 bg-base-100',
+    wrapper: 'border-info/70 bg-info/5',
     iconColor: 'text-info',
     icon: Info,
   },
   warning: {
-    wrapper: 'border-base-200 border-l-warning/80 bg-base-100',
+    wrapper: 'border-warning/70 bg-warning/10',
     iconColor: 'text-warning',
     icon: TriangleAlert,
   },
   success: {
-    wrapper: 'border-base-200 border-l-success/80 bg-base-100',
+    wrapper: 'border-success/70 bg-success/5',
     iconColor: 'text-success',
     icon: CircleCheck,
   },
   error: {
-    wrapper: 'border-base-200 border-l-error/80 bg-base-100',
+    wrapper: 'border-error/70 bg-error/5',
     iconColor: 'text-error',
     icon: CircleX,
   },
 };
 
 const cfg = configs[color] ?? {
-  wrapper: 'border-base-200 border-l-base-content/40 bg-base-100',
+  wrapper: 'border-base-content/30 bg-base-100',
   iconColor: 'text-base-content/70',
   icon: Info,
 };
 const IconComponent = cfg.icon;
 ---
 
-<div class={`my-6 rounded-lg border border-l-[3px] px-5 py-4 ${cfg.wrapper}`}>
+<div class={`my-6 rounded-lg border px-5 py-4 ${cfg.wrapper}`}>
   {title && (
     <div class="not-prose flex items-center gap-1.5 mb-2 text-base-content">
       <IconComponent class={`size-3.5 stroke-[2.5] ${cfg.iconColor}`} aria-hidden="true" />

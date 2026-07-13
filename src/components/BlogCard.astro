@@ -23,11 +23,15 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 const readingTime = calcReadingTime(post.body ?? "");
 const readingTimeLabel = t("blog.readingTime").replace("{n}", String(readingTime));
 const tags = post.data.tags ?? [];
+const filterDate = post.data.publishDate.getTime();
 ---
 
 <article
   class={`${FLAT_CARD_CLASS} h-full relative group`}
   data-filter-tags={tags.join(",")}
+  data-filter-title={post.data.title}
+  data-filter-description={post.data.description}
+  data-filter-date={filterDate}
 >
   <figure class="aspect-video overflow-hidden flex-none">
     {post.data.image ? (

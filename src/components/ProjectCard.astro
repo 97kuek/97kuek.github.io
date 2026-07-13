@@ -21,11 +21,15 @@ const t = useTranslations(locale);
 const { title: displayTitle, description: displayDescription } = getLocalizedProject(project, locale);
 const projectUrl = getProjectDetailUrl(project.id, locale);
 const projectsListUrl = getProjectsUrl(locale);
+const filterDate = project.data.endDate?.getTime() ?? Number.MAX_SAFE_INTEGER;
 ---
 
 <article
   class={`${FLAT_CARD_CLASS} relative`}
   data-filter-tags={project.data.skills.join(",")}
+  data-filter-title={displayTitle}
+  data-filter-description={displayDescription}
+  data-filter-date={filterDate}
 >
   <figure class="aspect-video overflow-hidden">
     {project.data.images && project.data.images.length > 1 ? (

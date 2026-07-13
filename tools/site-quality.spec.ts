@@ -3,10 +3,12 @@ import { expect, test, type Page } from "@playwright/test";
 const representativePaths = [
   "/",
   "/projects/",
+  "/blog/",
   "/blog/slide-generator/",
   "/blog/game-theory/",
   "/search/",
   "/en/",
+  "/en/projects/",
 ];
 
 async function collectInternalLinks(page: Page) {
