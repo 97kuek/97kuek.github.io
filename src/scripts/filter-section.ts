@@ -41,7 +41,7 @@ function setButtonState(btn: Element, isActive: boolean) {
     return;
   }
 
-  btn.classList.toggle("btn-secondary", isActive);
+  btn.classList.toggle("btn-primary", isActive);
   btn.classList.toggle("active", isActive);
   btn.classList.toggle("btn-outline", !isActive);
   btn.classList.toggle("btn-ghost", !isActive);

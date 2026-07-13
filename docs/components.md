@@ -15,7 +15,6 @@
 | コンポーネント | 役割 |
 | --- | --- |
 | `Hero.astro` | ヒーローセクション（名前・肩書き・SNS リンク）。高さ `100dvh` で全端末1画面。自己紹介文は LLM 出力風にトークンストリーミング表示＋点滅カーソル（`prefers-reduced-motion` で即表示、CLS ゼロ） |
-| `Highlights.astro` | プロジェクト数・記事数・得意領域・チーム活動を短く示す概要セクション |
 | `About.astro` | 自己紹介セクション |
 | `Projects.astro` | プロジェクト一覧（`featured: true` のみ） |
 | `Blog.astro` | ブログ一覧（最新3件。自サイト/Zenn/Qiita/note 記事を同じカード体系で表示） |
@@ -46,8 +45,8 @@
 | --- | --- |
 | `BlogCard.astro` | ブログ記事カード（自サイト/Zenn/Qiita/note の出典バッジ、外部リンク、タグリンク、`highlightTag`・`headingLevel` 対応） |
 | `ProjectCard.astro` | プロジェクトカード（stretched-link、ロケール別タイトル/説明、役割・成果・状態の短い要約に対応） |
-| `SkillBadge.astro` | スキル・タグのバッジ（リンク付き、teal=secondary） |
-| `FilterSection.astro` | 一覧ページの検索・タグフィルター・ソート（AND 絞り込み、`q`/`tag`/`sort` の URL パラメータ同期、i18n 対応）。タグは件数降順で上位 `initialVisible`（既定10）のみ表示し、残りは「すべてのタグ (+N)」で展開。選択タグは teal（secondary）、「All」は coral（primary） |
+| `SkillBadge.astro` | スキル・タグのバッジ（リンク付き、ニュートラル背景＋本文色、hover で primary） |
+| `FilterSection.astro` | 一覧ページの検索・タグフィルター・ソート（AND 絞り込み、`q`/`tag`/`sort` の URL パラメータ同期、i18n 対応）。タグは件数降順で上位 `initialVisible`（既定10）のみ表示し、残りは「すべてのタグ (+N)」で展開。選択タグと「All」は coral（primary） |
 | `Terminal.astro` | ターミナルウィンドウ風の枠（信号機ドット＋タイトルバー＋slot）。色は expressive-code のコードブロック（github-dark）と同一パレットで固定。404・検索ページで使用 |
 | `ImageLightbox.astro` | 画像クリックで拡大表示 |
 | `OgPlaceholder.astro` | 画像なし記事・プロジェクトの SVG プレースホルダー（カード上では warm ink 背景、OG 画像生成にも使用） |

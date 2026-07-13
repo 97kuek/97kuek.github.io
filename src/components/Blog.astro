@@ -38,8 +38,8 @@ const { tags: featuredTopics, tagCounts } = getTagSummary(
         <span class="font-semibold text-base-content/50 mr-1">{t("blog.featuredTopics")}</span>
         {featuredTopics.slice(0, FEATURED_BLOG_TOPIC_LIMIT).map((tag) => (
           <a
-            href={`${import.meta.env.BASE_URL}blog/tags/${tag}`}
-            class="badge badge-outline badge-secondary hover:badge-secondary hover:text-secondary-content transition-colors"
+            href={`${import.meta.env.BASE_URL}blog/?tag=${encodeURIComponent(tag.toLowerCase())}`}
+            class="badge border border-base-300 bg-base-100 text-base-content hover:border-primary hover:text-primary transition-colors"
           >
             {tag}
             <span class="opacity-70">({tagCounts[tag]})</span>

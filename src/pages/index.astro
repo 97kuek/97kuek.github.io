@@ -1,12 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
-import Highlights from "../components/Highlights.astro";
 import About from "../components/About.astro";
 import Timeline from "../components/Timeline.astro";
 import Projects from "../components/Projects.astro";
 import Blog from "../components/Blog.astro";
-import GitHubActivity from "../components/GitHubActivity.astro";
 import Hackathons from "../components/Hackathons.astro";
 import Contact from "../components/Contact.astro";
 import { Briefcase, GraduationCap } from "@lucide/astro";
@@ -62,8 +60,6 @@ const personSchema = {
 
     <!-- All other sections (visible on all devices now) -->
     <div>
-      <Highlights />
-
       <!-- About Section -->
       {
         general.showAboutSection && (
@@ -81,9 +77,6 @@ const personSchema = {
 
       <!-- Blog Section -->
       {general.showBlogSection && <Blog />}
-
-      <!-- GitHub Activity Section -->
-      {general.showGitHubSection && <GitHubActivity />}
 
       <!-- Work Experience Section -->
       {

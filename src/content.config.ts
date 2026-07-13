@@ -145,7 +145,6 @@ const general = defineCollection({
     showAboutSection: z.boolean(),
     showProjectsSection: z.boolean(),
     showBlogSection: z.boolean(),
-    showGitHubSection: z.boolean(),
     showWorkSection: z.boolean(),
     showEducationSection: z.boolean(),
     showHackathonsSection: z.boolean(),
