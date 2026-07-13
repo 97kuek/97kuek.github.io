@@ -1,6 +1,6 @@
 import { SITE } from "./site";
 
-export type ExternalArticleSource = "Zenn" | "Qiita";
+export type ExternalArticleSource = "Zenn" | "Qiita" | "note";
 
 export interface ExternalArticle {
   id: string;
@@ -43,15 +43,22 @@ interface ZennResponse {
 const DEFAULT_EXTERNAL_LIMIT = 12;
 let externalArticlesCache: Promise<ExternalArticle[]> | undefined;
 
-function stripHtml(value: string): string {
+function decodeEntities(value: string): string {
   return value
-    .replace(/<[^>]*>/g, " ")
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+    .replace(/&#(\d+);/g, (_match, code: string) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([\da-f]+);/gi, (_match, code: string) => String.fromCodePoint(Number.parseInt(code, 16)))
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replace(/&#39;/g, "'");
+}
+
+function stripHtml(value: string): string {
+  return decodeEntities(value)
+    .replace(/<[^>]*>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -83,8 +90,46 @@ async function fetchJson<T>(url: string, source: ExternalArticleSource): Promise
   }
 }
 
-function getConfiguredUsername(envKey: "ZENN_USERNAME" | "QIITA_USERNAME", fallback: string): string {
+async function fetchText(url: string, source: ExternalArticleSource): Promise<string | undefined> {
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/rss+xml, application/xml, text/xml",
+        "User-Agent": `${SITE.repository} portfolio build`,
+      },
+    });
+
+    if (!response.ok) {
+      console.warn(`[externalArticles] ${source} fetch failed: ${response.status} ${response.statusText}`);
+      return undefined;
+    }
+
+    return await response.text();
+  } catch (error) {
+    console.warn(`[externalArticles] ${source} fetch failed`, error);
+    return undefined;
+  }
+}
+
+function getConfiguredUsername(envKey: "ZENN_USERNAME" | "QIITA_USERNAME" | "NOTE_USERNAME", fallback: string): string {
   return String(import.meta.env[envKey] || fallback || "").trim();
+}
+
+function extractXmlValue(xml: string, tagName: string): string | undefined {
+  const escaped = tagName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = xml.match(new RegExp(`<${escaped}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${escaped}>`, "i"));
+  return match ? decodeEntities(match[1]).trim() : undefined;
+}
+
+function extractXmlValues(xml: string, tagName: string): string[] {
+  const escaped = tagName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return Array.from(xml.matchAll(new RegExp(`<${escaped}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${escaped}>`, "gi")))
+    .map((match) => decodeEntities(match[1]).trim())
+    .filter(Boolean);
+}
+
+function parseRssItems(xml: string): string[] {
+  return Array.from(xml.matchAll(/<item(?:\s[^>]*)?>([\s\S]*?)<\/item>/gi)).map((match) => match[1]);
 }
 
 export async function getQiitaArticles(limit = DEFAULT_EXTERNAL_LIMIT): Promise<ExternalArticle[]> {
@@ -144,15 +189,43 @@ export async function getZennArticles(limit = DEFAULT_EXTERNAL_LIMIT): Promise<E
   });
 }
 
+export async function getNoteArticles(limit = DEFAULT_EXTERNAL_LIMIT): Promise<ExternalArticle[]> {
+  const username = getConfiguredUsername("NOTE_USERNAME", SITE.noteUsername);
+  if (!username) return [];
+
+  const xml = await fetchText(`https://note.com/${encodeURIComponent(username)}/rss`, "note");
+  if (!xml) return [];
+
+  return parseRssItems(xml).slice(0, limit).map((item, index) => {
+    const title = extractXmlValue(item, "title") ?? "Untitled note";
+    const link = extractXmlValue(item, "link") ?? `https://note.com/${username}`;
+    const guid = extractXmlValue(item, "guid") ?? link;
+    const description = extractXmlValue(item, "description") ?? extractXmlValue(item, "content:encoded") ?? "";
+    const pubDate = extractXmlValue(item, "pubDate") ?? extractXmlValue(item, "dc:date") ?? "";
+    const categories = extractXmlValues(item, "category");
+
+    return {
+      id: `note-${guid.replace(/^https?:\/\//, "").replace(/[^a-z0-9]+/gi, "-") || index}`,
+      source: "note",
+      title,
+      description: summarize(description, "note に投稿した記事です。"),
+      url: link,
+      publishedAt: pubDate ? new Date(pubDate) : new Date(0),
+      tags: ["note", ...categories].filter(Boolean),
+    };
+  });
+}
+
 export async function getExternalArticles(limit = DEFAULT_EXTERNAL_LIMIT): Promise<ExternalArticle[]> {
   externalArticlesCache ??= Promise.all([
     getZennArticles(limit),
     getQiitaArticles(limit),
-  ]).then(([zennArticles, qiitaArticles]) =>
-    [...zennArticles, ...qiitaArticles]
+    getNoteArticles(limit),
+  ]).then(([zennArticles, qiitaArticles, noteArticles]) =>
+    [...zennArticles, ...qiitaArticles, ...noteArticles]
       .filter((article) => !Number.isNaN(article.publishedAt.getTime()))
       .sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()),
   );
 
-  return (await externalArticlesCache).slice(0, limit * 2);
+  return (await externalArticlesCache).slice(0, limit * 3);
 }

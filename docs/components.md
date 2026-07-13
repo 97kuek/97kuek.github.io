@@ -15,12 +15,13 @@
 | コンポーネント | 役割 |
 | --- | --- |
 | `Hero.astro` | ヒーローセクション（名前・肩書き・SNS リンク）。高さ `100dvh` で全端末1画面。自己紹介文は LLM 出力風にトークンストリーミング表示＋点滅カーソル（`prefers-reduced-motion` で即表示、CLS ゼロ） |
+| `Highlights.astro` | プロジェクト数・記事数・得意領域・チーム活動を短く示す概要セクション |
 | `About.astro` | 自己紹介セクション |
 | `Projects.astro` | プロジェクト一覧（`featured: true` のみ） |
-| `Blog.astro` | ブログ一覧（最新3件、日本語ページのみ表示） |
+| `Blog.astro` | ブログ一覧（最新3件。自サイト/Zenn/Qiita/note 記事を同じカード体系で表示） |
 | `Timeline.astro` | 職務経歴・学歴タイムライン（`collection` prop で切り替え、コンテンツをカード内に直接表示） |
 | `Hackathons.astro` | ハッカソン一覧 |
-| `Contact.astro` | お問い合わせフォーム付き連絡先セクション（ロケール別エントリを自動読み込み） |
+| `Contact.astro` | 連絡先セクション（`formAction` 設定時のみフォーム表示、未設定時はメールリンク導線） |
 
 ## ナビゲーション
 
@@ -37,19 +38,19 @@
 | `TableOfContents.astro` | 目次（mobile: 折りたたみ / desktop: sticky サイドバー） |
 | `ReadingProgress.astro` | 読了プログレスバー（固定、primary カラー） |
 | `RelatedContent.astro` | 関連コンテンツ（タグ一致スコアで選出） |
-| `Giscus.astro` | GitHub Discussions コメント欄 |
+| `Giscus.astro` | ブログ記事の GitHub Discussions コメント欄 |
 
 ## カード・UI
 
 | コンポーネント | 役割 |
 | --- | --- |
-| `BlogCard.astro` | ブログ記事カード（stretched-link、タグリンク・`highlightTag`・`headingLevel` 対応。トップ/一覧/タグページ共通） |
-| `ProjectCard.astro` | プロジェクトカード（stretched-link、ロケール別 `title_en`/`description_en` 対応） |
+| `BlogCard.astro` | ブログ記事カード（自サイト/Zenn/Qiita/note の出典バッジ、外部リンク、タグリンク、`highlightTag`・`headingLevel` 対応） |
+| `ProjectCard.astro` | プロジェクトカード（stretched-link、ロケール別タイトル/説明、役割・成果・状態の短い要約に対応） |
 | `SkillBadge.astro` | スキル・タグのバッジ（リンク付き、teal=secondary） |
 | `FilterSection.astro` | 一覧ページの検索・タグフィルター・ソート（AND 絞り込み、`q`/`tag`/`sort` の URL パラメータ同期、i18n 対応）。タグは件数降順で上位 `initialVisible`（既定10）のみ表示し、残りは「すべてのタグ (+N)」で展開。選択タグは teal（secondary）、「All」は coral（primary） |
 | `Terminal.astro` | ターミナルウィンドウ風の枠（信号機ドット＋タイトルバー＋slot）。色は expressive-code のコードブロック（github-dark）と同一パレットで固定。404・検索ページで使用 |
 | `ImageLightbox.astro` | 画像クリックで拡大表示 |
-| `OgPlaceholder.astro` | 画像なし記事の SVG プレースホルダー（暖色 cream 背景＋coral アクセントバー。OG 画像生成にも使用） |
+| `OgPlaceholder.astro` | 画像なし記事・プロジェクトの SVG プレースホルダー（カード上では warm ink 背景、OG 画像生成にも使用） |
 
 ## Markdoc タグコンポーネント
 
@@ -57,7 +58,7 @@
 | --- | --- |
 | `DiagramFlow.astro` | フロー図コンテナ（`direction`, `title` props） |
 | `DiagramNode.astro` | フロー図のノード（`label`, `sublabel`, `color` props） |
-| `Box.astro` | コールアウト（`color`: info/warning/success/error、`title`）。ヘアライン枠＋カラー左スパイン＋角丸のフラットカード |
+| `Box.astro` | コールアウト（`color`: info/warning/success/error、`title`）。枠線全体にセマンティック色を反映するフラットカード |
 | `DetailsBlock.astro` | 折りたたみ（`label`）。回転シェブロン＋EC コードブロックと同一のダーク配色。コードブロックを包むと連結 |
 
 ## 遊び心（AI・情報系モチーフ）

@@ -32,10 +32,10 @@ image: "@assets/blog/記事名/thumbnail.png"  # 省略可
 
 ## 外部記事連携
 
-Zenn / Qiita の公開記事はビルド時に取得され、ホームの Blog セクション、`/blog/`、RSS に外部記事カードとして表示される。
+Zenn / Qiita / note の公開記事はビルド時に取得され、ホームの Blog セクション、`/blog/`、RSS に外部記事カードとして表示される。
 
-- 既定値は `src/utils/site.ts` の `zennUsername` / `qiitaUsername`（未設定時は取得しない）
-- 環境変数 `ZENN_USERNAME` / `QIITA_USERNAME` で上書き可能
+- 既定値は `src/utils/site.ts` の `zennUsername` / `qiitaUsername` / `noteUsername`（未設定時は取得しない）
+- 環境変数 `ZENN_USERNAME` / `QIITA_USERNAME` / `NOTE_USERNAME` で上書き可能
 - 取得できない場合もビルドは失敗せず、ローカル記事だけを表示する
 
 ---
@@ -57,6 +57,12 @@ endDate: "YYYY-MM-DD"       # 省略可（省略すると「進行中」）
 updatedDate: "YYYY-MM-DD"   # 省略可
 skills: ["TypeScript", "React"]
 featured: true              # トップページへの表示
+role: "担当領域"            # 省略可。カード/詳細の要約に表示
+impact: "成果・効果"        # 省略可。カード/詳細の要約に表示
+status: "公開中"            # 省略可。カード/詳細の要約に表示
+role_en: "Role"             # 省略可
+impact_en: "Outcome"        # 省略可
+status_en: "Live"           # 省略可
 image: "@assets/projects/プロジェクト名/thumbnail.png"  # 省略可
 demoLink: "https://..."     # 省略可
 sourceLink: "https://..."   # 省略可

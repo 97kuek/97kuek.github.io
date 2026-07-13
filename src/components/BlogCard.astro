@@ -37,6 +37,7 @@ const filterDate = publishDate.getTime();
 const href = article?.url ?? `${import.meta.env.BASE_URL}blog/${post!.id}`;
 const placeholderId = article?.id ?? post!.id;
 const placeholderLabel = article?.source ?? "BLOG";
+const sourceLabel = article?.source ?? "Blog";
 ---
 
 <article
@@ -61,6 +62,9 @@ const placeholderLabel = article?.source ?? "BLOG";
   </figure>
   <div class="card-body">
     <div class="flex items-center gap-2 text-xs text-base-content/60">
+      <span class="rounded-full border border-secondary/30 bg-secondary/10 px-2 py-0.5 font-semibold text-secondary">
+        {sourceLabel}
+      </span>
       <time>{formatDate(publishDate)}</time>
       <span>&bull;</span>
       <span>{readingTimeLabel}</span>

@@ -18,6 +18,18 @@ export function getLocalizedProject(project: CollectionEntry<"projects">, locale
       locale === "en" && project.data.description_en
         ? project.data.description_en
         : project.data.description,
+    role:
+      locale === "en" && project.data.role_en
+        ? project.data.role_en
+        : project.data.role,
+    impact:
+      locale === "en" && project.data.impact_en
+        ? project.data.impact_en
+        : project.data.impact,
+    status:
+      locale === "en" && project.data.status_en
+        ? project.data.status_en
+        : project.data.status,
   };
 }
 

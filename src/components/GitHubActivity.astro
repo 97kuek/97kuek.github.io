@@ -1,5 +1,5 @@
 ---
-import { ArrowRight } from "@lucide/astro";
+import { ArrowRight, GitPullRequest, Star } from "@lucide/astro";
 import SectionHeader from "./SectionHeader.astro";
 import GitHubIcon from "./icons/GitHub.astro";
 import { FLAT_CARD_CLASS } from "../utils/classes";
@@ -8,8 +8,6 @@ import { useTranslations, type Lang } from "../i18n/ui";
 
 const USERNAME = SITE.githubUsername;
 const PROFILE_URL = `https://github.com/${USERNAME}`;
-// 3D contribution graph generated in the GitHub profile repository (97kuek/97kuek)
-const GRAPH_3D = `https://raw.githubusercontent.com/${USERNAME}/${USERNAME}/main/profile-3d-contrib/profile-season-animate.svg`;
 
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 ---
@@ -25,15 +23,28 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
     <div
       class={FLAT_CARD_CLASS}
     >
-      <div class="card-body items-center">
-        <img
-          src={GRAPH_3D}
-          alt="GitHub 3D contribution graph"
-          loading="lazy"
-          width="1280"
-          height="850"
-          class="w-full max-w-3xl h-auto"
-        />
+      <div class="card-body">
+        <div class="grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <GitHubIcon class="size-8 text-base-content" aria-hidden="true" />
+              <h3 class="text-2xl font-bold">@{USERNAME}</h3>
+            </div>
+            <p class="text-base-content/70">
+              {t("github.description")}
+            </p>
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div class="rounded-lg border border-base-200 p-4">
+              <GitPullRequest class="size-5 text-secondary mb-2" aria-hidden="true" />
+              <p class="font-semibold">{t("github.codeHistory")}</p>
+            </div>
+            <div class="rounded-lg border border-base-200 p-4">
+              <Star class="size-5 text-secondary mb-2" aria-hidden="true" />
+              <p class="font-semibold">{t("github.publicRepos")}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

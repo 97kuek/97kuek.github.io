@@ -13,6 +13,11 @@ interface Props {
 
 const { title, photo, Content, link } = Astro.props;
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
+const capabilities = [
+  { title: t("about.capabilityWeb"), text: t("about.capabilityWebText") },
+  { title: t("about.capabilityMath"), text: t("about.capabilityMathText") },
+  { title: t("about.capabilityTeam"), text: t("about.capabilityTeamText") },
+];
 ---
 
 <section id="about" class="py-16 px-4">
@@ -51,6 +56,16 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
         >
           <Content />
         </article>
+        <div class="grid gap-4 sm:grid-cols-3 border-t border-base-200 pt-5 mt-2">
+          {
+            capabilities.map((item) => (
+              <div>
+                <h4 class="text-sm font-bold text-primary">{item.title}</h4>
+                <p class="mt-1 text-sm leading-relaxed text-base-content/70">{item.text}</p>
+              </div>
+            ))
+          }
+        </div>
         {
           link && (
             <div class="card-actions justify-end mt-4">

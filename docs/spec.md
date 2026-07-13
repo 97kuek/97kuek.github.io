@@ -31,7 +31,7 @@ Astro Content Collections を使用。各コレクションは `src/content/` �
 | コレクション | パス | 形式 | 主なフィールド |
 | --- | --- | --- | --- |
 | `blog` | `src/content/blog/` | `.mdoc` | title, description, publishDate, tags |
-| `projects` | `src/content/projects/` | `.mdoc` | title, title_en, description, description_en, startDate, skills, featured |
+| `projects` | `src/content/projects/` | `.mdoc` | title, title_en, description, description_en, role, impact, status, startDate, skills, featured |
 | `work` | `src/content/work/` | `.md` | title, subtitle, startDate, endDate, logo, link, skills |
 | `education` | `src/content/education/` | `.md` | title, subtitle, startDate, endDate, logo, link |
 | `hackathons` | `src/content/hackathons/` | `.md` | title, location, description, startDate, skills |
@@ -93,6 +93,12 @@ Astro Content Collections を使用。各コレクションは `src/content/` �
   endDate?: Date;
   updatedDate?: Date;
   skills: string[];
+  role?: string;
+  role_en?: string;
+  impact?: string;
+  impact_en?: string;
+  status?: string;
+  status_en?: string;
   featured?: boolean;       // true のときトップページに表示
   image?: ImageMetadata;
   demoLink?: string;
@@ -104,12 +110,12 @@ Astro Content Collections を使用。各コレクションは `src/content/` �
 
 ## ユーティリティ
 
-### Zenn / Qiita 連携
+### Zenn / Qiita / note 連携
 
-`src/utils/externalArticles.ts` がビルド時に Zenn / Qiita の公開記事を取得し、ホームの Blog セクション、`/blog/`、RSS に外部記事として混在させる。
+`src/utils/externalArticles.ts` がビルド時に Zenn / Qiita / note の公開記事を取得し、ホームの Blog セクション、`/blog/`、RSS に外部記事として混在させる。
 
-- デフォルトユーザー名は `src/utils/site.ts` の `zennUsername` / `qiitaUsername`（未設定時は取得しない）
-- `ZENN_USERNAME` / `QIITA_USERNAME` 環境変数で上書き可能
+- デフォルトユーザー名は `src/utils/site.ts` の `zennUsername` / `qiitaUsername` / `noteUsername`（未設定時は取得しない）
+- `ZENN_USERNAME` / `QIITA_USERNAME` / `NOTE_USERNAME` 環境変数で上書き可能
 - 取得失敗時はビルドを落とさず、ローカル記事のみで継続する
 
 ### Contact form

@@ -3,6 +3,7 @@
 interface ImportMetaEnv {
   readonly ZENN_USERNAME?: string;
   readonly QIITA_USERNAME?: string;
+  readonly NOTE_USERNAME?: string;
 }
 
 interface ImportMeta {

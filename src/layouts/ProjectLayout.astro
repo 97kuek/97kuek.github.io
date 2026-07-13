@@ -8,7 +8,6 @@ import { ExternalLink } from "@lucide/astro";
 import GitHubIcon from "../components/icons/GitHub.astro";
 import { formatDate, formatPeriod } from "../utils/formatDate";
 import { useTranslations, type Lang } from "../i18n/ui";
-import Giscus from "../components/Giscus.astro";
 import RelatedContent from "../components/RelatedContent.astro";
 import PrevNextNav from "../components/PrevNextNav.astro";
 import ReadingProgress from "../components/ReadingProgress.astro";
@@ -39,6 +38,9 @@ interface Props {
   image?: ImageMetadata;
   images?: ImageMetadata[];
   skills: string[];
+  role?: string;
+  impact?: string;
+  status?: string;
   demoLink?: string;
   sourceLink?: string;
   updatedDate?: Date;
@@ -56,6 +58,9 @@ const {
   image,
   images,
   skills,
+  role,
+  impact,
+  status,
   demoLink,
   sourceLink,
   updatedDate,
@@ -216,6 +221,42 @@ const projectSchema = {
           </ContentHeader>
 
           {
+            (role || impact || status) && (
+              <section class="border border-base-200 bg-base-100 rounded-lg p-6 mb-8">
+                <h2 class="text-sm font-bold tracking-widest text-primary uppercase mb-4">
+                  {t("project.overview")}
+                </h2>
+                <dl class="grid gap-4 sm:grid-cols-3">
+                  {role && (
+                    <div>
+                      <dt class="text-xs font-bold tracking-widest uppercase text-base-content/50">
+                        {t("project.role")}
+                      </dt>
+                      <dd class="mt-1 text-sm font-semibold text-base-content">{role}</dd>
+                    </div>
+                  )}
+                  {impact && (
+                    <div>
+                      <dt class="text-xs font-bold tracking-widest uppercase text-base-content/50">
+                        {t("project.impact")}
+                      </dt>
+                      <dd class="mt-1 text-sm font-semibold text-base-content">{impact}</dd>
+                    </div>
+                  )}
+                  {status && (
+                    <div>
+                      <dt class="text-xs font-bold tracking-widest uppercase text-base-content/50">
+                        {t("project.status")}
+                      </dt>
+                      <dd class="mt-1 text-sm font-semibold text-base-content">{status}</dd>
+                    </div>
+                  )}
+                </dl>
+              </section>
+            )
+          }
+
+          {
             skills && skills.length > 0 && (
               <section class="border border-base-200 bg-base-100 rounded-lg p-6 mb-8">
                 <h2 class="text-sm font-bold tracking-widest text-primary uppercase mb-4">
@@ -252,8 +293,6 @@ const projectSchema = {
             collection="projects"
             tags={skills}
           />
-
-          <Giscus />
 
           <div class="divider mt-12"></div>
 

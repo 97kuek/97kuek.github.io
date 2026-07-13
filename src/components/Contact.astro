@@ -14,6 +14,7 @@ const FooterIcon = getIcon(contact.footerIcon);
 
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 const contactEmail = contact.linkUrl.replace(/^mailto:/, "");
+const hasFormAction = Boolean(contact.formAction);
 ---
 
 <footer id="contact" class="bg-base-200 px-4 py-16">
@@ -29,44 +30,55 @@ const contactEmail = contact.linkUrl.replace(/^mailto:/, "");
       <a href={contact.linkUrl} class="link link-hover text-secondary">{contactEmail}</a>
     </section>
 
-    <form
-      class="grid gap-4"
-      data-contact-form
-      data-contact-email={contactEmail}
-      data-contact-action={contact.formAction ?? ""}
-      data-default-subject={t("contact.defaultSubject")}
-      data-name-label={t("contact.name")}
-      data-email-label={t("contact.email")}
-      data-sending-message={t("contact.sending")}
-      data-success-message={t("contact.success")}
-      data-error-message={t("contact.error")}
-      data-mailto-fallback-message={t("contact.mailtoFallback")}
-    >
-      <div class="grid gap-2">
-        <label class="text-sm font-semibold" for="contact-name">{t("contact.name")}</label>
-        <input id="contact-name" name="name" type="text" required autocomplete="name" class="input input-bordered w-full" />
-      </div>
+    {
+      hasFormAction ? (
+        <form
+          class="grid gap-4"
+          data-contact-form
+          data-contact-email={contactEmail}
+          data-contact-action={contact.formAction}
+          data-default-subject={t("contact.defaultSubject")}
+          data-name-label={t("contact.name")}
+          data-email-label={t("contact.email")}
+          data-sending-message={t("contact.sending")}
+          data-success-message={t("contact.success")}
+          data-error-message={t("contact.error")}
+          data-mailto-fallback-message={t("contact.mailtoFallback")}
+        >
+          <div class="grid gap-2">
+            <label class="text-sm font-semibold" for="contact-name">{t("contact.name")}</label>
+            <input id="contact-name" name="name" type="text" required autocomplete="name" class="input input-bordered w-full" />
+          </div>
 
-      <div class="grid gap-2">
-        <label class="text-sm font-semibold" for="contact-email">{t("contact.email")}</label>
-        <input id="contact-email" name="email" type="email" required autocomplete="email" class="input input-bordered w-full" />
-      </div>
+          <div class="grid gap-2">
+            <label class="text-sm font-semibold" for="contact-email">{t("contact.email")}</label>
+            <input id="contact-email" name="email" type="email" required autocomplete="email" class="input input-bordered w-full" />
+          </div>
 
-      <div class="grid gap-2">
-        <label class="text-sm font-semibold" for="contact-subject">{t("contact.subject")}</label>
-        <input id="contact-subject" name="subject" type="text" required class="input input-bordered w-full" />
-      </div>
+          <div class="grid gap-2">
+            <label class="text-sm font-semibold" for="contact-subject">{t("contact.subject")}</label>
+            <input id="contact-subject" name="subject" type="text" required class="input input-bordered w-full" />
+          </div>
 
-      <div class="grid gap-2">
-        <label class="text-sm font-semibold" for="contact-message">{t("contact.message")}</label>
-        <textarea id="contact-message" name="message" required rows="7" class="textarea textarea-bordered w-full resize-y"></textarea>
-      </div>
+          <div class="grid gap-2">
+            <label class="text-sm font-semibold" for="contact-message">{t("contact.message")}</label>
+            <textarea id="contact-message" name="message" required rows="7" class="textarea textarea-bordered w-full resize-y"></textarea>
+          </div>
 
-      <div class="flex justify-end">
-        <button type="submit" class="btn btn-primary">{t("contact.submit")}</button>
-      </div>
-      <p class="min-h-5 text-sm text-base-content/70" data-contact-status aria-live="polite"></p>
-    </form>
+          <div class="flex justify-end">
+            <button type="submit" class="btn btn-primary">{t("contact.submit")}</button>
+          </div>
+          <p class="min-h-5 text-sm text-base-content/70" data-contact-status aria-live="polite"></p>
+        </form>
+      ) : (
+        <aside class="border border-base-300 bg-base-100 rounded-lg p-6">
+          <p class="text-sm text-base-content/70 mb-4">{t("contact.formUnavailable")}</p>
+          <a href={contact.linkUrl} class="btn btn-primary">
+            {t("contact.emailDirect")}
+          </a>
+        </aside>
+      )
+    }
   </div>
 
   <div class="max-w-5xl mx-auto mt-12 pt-6 border-t border-base-300 text-sm text-base-content/60 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">

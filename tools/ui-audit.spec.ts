@@ -99,26 +99,12 @@ test.describe("portfolio UI audit", () => {
     await expectNoHorizontalOverflow(page);
   });
 
-  test("contact form can post to configured endpoint", async ({ page }) => {
-    await page.route("https://example.test/contact", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: "{}",
-      });
-    });
-
+  test("contact exposes a clear email path when no form endpoint is configured", async ({ page }) => {
     await page.goto("/");
-    await page.locator("[data-contact-form]").evaluate((form) => {
-      (form as HTMLFormElement).dataset.contactAction = "https://example.test/contact";
-    });
-    await page.getByLabel("お名前").fill("Test User");
-    await page.getByLabel("メールアドレス").fill("test@example.com");
-    await page.getByLabel("件名").fill("Portfolio contact test");
-    await page.getByLabel("お問い合わせ内容").fill("Contact form smoke test.");
-    await page.getByRole("button", { name: "送信" }).click();
 
-    await expect(page.getByText("送信しました。")).toBeVisible();
+    await expect(page.locator("[data-contact-form]")).toHaveCount(0);
+    await expect(page.getByText("現在はメールリンクからの連絡を受け付けています。")).toBeVisible();
+    await expect(page.getByRole("link", { name: "メールで連絡する" })).toHaveAttribute("href", /^mailto:/);
     await expectNoHorizontalOverflow(page);
   });
 
