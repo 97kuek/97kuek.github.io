@@ -3,7 +3,8 @@ import { Image } from "astro:assets";
 import SkillBadge from "./SkillBadge.astro";
 import OgPlaceholder from "./OgPlaceholder.astro";
 import CardCarousel from "./CardCarousel.astro";
-import { ExternalLink, Github } from "@lucide/astro";
+import { ExternalLink } from "@lucide/astro";
+import GitHubIcon from "./icons/GitHub.astro";
 import type { CollectionEntry } from "astro:content";
 import { formatPeriod } from "../utils/formatDate";
 import { useTranslations, type Lang } from "../i18n/ui";
@@ -84,7 +85,7 @@ const projectsListUrl = getProjectsUrl(locale);
             rel="noopener noreferrer"
             class="btn btn-sm btn-soft gap-1"
           >
-            <Github class="size-4" aria-hidden="true" />
+            <GitHubIcon class="size-4" aria-hidden="true" />
             {t("project.sourceCode")}
           </a>
         )

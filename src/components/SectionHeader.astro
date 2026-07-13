@@ -1,14 +1,6 @@
 ---
 import { SECTION_EYEBROW_CLASS } from "../utils/classes";
 
-interface Props {
-  label: string;
-  subtitle?: string;
-  class?: string;
-  subtitleClass?: string;
-  as?: "h1" | "h2" | "p";
-}
-
 const {
   label,
   subtitle,
@@ -23,4 +15,3 @@ const Heading = as;
   <Heading class={SECTION_EYEBROW_CLASS}>{label}</Heading>
   {subtitle && <p class={subtitleClass}>{subtitle}</p>}
 </div>
-

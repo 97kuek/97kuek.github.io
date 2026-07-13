@@ -18,7 +18,7 @@ const giscusLang = isEn ? "en" : "ja";
         <button class="btn btn-soft btn-sm" type="button" data-giscus-load>{commentsButton}</button>
     </div>
     <div class="giscus"></div>
-    <script define:vars={{ giscusRepo: SITE.repository, giscusLang }}>
+    <script is:inline define:vars={{ giscusRepo: SITE.repository, giscusLang }}>
         let giscusLoaded = false;
 
         function getGiscusTheme() {

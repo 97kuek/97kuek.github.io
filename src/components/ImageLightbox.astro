@@ -34,7 +34,7 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
   ></p>
 </div>
 
-<script define:vars={{ LIGHTBOX_ANIMATION_DURATION_MS }}>
+<script is:inline define:vars={{ LIGHTBOX_ANIMATION_DURATION_MS }}>
   const overlay = document.getElementById('lightbox-overlay');
   const lightboxImg = document.getElementById('lightbox-image');
   const lightboxCaption = document.getElementById('lightbox-caption');

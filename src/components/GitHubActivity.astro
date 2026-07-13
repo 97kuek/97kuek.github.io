@@ -1,6 +1,7 @@
 ---
-import { Github, ArrowRight } from "@lucide/astro";
+import { ArrowRight } from "@lucide/astro";
 import SectionHeader from "./SectionHeader.astro";
+import GitHubIcon from "./icons/GitHub.astro";
 import { FLAT_CARD_CLASS } from "../utils/classes";
 import { SITE } from "../utils/site";
 import { useTranslations, type Lang } from "../i18n/ui";
@@ -43,7 +44,7 @@ const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
         rel="noopener"
         class="btn btn-primary btn-outline gap-2"
       >
-        <Github class="size-4" />
+        <GitHubIcon class="size-4" aria-hidden="true" />
         {t("github.view")}
         <ArrowRight class="size-4" />
       </a>

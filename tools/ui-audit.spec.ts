@@ -56,6 +56,23 @@ test.describe("portfolio UI audit", () => {
     await expectNoHorizontalOverflow(page);
   });
 
+  test("game theory article renders callouts and matrices", async ({ page }) => {
+    await page.goto("/blog/game-theory/");
+
+    await expect(page.locator(".katex-error")).toHaveCount(0);
+    await expect(page.getByText("利得の数値で見るべきもの")).toBeVisible();
+    await expect(page.locator(".katex-block").filter({ hasText: "M_1" }).first()).toBeVisible();
+
+    const matrixTex = await page
+      .locator('.katex-block annotation[encoding="application/x-tex"]')
+      .filter({ hasText: "\\begin{pmatrix}" })
+      .first()
+      .textContent();
+    expect(matrixTex).toContain("\\\\");
+
+    await expectNoHorizontalOverflow(page);
+  });
+
   test("search page exposes Pagefind input", async ({ page }) => {
     await page.goto("/search/");
     await expect(page.getByRole("heading", { level: 1, name: "検索" })).toBeVisible();

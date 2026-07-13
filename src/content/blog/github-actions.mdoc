@@ -15,17 +15,17 @@ tags: ["GitHub Actions", "GitHub Pages", "Astro", "CI/CD"]
 2. 生成された`dist/`フォルダを手動でアップロードする
 3. GitHub Pagesに反映されたことを確認する
 
-この作業を毎回やるのはかなり面倒です。しかも手作業なので「ビルド忘れ」や「アップロードし忘れ」といったミスも起きやすいです。
+この作業を毎回手で行うと、「ビルド忘れ」や「アップロードし忘れ」が起きやすくなります。
 
 そこで**GitHub Actions**を導入し、`main`ブランチに`git push`するだけで自動的にビルドからデプロイまで完結する仕組みを構築しました。
 
-本記事では、**GitHub Actionsを使ったことがない方でも理解できるよう**、設定ファイルの1行ずつを丁寧に解説していこうと思います。
+本記事では、**GitHub Actionsを初めて使う人でも流れを追えるように**、設定ファイルの役割を順に解説します。
 
 設定手順のみを知りたい方は[こちら](#設定手順)からジャンプしてください。
 
 ## GitHub Pagesとは
 
-まずは、GitHub PagesとGitHub Actionsとは何なのかについて、簡単に説明します。
+まず、GitHub Pages と GitHub Actions の役割を簡単に整理します。
 
 **GitHub Pages**は、GitHub が無料で提供する静的サイトのホスティングサービスです。
 
@@ -51,9 +51,7 @@ Astro のようなフレームワークで作ったサイトは、公開前に�
 
 ## このサイトの構成と自動デプロイの仕組み
 
-ここまでが用語の確認でした。
-
-次に、自動デプロイがどのようなフローで実行されているのか、全体図をご紹介したいと思います。
+次に、自動デプロイがどのような流れで実行されるのかを確認します。
 
 参考までに、このサイトの技術スタックを簡単に紹介します。
 
@@ -65,7 +63,7 @@ Astro のようなフレームワークで作ったサイトは、公開前に�
 | デプロイ | GitHub Actions |
 | Node.js | 20.x |
 
-GitHub Actionsの設定が完了すると、次のような流れで自動デプロイが動作します。
+GitHub Actions の設定が完了すると、次の流れで自動デプロイが動きます。
 
 1. ローカルで`git push origin main`
 2. GitHubがイベント検知
@@ -89,7 +87,7 @@ GitHub Actionsの設定が完了すると、次のような流れで自動デプ
 
 ## 設定手順
 
-それでは、実際の設定手順を順番に解説していきます。
+ここから実際の設定手順に入ります。
 
 ### 1. GitHub Pages のデプロイ元を変更する
 
@@ -101,7 +99,7 @@ GitHub Actionsの設定が完了すると、次のような流れで自動デプ
 
 ### 2. ワークフローファイルを作成する
 
-リポジトリのルートに`.github/workflows/`フォルダを作成し、その中に`deploy.yml`という名前でファイルを作ります。
+リポジトリのルートに `.github/workflows/` フォルダを作成し、その中に `deploy.yml` を作ります。
 
 ```text
 my-portfolio/
@@ -198,7 +196,7 @@ git commit -m "ci: add GitHub Actions deploy workflow"
 git push origin main
 ```
 
-push 後、GitHub のリポジトリページで **Actions タブ**を開くと、ワークフローがリアルタイムで実行されているのが確認できます。
+push 後、GitHub のリポジトリページで **Actions タブ**を開くと、ワークフローの実行状況を確認できます。
 
 **確認の手順：**
 
@@ -252,7 +250,7 @@ on:
 **`workflow_dispatch:`**
 
 GitHub のリポジトリページから、**手動でワークフローを起動できる**ようにします。
-設定を変えたときや「今すぐデプロイしたい」というときに、`push`せずにGitHubのUI上のボタンから実行できるので便利です。
+設定を変えた直後など、`push`せずにGitHubのUIから再実行したい場合に使えます。
 
 #### `permissions`：権限の設定
 
@@ -283,7 +281,7 @@ concurrency:
   cancel-in-progress: false
 ```
 
-**短時間に複数回pushした場合など、ワークフローが重複して起動したときの挙動を定義**します。
+**短時間に複数回 push した場合など、ワークフローが重複して起動したときの挙動を定義**します。
 
 たとえば、タイポを直すために2回連続で`push`したとします。
 このとき2つのデプロイが同時に走ると、後から来たデプロイが先のデプロイを上書きしてしまうなど、
@@ -304,8 +302,7 @@ jobs:
     runs-on: ubuntu-latest
 ```
 
-`runs-on: 
-ubuntu-latest`では、このジョブをどのOSで実行するかを指定します。
+`runs-on: ubuntu-latest` では、このジョブをどのOSで実行するかを指定します。
 
 ここでは、GitHubが無料で提供する`Ubuntu Linux`の仮想マシンを使います。
 ワークフローが起動するたびに、クリーンな状態の新しい仮想マシンが用意されます。
@@ -365,7 +362,7 @@ GitHub Pages向けにビルド環境を設定するアクションです。
 
 `npm run build`（= `astro build`）を実行します。
 
-Astroがすべての`.astro`ファイルや`.mdファイル`を処理し、最終的な HTML・CSS・JavaScript を `dist/`フォルダに出力します。
+Astroがすべての `.astro` ファイルや `.md` ファイルを処理し、最終的な HTML・CSS・JavaScript を `dist/` フォルダに出力します。
 
 
 ```yaml
@@ -398,7 +395,7 @@ Astroがすべての`.astro`ファイルや`.mdファイル`を処理し、最�
 
 **`environment`**
 
-GitHub の Environments 機能と連携します。これを設定すると、リポジトリの Deployments タブに「どのコミットをいつデプロイしたか」の履歴が残り、公開 URL も GitHub UI 上に表示されるようになります。`${{ steps.deployment.outputs.page_url }}` はデプロイ後の URL を自動で取得するための変数です。
+GitHub の Environments 機能と連携します。これを設定すると、Deployments タブに「どのコミットをいつデプロイしたか」の履歴が残り、公開 URL も GitHub UI 上に表示されます。`${{ steps.deployment.outputs.page_url }}` はデプロイ後の URL を取得するための変数です。
 
 **`actions/deploy-pages@v4`**
 
@@ -406,7 +403,7 @@ GitHub の Environments 機能と連携します。これを設定すると、�
 
 ## おわりに
 
-`.github/workflows/deploy.yml` を1ファイル追加するだけで、`git push` のたびに自動でビルド・デプロイが行われる環境が完成します。最初の設定さえ終われば、あとは記事を書いて push するだけで公開まで完結します。
+`.github/workflows/deploy.yml` を1ファイル追加すれば、`git push` のたびにビルドとデプロイが自動で実行されます。最初の設定さえ終われば、記事を書いて push するだけで公開まで進みます。
 
 さらに発展させたい場合は、以下を検討してみてください。
 

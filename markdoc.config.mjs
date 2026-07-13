@@ -1,4 +1,4 @@
-import { defineMarkdocConfig, component, nodes } from '@astrojs/markdoc/config';
+import { defineMarkdocConfig, component } from '@astrojs/markdoc/config';
 
 export default defineMarkdocConfig({
   tags: {

@@ -10,7 +10,7 @@ interface Props {
   minimal?: boolean;
 }
 
-const { id, title, tags = [], label, showText = true, minimal = false } = Astro.props;
+const { title, tags = [], label, showText = true, minimal = false } = Astro.props;
 
 const lines = wrapTitle(title);
 

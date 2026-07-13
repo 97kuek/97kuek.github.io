@@ -61,7 +61,7 @@ const blogSchema = {
 
 <Layout title={`${title} - ${ownerName}`} description={description} ogImage={ogImage} ogImageWidth={800} ogImageHeight={450}>
   <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(blogSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(blogSchema)} />
     <meta property="og:type" content="article" />
     <meta property="article:published_time" content={publishDate.toISOString()} />
     {updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}

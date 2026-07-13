@@ -4,6 +4,7 @@ const representativePaths = [
   "/",
   "/projects/",
   "/blog/slide-generator/",
+  "/blog/game-theory/",
   "/search/",
   "/en/",
 ];
