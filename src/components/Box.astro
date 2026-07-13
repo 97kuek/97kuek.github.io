@@ -5,36 +5,36 @@ const { color, title } = Astro.props;
 
 type BoxConfig = {
   wrapper: string;
-  titleColor: string;
+  iconColor: string;
   icon: any;
 };
 
 const configs: Record<string, BoxConfig> = {
   info: {
-    wrapper: 'border-base-200 border-l-info/70 bg-info/[0.06]',
-    titleColor: 'text-info',
+    wrapper: 'border-base-200 border-l-info/80 bg-base-100',
+    iconColor: 'text-info',
     icon: Info,
   },
   warning: {
-    wrapper: 'border-base-200 border-l-warning/70 bg-warning/[0.06]',
-    titleColor: 'text-warning',
+    wrapper: 'border-base-200 border-l-warning/80 bg-base-100',
+    iconColor: 'text-warning',
     icon: TriangleAlert,
   },
   success: {
-    wrapper: 'border-base-200 border-l-success/70 bg-success/[0.06]',
-    titleColor: 'text-success',
+    wrapper: 'border-base-200 border-l-success/80 bg-base-100',
+    iconColor: 'text-success',
     icon: CircleCheck,
   },
   error: {
-    wrapper: 'border-base-200 border-l-error/70 bg-error/[0.06]',
-    titleColor: 'text-error',
+    wrapper: 'border-base-200 border-l-error/80 bg-base-100',
+    iconColor: 'text-error',
     icon: CircleX,
   },
 };
 
 const cfg = configs[color] ?? {
-  wrapper: 'border-base-200 border-l-base-content/30 bg-base-200/50',
-  titleColor: 'text-base-content/60',
+  wrapper: 'border-base-200 border-l-base-content/40 bg-base-100',
+  iconColor: 'text-base-content/70',
   icon: Info,
 };
 const IconComponent = cfg.icon;
@@ -42,8 +42,8 @@ const IconComponent = cfg.icon;
 
 <div class={`my-6 rounded-lg border border-l-[3px] px-5 py-4 ${cfg.wrapper}`}>
   {title && (
-    <div class={`not-prose flex items-center gap-1.5 mb-2 ${cfg.titleColor}`}>
-      <IconComponent class="size-3.5 stroke-[2.5]" aria-hidden="true" />
+    <div class="not-prose flex items-center gap-1.5 mb-2 text-base-content">
+      <IconComponent class={`size-3.5 stroke-[2.5] ${cfg.iconColor}`} aria-hidden="true" />
       <span class="text-sm font-semibold">{title}</span>
     </div>
   )}

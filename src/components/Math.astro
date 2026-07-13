@@ -1,9 +1,9 @@
 ---
 import { renderToString } from 'katex';
+import { normalizeMathSlot } from '../utils/math';
 
 const rawFormula = await Astro.slots.render("default");
-// Markdoc sometimes wraps the formula in <p> tags, which breaks KaTeX
-const formula = rawFormula.replace(/<[^>]*>/g, "").trim();
+const formula = normalizeMathSlot(rawFormula);
 const html = renderToString(formula, {
   displayMode: true,
   throwOnError: false
