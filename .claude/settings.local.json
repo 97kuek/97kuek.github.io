@@ -78,7 +78,13 @@
       "PowerShell(git push *)",
       "PowerShell(Remove-Item *)",
       "PowerShell(npm install *)",
-      "PowerShell(git restore *)"
+      "PowerShell(git restore *)",
+      "WebFetch(domain:withaqua.com)",
+      "WebFetch(domain:aquavoice.com)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:4321/blog/aqua-voice-discount/ -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(pkill -f \"astro dev\")",
+      "Bash(git rm *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",
