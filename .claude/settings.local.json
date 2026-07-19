@@ -84,7 +84,16 @@
       "Bash(npm run *)",
       "Bash(curl -s http://localhost:4321/blog/aqua-voice-discount/ -o /dev/null -w \"%{http_code}\\\\n\")",
       "Bash(pkill -f \"astro dev\")",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "Bash(perl -0pi -e 's/^export const FEATURED_BLOG_TOPIC_LIMIT = 6;\\\\n//m' src/utils/constants.ts)",
+      "Bash(perl -0pi -e 's/^\\\\s*\"blog\\\\.featuredTopics\": \"Featured topics\",\\\\n//mg' src/i18n/ui.ts)",
+      "Bash(grep -n \"math\\\\|\\\\$\\\\$\\\\|\\\\\\\\\\\\\\\\begin\" src/content/blog/transformer.mdoc)",
+      "Bash(perl -pi -e 's/FLAT_CARD_CLASS/GLASS_CARD_CLASS/g' src/components/BlogCard.astro src/components/Hackathons.astro src/components/ProjectCard.astro src/components/RelatedContent.astro src/components/TimelineCard.astro)",
+      "Bash(grep -v \"^--$\")",
+      "Bash(echo \"build exit: $?\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4321/)",
+      "Bash(pkill -f \"astro preview\")",
+      "Bash(git -C /Users/keitaro/Documents/97kuek.github.io status --short)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",

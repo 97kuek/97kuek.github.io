@@ -17,8 +17,8 @@ const contactEmail = contact.linkUrl.replace(/^mailto:/, "");
 const hasFormAction = Boolean(contact.formAction);
 ---
 
-<footer id="contact" class="bg-base-200 px-4 py-16">
-  <div class="max-w-5xl mx-auto grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] items-start">
+<footer id="contact" class="px-4 py-20 md:py-24 border-t border-base-300/50">
+  <div class="max-w-5xl mx-auto grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] items-start" data-reveal>
     <section class="space-y-5">
       <p class="text-base font-bold tracking-widest text-primary uppercase">{t("contact.title")}</p>
       <div class="flex items-center gap-4">
@@ -62,7 +62,7 @@ const hasFormAction = Boolean(contact.formAction);
 
           <div class="grid gap-2">
             <label class="text-sm font-semibold" for="contact-message">{t("contact.message")}</label>
-            <textarea id="contact-message" name="message" required rows="7" class="textarea textarea-bordered w-full resize-y"></textarea>
+            <textarea id="contact-message" name="message" required rows="5" class="textarea textarea-bordered w-full resize-y"></textarea>
           </div>
 
           <div class="flex justify-end">
@@ -71,7 +71,7 @@ const hasFormAction = Boolean(contact.formAction);
           <p class="min-h-5 text-sm text-base-content/70" data-contact-status aria-live="polite"></p>
         </form>
       ) : (
-        <aside class="border border-base-300 bg-base-100 rounded-lg p-6">
+        <aside class="glass-card rounded-box p-6">
           <p class="text-sm text-base-content/70 mb-4">{t("contact.formUnavailable")}</p>
           <a href={contact.linkUrl} class="btn btn-primary">
             {t("contact.emailDirect")}

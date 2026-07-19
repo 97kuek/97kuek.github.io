@@ -22,7 +22,7 @@ const {
   collection,
   variant,
   color = "primary",
-  backgroundColor = "base-200",
+  backgroundColor = "transparent",
   icon,
   sectionTitle,
   sectionSubtitle,
@@ -83,8 +83,8 @@ const skillCounts =
 const containerId = `${collection}-items`;
 ---
 
-<section id={collection} class={`py-16 px-4 bg-${backgroundColor}`}>
-  <div class="max-w-4xl mx-auto">
+<section id={collection} class={`py-20 md:py-28 px-4 bg-${backgroundColor}`}>
+  <div class="max-w-4xl mx-auto" data-reveal>
     <SectionHeader
       label={sectionTitle}
       subtitle={sectionSubtitle}
@@ -92,7 +92,7 @@ const containerId = `${collection}-items`;
       subtitleClass="text-lg text-base-content/60 mt-1"
     />
 
-    {collection === "work" && allSkills.length > 0 && (
+    {collection === "work" && entries.length >= 3 && allSkills.length > 0 && (
       <div class="flex justify-center">
         <FilterSection tags={allSkills} tagCounts={skillCounts} totalCount={entries.length} containerId={containerId} />
       </div>
@@ -115,7 +115,7 @@ const containerId = `${collection}-items`;
         ))}
       </ul>
     ) : (
-      <ul class="list bg-base-100 rounded-box border border-base-200">
+      <ul class="list glass-card rounded-box">
         {entriesWithContent.map(({ entry, Content, period, duration }) => (
           <TimelineListItem
             entry={entry}

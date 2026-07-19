@@ -27,7 +27,6 @@ const { hero } = Astro.props;
 const isEn = (Astro.currentLocale ?? "ja") === "en";
 const primaryLinks = [
   { href: "#projects", label: isEn ? "View projects" : "プロジェクトを見る", variant: "btn-primary" },
-  ...(isEn ? [] : [{ href: "#blog", label: "記事を読む", variant: "btn-soft" }]),
   { href: "#contact", label: isEn ? "Contact" : "連絡する", variant: "btn-ghost" },
 ];
 ---
@@ -50,7 +49,7 @@ const primaryLinks = [
 
     <!-- Text content -->
     <div class="max-w-2xl text-center lg:text-left">
-      <h1 class="text-4xl lg:text-5xl font-bold mb-3 leading-tight text-base-content">
+      <h1 class="text-4xl lg:text-6xl font-bold tracking-tight mb-3 leading-[1.1] text-base-content">
         {hero.name}
       </h1>
 

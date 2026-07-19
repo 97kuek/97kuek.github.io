@@ -4,7 +4,7 @@ import { Image } from "astro:assets";
 import SkillBadge from "./SkillBadge.astro";
 import FilterSection from "./FilterSection.astro";
 import SectionHeader from "./SectionHeader.astro";
-import { FLAT_CARD_CLASS } from "../utils/classes";
+import { GLASS_CARD_CLASS } from "../utils/classes";
 import { useTranslations, type Lang } from "../i18n/ui";
 
 const hackathonEntries = await getCollection("hackathons");
@@ -41,8 +41,8 @@ function formatPeriod(startDate: Date, endDate?: Date) {
 }
 ---
 
-<section id="hackathons" class="py-20 px-4">
-  <div class="max-w-4xl mx-auto">
+<section id="hackathons" class="py-20 md:py-28 px-4">
+  <div class="max-w-4xl mx-auto" data-reveal>
     <SectionHeader
       label="HACKATHONS"
       subtitle={t("hackathons.subtitle")}
@@ -55,7 +55,7 @@ function formatPeriod(startDate: Date, endDate?: Date) {
       {
         sortedHackathons.map((hackathon) => (
           <div
-            class={FLAT_CARD_CLASS}
+            class={GLASS_CARD_CLASS}
             data-filter-tags={(hackathon.data.skills || []).join(",")}
           >
             <div class="card-body">

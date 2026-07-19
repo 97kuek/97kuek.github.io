@@ -5,7 +5,7 @@ import { ExternalLink } from "@lucide/astro";
 import OgPlaceholder from "./OgPlaceholder.astro";
 import { formatDate, calcReadingTime } from "../utils/formatDate";
 import { useTranslations, type Lang } from "../i18n/ui";
-import { FLAT_CARD_CLASS } from "../utils/classes";
+import { GLASS_CARD_CLASS } from "../utils/classes";
 import { BLOG_CARD_TAG_LIMIT } from "../utils/constants";
 import type { ExternalArticle } from "../utils/externalArticles";
 
@@ -41,7 +41,7 @@ const sourceLabel = article?.source ?? "Blog";
 ---
 
 <article
-  class={`${FLAT_CARD_CLASS} h-full relative group`}
+  class={`${GLASS_CARD_CLASS} h-full relative group`}
   data-filter-tags={tags.join(",")}
   data-filter-title={title}
   data-filter-description={`${description} ${article?.source ?? ""}`}

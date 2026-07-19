@@ -52,6 +52,91 @@ kbd {
 .prose p {
   margin-block: 1.1em;
 }
+
+/* ---------------------------------------------------------------------------
+   Glass material (Apple-style translucent surface).
+   Cards and floating chrome sample the ambient canvas behind them via
+   backdrop-filter; a bright top edge reads as light catching the material.
+   Falls back to an opaque surface under prefers-reduced-transparency.
+--------------------------------------------------------------------------- */
+.glass-card {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-top-color: var(--glass-edge);
+  box-shadow: var(--glass-shadow);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-card {
+    background: var(--color-base-100);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .glass-card {
+    background: var(--color-base-100);
+    border-color: var(--color-base-content);
+  }
+}
+
+/* Ambient canvas: soft coral / teal / amber washes for the glass to sample.
+   Subtle enough to stay an undertone, strong enough that blur reads. */
+.ambient-bg {
+  background-image:
+    radial-gradient(60rem 42rem at 12% 4%, color-mix(in oklch, var(--color-primary) 10%, transparent), transparent 65%),
+    radial-gradient(64rem 48rem at 90% 28%, color-mix(in oklch, var(--color-secondary) 9%, transparent), transparent 68%),
+    radial-gradient(56rem 44rem at 24% 82%, color-mix(in oklch, var(--color-accent) 8%, transparent), transparent 68%);
+}
+
+/* Optical typography: large text tightens, body stays neutral. */
+h1 {
+  letter-spacing: -0.02em;
+}
+
+h2,
+h3,
+h4 {
+  letter-spacing: -0.01em;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+/* Instant press feedback on the pointer-down, not the release. */
+@media (prefers-reduced-motion: no-preference) {
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
+    transition: transform 0.1s ease-out;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll-reveal: sections fade up as they enter the viewport.
+   The hidden state is gated behind html.reveal-ready (set by JS in
+   Layout.astro) so content stays visible without JS, and behind
+   prefers-reduced-motion so motion-sensitive users see it instantly.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  html.reveal-ready [data-reveal] {
+    opacity: 0;
+    translate: 0 1.75rem;
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html.reveal-ready [data-reveal].is-revealed {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
 /* 
 If you want use the ThemeToggle component,
 and chose the themes to light and dark,
@@ -101,10 +186,17 @@ The name should be the same as the theme name below.
   --color-warning-content: oklch(24% 0.05 80);
   --color-error: oklch(56% 0.16 25);
   --color-error-content: oklch(98% 0.02 25);
-  /* Editorial radii */
+  /* Editorial radii — box rounded up for the glass material */
   --radius-selector: 0.5rem;
   --radius-field: 0.5rem;
-  --radius-box: 0.75rem;
+  --radius-box: 1rem;
+  /* Glass material */
+  --glass-bg: oklch(97.8% 0.009 85 / 0.62);
+  --glass-border: oklch(23% 0.008 70 / 0.08);
+  --glass-edge: oklch(100% 0 0 / 0.6);
+  --glass-shadow:
+    0 1px 2px oklch(23% 0.01 70 / 0.04),
+    0 12px 32px -12px oklch(23% 0.01 70 / 0.12);
 }
 
 /* Dark = warm-ink companion (not cool navy), lifted accents for contrast. */
@@ -130,7 +222,14 @@ The name should be the same as the theme name below.
   --color-error-content: oklch(20% 0.04 25);
   --radius-selector: 0.5rem;
   --radius-field: 0.5rem;
-  --radius-box: 0.75rem;
+  --radius-box: 1rem;
+  /* Glass material */
+  --glass-bg: oklch(24.5% 0.008 70 / 0.55);
+  --glass-border: oklch(100% 0 0 / 0.08);
+  --glass-edge: oklch(100% 0 0 / 0.12);
+  --glass-shadow:
+    0 1px 2px oklch(0% 0 0 / 0.35),
+    0 16px 40px -16px oklch(0% 0 0 / 0.55);
 }
 
 

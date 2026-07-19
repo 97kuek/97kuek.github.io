@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
-import { FLAT_CARD_CLASS } from "../utils/classes";
+import { GLASS_CARD_CLASS } from "../utils/classes";
 import { useTranslations, type Lang } from "../i18n/ui";
 import { getLocalizedProject, getProjectDetailUrl } from "../utils/content";
 import { RELATED_CONTENT_LIMIT } from "../utils/constants";
@@ -76,7 +76,7 @@ const mappedEntries = relatedEntries.map(({ entry }) => {
       mappedEntries.map(({ data, url, displayTitle, displayDescription }) => (
         <a
           href={url}
-          class={`group block ${FLAT_CARD_CLASS} overflow-hidden`}
+          class={`group block ${GLASS_CARD_CLASS} overflow-hidden`}
         >
           {data.image && (
             <figure class="aspect-video overflow-hidden">

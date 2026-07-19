@@ -75,19 +75,14 @@ test.describe("portfolio UI audit", () => {
     await expectNoHorizontalOverflow(page);
   });
 
-  test("game theory article renders callouts and matrices", async ({ page }) => {
-    await page.goto("/blog/game-theory/");
+  test("transformer article renders KaTeX without errors", async ({ page }) => {
+    await page.goto("/blog/transformer/");
 
     await expect(page.locator(".katex-error")).toHaveCount(0);
-    await expect(page.getByText("利得の数値で見るべきもの")).toBeVisible();
-    await expect(page.locator(".katex-block").filter({ hasText: "M_1" }).first()).toBeVisible();
-
-    const matrixTex = await page
-      .locator('.katex-block annotation[encoding="application/x-tex"]')
-      .filter({ hasText: "\\begin{pmatrix}" })
-      .first()
-      .textContent();
-    expect(matrixTex).toContain("\\\\");
+    await expect(
+      page.getByRole("heading", { name: /Transformerとは/ }),
+    ).toBeVisible();
+    await expect(page.locator(".katex-block").first()).toBeVisible();
 
     await expectNoHorizontalOverflow(page);
   });

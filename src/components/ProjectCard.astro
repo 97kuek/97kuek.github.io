@@ -8,7 +8,7 @@ import GitHubIcon from "./icons/GitHub.astro";
 import type { CollectionEntry } from "astro:content";
 import { formatPeriod } from "../utils/formatDate";
 import { useTranslations, type Lang } from "../i18n/ui";
-import { FLAT_CARD_CLASS } from "../utils/classes";
+import { GLASS_CARD_CLASS } from "../utils/classes";
 import { getLocalizedProject, getProjectDetailUrl, getProjectsUrl } from "../utils/content";
 
 interface Props {
@@ -31,7 +31,7 @@ const filterDate = project.data.endDate?.getTime() ?? Number.MAX_SAFE_INTEGER;
 ---
 
 <article
-  class={`${FLAT_CARD_CLASS} relative`}
+  class={`${GLASS_CARD_CLASS} relative`}
   data-filter-tags={project.data.skills.join(",")}
   data-filter-title={displayTitle}
   data-filter-description={displayDescription}

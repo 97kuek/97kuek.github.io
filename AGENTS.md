@@ -32,17 +32,21 @@ warm-editorial 配色。[docs/DESIGN.md](docs/DESIGN.md)（Claude.com のデザ�
 - **役割分担**: **coral（primary）= ブランド/CTA・セクション見出し・`prose strong`・アバターのリング・選択中タグ等**。**teal（secondary）= 本文リンク等の補助インタラクティブ**（`prose a`・検索結果リンク）。タグ・バッジは同系色の背景/文字を避け、ニュートラル背景＋本文色を基本にする。
 - **amber（accent）** は稀なアクセント（DiagramNode など）。3アクセントを乱用しない。
 - **セマンティック色**（info=teal 系 / success / warning / error）は cream と両立するよう暖色寄りに調整済み（Box で使用）。
-- **radius** は `--radius-field` 8px（ボタン・入力）/ `--radius-box` 12px（カード）のスクエア寄り。
+- **radius** は `--radius-field` 8px（ボタン・入力）/ `--radius-box` 16px（カード。ガラスマテリアルに合わせ丸め）。
 - **コントラスト**: ライトの coral/teal は本文で WCAG AA(4.5:1) を満たす値にしてある（coral 4.87 / teal 4.65）。色を変える際は `node tools/contrast.mjs` で再検算する。
 - ブランド記号として Anthropic の spike-mark（アスタリスク）や Copernicus セリフは**使わない**。識別性はターミナル/ストリーミング Hero のモチーフが担う。
 
 ### カード
 
-shadow 禁止（フローティングボタン・ドロップダウン等の UI 要素は除く）。フラットカードが基本:
+すりガラス（Apple 風 glass）マテリアルが基本。`global.css` の `.glass-card`（半透明背景 + backdrop-blur + 上端ハイライト + ソフトシャドウ、`--glass-*` トークンで両テーマ定義）を使う。共通クラスは `src/utils/classes.ts` の `GLASS_CARD_CLASS`:
 
 ```html
-class="card bg-base-100 border border-base-200 hover:border-primary/20 transition-colors duration-200"
+class="card glass-card transition-all duration-300 hover:-translate-y-0.5"
 ```
+
+- glass のソフトシャドウはマテリアルの一部として許可。それ以外の装飾的 shadow は引き続き禁止（フローティングボタン・ドロップダウン等の UI 要素は除く）
+- `prefers-reduced-transparency` / `prefers-contrast` では不透明サーフェスにフォールバックする（`global.css` 定義済み）
+- ホームの `<main>` には `.ambient-bg`（coral/teal/amber の淡い radial wash）を敷き、ガラスが拾う背景を作る
 
 ### セクションヘッダー
 
