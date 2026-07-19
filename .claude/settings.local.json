@@ -93,7 +93,10 @@
       "Bash(echo \"build exit: $?\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4321/)",
       "Bash(pkill -f \"astro preview\")",
-      "Bash(git -C /Users/keitaro/Documents/97kuek.github.io status --short)"
+      "Bash(git -C /Users/keitaro/Documents/97kuek.github.io status --short)",
+      "Bash(npx playwright *)",
+      "Bash(perl -0pi -e 's/^\\\\s*\"theme\\\\.toggle\": \"\\(テーマを切り替え|Toggle theme\\)\",\\\\n//mg' src/i18n/ui.ts)",
+      "Bash(echo \"exit: $?\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",

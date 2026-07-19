@@ -25,9 +25,9 @@ npm run audit:ui # Playwright による代表画面の UI 監査（事前に npm
 
 ### 配色（パレット）
 
-warm-editorial 配色。[docs/DESIGN.md](docs/DESIGN.md)（Claude.com のデザイン記述）に着想を得ているが、まるかぶりを避けるため値は独自にずらしている。定義は `src/styles/global.css` の `[data-theme="light"]` / `[data-theme="dark"]`。
+warm-editorial 配色。[docs/DESIGN.md](docs/DESIGN.md)（Claude.com のデザイン記述）に着想を得ているが、まるかぶりを避けるため値は独自にずらしている。定義は `src/styles/global.css` の `[data-theme="light"]`。
 
-- **デフォルトテーマはライト（cream）**。ダークは warm-ink の第2テーマ（`Layout.astro` で `localStorage` 優先、無ければ `light`）。
+- **テーマはライト（cream）のみ**。ダークモードは意図的に廃止済み（テーマトグルも無い）。
 - **canvas = cream**（`base-100` ~#faf8f1）、**text = warm ink**（`base-content`）。純白・クールグレーは使わない。
 - **役割分担**: **coral（primary）= ブランド/CTA・セクション見出し・`prose strong`・アバターのリング・選択中タグ等**。**teal（secondary）= 本文リンク等の補助インタラクティブ**（`prose a`・検索結果リンク）。タグ・バッジは同系色の背景/文字を避け、ニュートラル背景＋本文色を基本にする。
 - **amber（accent）** は稀なアクセント（DiagramNode など）。3アクセントを乱用しない。

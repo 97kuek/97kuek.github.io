@@ -105,24 +105,34 @@ const devNotice = t("search.devNotice");
 
 <script is:inline define:vars={{ devNotice }}>
   document.addEventListener("astro:page-load", function () {
-    if (!document.getElementById("search")) return;
-    var script = document.createElement("script");
-    script.src = "/pagefind/pagefind-ui.js";
-    script.onload = function () {
+    var el = document.getElementById("search");
+    // Guard against double-mounting: this inline script re-runs on every
+    // view-transition visit, so page-load listeners accumulate and each
+    // would otherwise stack another PagefindUI form into #search.
+    if (!el || el.dataset.mounted === "true") return;
+    el.dataset.mounted = "true";
+
+    function mount() {
       new PagefindUI({
         element: "#search",
         showImages: false,
         showEmptyFilters: false,
       });
-    };
+    }
+
+    if (window.PagefindUI) {
+      mount();
+      return;
+    }
+
+    var script = document.createElement("script");
+    script.src = "/pagefind/pagefind-ui.js";
+    script.onload = mount;
     script.onerror = function () {
-      var el = document.getElementById("search");
-      if (el) {
-        el.innerHTML =
-          '<p class="pagefind-dev-notice">' +
-          devNotice.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") +
-          "</p>";
-      }
+      el.innerHTML =
+        '<p class="pagefind-dev-notice">' +
+        devNotice.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") +
+        "</p>";
     };
     document.head.appendChild(script);
   });

@@ -137,16 +137,9 @@ h3 {
     translate: 0 0;
   }
 }
-/* 
-If you want use the ThemeToggle component,
-and chose the themes to light and dark,
-move the --default and --prefersdark to the themes you want
-and then update the the darkThemeName and lightThemeName
-variables on ThemeToggle component with the new theme names.
-The name should be the same as the theme name below.
-*/
+/* Single light (warm cream) theme — dark mode is intentionally not offered. */
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark;
+  themes: light --default;
 }
 
 /* ---------------------------------------------------------------------------
@@ -198,40 +191,6 @@ The name should be the same as the theme name below.
     0 1px 2px oklch(23% 0.01 70 / 0.04),
     0 12px 32px -12px oklch(23% 0.01 70 / 0.12);
 }
-
-/* Dark = warm-ink companion (not cool navy), lifted accents for contrast. */
-[data-theme="dark"] {
-  --color-base-100: oklch(20.5% 0.007 70); /* warm ink (~#1a1815) */
-  --color-base-200: oklch(24.5% 0.008 70);
-  --color-base-300: oklch(30% 0.009 70);
-  --color-base-content: oklch(94% 0.012 85); /* cream text (~#f3efe6) */
-  --color-primary: oklch(74% 0.135 48);
-  --color-primary-content: oklch(24% 0.04 48);
-  --color-secondary: oklch(74% 0.10 190);
-  --color-secondary-content: oklch(24% 0.03 190);
-  --color-accent: oklch(75% 0.13 75);
-  --color-accent-content: oklch(22% 0.05 75);
-  /* Semantic — lifted for dark surfaces */
-  --color-info: oklch(74% 0.09 192);
-  --color-info-content: oklch(22% 0.03 192);
-  --color-success: oklch(74% 0.13 150);
-  --color-success-content: oklch(22% 0.04 150);
-  --color-warning: oklch(80% 0.12 80);
-  --color-warning-content: oklch(24% 0.05 80);
-  --color-error: oklch(68% 0.16 25);
-  --color-error-content: oklch(20% 0.04 25);
-  --radius-selector: 0.5rem;
-  --radius-field: 0.5rem;
-  --radius-box: 1rem;
-  /* Glass material */
-  --glass-bg: oklch(24.5% 0.008 70 / 0.55);
-  --glass-border: oklch(100% 0 0 / 0.08);
-  --glass-edge: oklch(100% 0 0 / 0.12);
-  --glass-shadow:
-    0 1px 2px oklch(0% 0 0 / 0.35),
-    0 16px 40px -16px oklch(0% 0 0 / 0.55);
-}
-
 
 .katex .mtext {
   font-family: "KaTeX_Main", "Noto Sans JP", system-ui, sans-serif;

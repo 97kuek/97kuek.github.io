@@ -1,6 +1,5 @@
 ---
 import { getEntry } from "astro:content";
-import ThemeToggle from "./ThemeToggle.astro";
 import { useTranslations, type Lang } from "../i18n/ui";
 import { Menu, Search } from "@lucide/astro";
 import {
@@ -78,21 +77,18 @@ const isSearchActive = currentPath === normalizePath(searchHref);
           data-nav-key={link.key}
           aria-current={isActiveHref(link.href) ? "page" : undefined}
           data-active={isActiveHref(link.href) ? "" : undefined}
-          class="btn btn-ghost btn-sm text-base-content/70 hover:text-base-content data-[active]:text-primary data-[active]:font-semibold"
+          class="btn btn-ghost btn-sm font-medium text-base-content/90 hover:text-base-content hover:bg-base-content/5 data-[active]:text-primary data-[active]:font-semibold"
         >
           {link.label}
         </a>
       ))}
     </nav>
 
-    <!-- テーマトグル -->
-    <ThemeToggle />
-
     <!-- 言語トグル -->
     <a
       href={langToggleHref}
       data-nav-key="lang"
-      class="btn btn-ghost btn-sm font-mono text-xs"
+      class="btn btn-sm font-mono text-xs bg-base-100/80 border-base-300 hover:border-primary/40 ml-1"
       aria-label={t("lang.switchLabel")}
     >
       {t("lang.switchTo")}
@@ -103,7 +99,7 @@ const isSearchActive = currentPath === normalizePath(searchHref);
       href={searchHref}
       data-nav-key="search"
       class:list={[
-        "btn btn-ghost btn-square btn-sm",
+        "btn btn-square btn-sm bg-base-100/80 border-base-300 hover:border-primary/40 ml-1",
         isSearchActive && "text-primary",
       ]}
       aria-label={t("nav.search")}
@@ -114,7 +110,7 @@ const isSearchActive = currentPath === normalizePath(searchHref);
 
     <!-- モバイル・タブレット: ハンバーガー -->
     <div class="dropdown dropdown-end lg:hidden">
-      <button tabindex="0" class="btn btn-ghost btn-square" aria-label={t("nav.openMenu")}>
+      <button tabindex="0" class="btn btn-square bg-base-100/80 border-base-300 ml-1" aria-label={t("nav.openMenu")}>
         <Menu class="size-[22px]" aria-hidden="true" />
       </button>
       <ul
