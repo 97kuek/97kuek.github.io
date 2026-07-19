@@ -17,6 +17,9 @@ body {
   overflow-x: hidden;
   font-family: "BIZ UDPGothic", "BIZ UDGothic", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
   line-height: 1.85;
+  font-optical-sizing: auto;
+  /* Press feedback is our own (instant :active scale) — drop the gray flash */
+  -webkit-tap-highlight-color: transparent;
 }
 
 code,
@@ -68,8 +71,25 @@ kbd {
   box-shadow: var(--glass-shadow);
 }
 
+/* Popovers / menus float over arbitrary content, so they get a thicker,
+   near-opaque material than in-flow cards (bigger surface = heavier glass). */
+.glass-popover {
+  background: color-mix(in oklch, var(--color-base-100) 92%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-top-color: var(--glass-edge);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Menus emerge from the control that opened them, not from their center. */
+.dropdown-end .dropdown-content {
+  transform-origin: top right;
+}
+
 @media (prefers-reduced-transparency: reduce) {
-  .glass-card {
+  .glass-card,
+  .glass-popover {
     background: var(--color-base-100);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -77,7 +97,8 @@ kbd {
 }
 
 @media (prefers-contrast: more) {
-  .glass-card {
+  .glass-card,
+  .glass-popover {
     background: var(--color-base-100);
     border-color: var(--color-base-content);
   }
@@ -107,6 +128,22 @@ h1,
 h2,
 h3 {
   text-wrap: balance;
+}
+
+/* Japanese line breaking: break at phrase boundaries, not mid-word.
+   auto-phrase is a Chromium-only progressive enhancement — elsewhere the
+   default behavior is kept. .phrase-wrap opts standalone text in. */
+h1,
+h2,
+h3,
+.card-title,
+.phrase-wrap {
+  word-break: auto-phrase;
+}
+
+/* Avoid single-word orphan lines in body copy. */
+p {
+  text-wrap: pretty;
 }
 
 /* Instant press feedback on the pointer-down, not the release. */

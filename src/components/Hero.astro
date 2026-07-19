@@ -53,7 +53,16 @@ const primaryLinks = [
         {hero.name}
       </h1>
 
-      <p class="text-xl text-base-content/70 mb-2 font-medium">{hero.title}</p>
+      <p class="text-xl text-base-content/70 mb-2 font-medium">
+        {
+          hero.title.split(" / ").map((part, i) => (
+            <>
+              {i > 0 && <span class="text-base-content/35 mx-0.5" aria-hidden="true">/</span>}
+              <span class="inline-block">{part}</span>
+            </>
+          ))
+        }
+      </p>
 
       {
         hero.location && (
@@ -65,9 +74,9 @@ const primaryLinks = [
       }
 
       <p
-        class="text-base leading-relaxed mb-6 text-base-content/75 whitespace-pre-line"
+        class="text-base leading-relaxed mb-6 text-base-content/75 whitespace-pre-line phrase-wrap"
         data-hero-desc
-      >{hero.description}<span class="hero-cursor" aria-hidden="true">▋</span></p>
+      >{hero.description.trim()}<span class="hero-cursor" aria-hidden="true">▋</span></p>
 
       <div class="flex flex-wrap gap-3 justify-center lg:justify-start mb-6">
         {
@@ -135,7 +144,9 @@ const primaryLinks = [
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     var textNode = el.firstChild;
-    var full = textNode && textNode.nodeType === 3 ? textNode.textContent : "";
+    // Trim so a trailing YAML newline can't push the cursor onto its own line
+    // (the text sits in a whitespace-pre-line paragraph).
+    var full = textNode && textNode.nodeType === 3 ? textNode.textContent.trim() : "";
     el.dataset.streamed = "done";
 
     // Reduced motion or empty: leave the server-rendered text as-is.
@@ -147,10 +158,18 @@ const primaryLinks = [
     var typed = document.createElement("span");
     textNode.replaceWith(typed);
 
-    // Tokenize as "leading whitespace + word" so the line never ends on a
-    // lone space: the cursor stays glued to the last word and won't break
-    // onto its own line between ticks.
-    var tokens = full.match(/\s*\S+/g) || [full];
+    // Tokenize into words. Japanese has no spaces, so prefer Intl.Segmenter
+    // (word granularity) and fall back to "leading whitespace + word" chunks;
+    // either way the cursor stays glued to the last token between ticks.
+    var tokens;
+    if (window.Intl && Intl.Segmenter) {
+      tokens = Array.from(
+        new Intl.Segmenter("ja", { granularity: "word" }).segment(full),
+        function (s) { return s.segment; }
+      );
+    } else {
+      tokens = full.match(/\s*\S+/g) || [full];
+    }
     var i = 0;
     function step() {
       if (i >= tokens.length) return;

@@ -6,7 +6,7 @@
 
 | ファイル | 役割 |
 | --- | --- |
-| `layouts/Layout.astro` | 全ページ共通（head・OGP・JSON-LD・hreflang・Navbar） |
+| `layouts/Layout.astro` | 全ページ共通（head・OGP・JSON-LD・hreflang・Navbar）。`data-reveal` 要素のスクロール reveal もここで初期化 |
 | `layouts/BlogLayout.astro` | ブログ記事ページ（TOC・読了時間・前後ナビ・関連記事） |
 | `layouts/ProjectLayout.astro` | プロジェクト詳細ページ（期間・スキル・前後ナビ） |
 
@@ -14,7 +14,7 @@
 
 | コンポーネント | 役割 |
 | --- | --- |
-| `Hero.astro` | ヒーローセクション（名前・肩書き・SNS リンク）。高さ `100dvh` で全端末1画面。自己紹介文は LLM 出力風にトークンストリーミング表示＋点滅カーソル（`prefers-reduced-motion` で即表示、CLS ゼロ） |
+| `Hero.astro` | ヒーローセクション（名前・肩書き・SNS リンク）。高さ `100dvh` で全端末1画面。自己紹介文は LLM 出力風にトークンストリーミング表示＋点滅カーソル（日本語は `Intl.Segmenter` で語単位、`prefers-reduced-motion` で即表示、CLS ゼロ）。肩書きは「 / 」区切りごとに `inline-block` 分割して変な位置での折り返しを防ぐ |
 | `About.astro` | 自己紹介セクション |
 | `Projects.astro` | プロジェクト一覧（`featured: true` のみ） |
 | `Blog.astro` | ブログ一覧（最新3件。自サイト/Zenn/Qiita/note 記事を同じカード体系で表示） |
@@ -26,7 +26,7 @@
 
 | コンポーネント | 役割 |
 | --- | --- |
-| `Navbar.astro` | 固定ヘッダー（言語トグル JA/EN・検索ボタン・スクロール連動スタイル） |
+| `Navbar.astro` | 固定ヘッダー（言語トグル JA/EN・検索ボタン・スクロール連動スタイル）。半透明ガラスチローム、モバイルメニューは `.glass-popover` |
 | `BackToTop.astro` | トップへ戻るボタン（長押しで目次ポップアップ） |
 | `PrevNextNav.astro` | 前後記事ナビゲーション |
 

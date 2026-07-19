@@ -45,8 +45,17 @@ class="card glass-card transition-all duration-300 hover:-translate-y-0.5"
 ```
 
 - glass のソフトシャドウはマテリアルの一部として許可。それ以外の装飾的 shadow は引き続き禁止（フローティングボタン・ドロップダウン等の UI 要素は除く）
+- メニュー・ポップオーバーは `.glass-popover`（ほぼ不透明の厚い素材）。透けすぎて読みにくい glass-card を流用しない
 - `prefers-reduced-transparency` / `prefers-contrast` では不透明サーフェスにフォールバックする（`global.css` 定義済み）
 - ホームの `<main>` には `.ambient-bg`（coral/teal/amber の淡い radial wash）を敷き、ガラスが拾う背景を作る
+
+### モーション・タイポグラフィ
+
+詳細 → [docs/design-system.md](docs/design-system.md)。要点:
+
+- セクションのスクロール reveal は `data-reveal` を付けるだけ（`Layout.astro` + `global.css` が処理。reduced-motion / no-JS 安全）
+- 日本語の改行は `word-break: auto-phrase`（h1–h3・`.card-title`・`.phrase-wrap`）で文節単位に。「 / 」並記は `inline-block` span に分割して語中改行を防ぐ（`Hero.astro` 参照）
+- ナビのボタン類は枠・背景で囲わない（ghost + 濃いめ文字色）。ドロップダウンは `.glass-popover`
 
 ### セクションヘッダー
 
@@ -118,6 +127,7 @@ ASCII アート・Mermaid 禁止。`DiagramFlow` + `DiagramNode` を使う → [
 | ファイル | 内容 |
 | --- | --- |
 | [docs/spec.md](docs/spec.md) | アーキテクチャ・スキーマ・CI/CD・ユーティリティ・SEO |
+| [docs/design-system.md](docs/design-system.md) | マテリアル（glass）・モーション・タイポグラフィの一次リファレンス |
 | [docs/components.md](docs/components.md) | コンポーネント一覧・役割 |
 | [docs/content-guide.md](docs/content-guide.md) | コンテンツ執筆ガイド・Markdoc タグ・図解の書き方 |
 | [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) | ブランチ戦略・コミット規約 |

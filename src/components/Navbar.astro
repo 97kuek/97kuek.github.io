@@ -88,7 +88,7 @@ const isSearchActive = currentPath === normalizePath(searchHref);
     <a
       href={langToggleHref}
       data-nav-key="lang"
-      class="btn btn-sm font-mono text-xs bg-base-100/80 border-base-300 hover:border-primary/40 ml-1"
+      class="btn btn-ghost btn-sm font-mono text-xs font-semibold text-base-content/80 hover:text-base-content"
       aria-label={t("lang.switchLabel")}
     >
       {t("lang.switchTo")}
@@ -99,7 +99,7 @@ const isSearchActive = currentPath === normalizePath(searchHref);
       href={searchHref}
       data-nav-key="search"
       class:list={[
-        "btn btn-square btn-sm bg-base-100/80 border-base-300 hover:border-primary/40 ml-1",
+        "btn btn-ghost btn-square btn-sm text-base-content/80 hover:text-base-content",
         isSearchActive && "text-primary",
       ]}
       aria-label={t("nav.search")}
@@ -110,12 +110,12 @@ const isSearchActive = currentPath === normalizePath(searchHref);
 
     <!-- モバイル・タブレット: ハンバーガー -->
     <div class="dropdown dropdown-end lg:hidden">
-      <button tabindex="0" class="btn btn-square bg-base-100/80 border-base-300 ml-1" aria-label={t("nav.openMenu")}>
+      <button tabindex="0" class="btn btn-ghost btn-square text-base-content/80 hover:text-base-content" aria-label={t("nav.openMenu")}>
         <Menu class="size-[22px]" aria-hidden="true" />
       </button>
       <ul
         tabindex="0"
-        class="dropdown-content menu glass-card rounded-box z-50 w-48 p-2 mt-2"
+        class="dropdown-content menu glass-popover rounded-box z-50 w-48 p-2 mt-2"
       >
         {navLinks.map((link) => (
           <li>
