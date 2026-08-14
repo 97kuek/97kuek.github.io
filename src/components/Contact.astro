@@ -3,178 +3,80 @@ import { getEntry, render } from "astro:content";
 import { getIcon } from "../utils/iconMapper";
 import { useTranslations, type Lang } from "../i18n/ui";
 
-const locale = Astro.currentLocale ?? "ja";
+const locale = (Astro.currentLocale ?? "ja") as Lang;
 const contactId = locale === "en" ? "en" : "index";
-const contactEntry = (await getEntry("contact", contactId as any))!;
+const contactEntry = (await getEntry("contact", contactId as "index"))!;
 const contact = contactEntry.data;
 const { Content } = await render(contactEntry);
-
 const SectionIcon = getIcon(contact.icon);
 const FooterIcon = getIcon(contact.footerIcon);
-
-const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
+const t = useTranslations(locale);
 const contactEmail = contact.linkUrl.replace(/^mailto:/, "");
-const hasFormAction = Boolean(contact.formAction);
 ---
 
-<footer id="contact" class="px-4 py-20 md:py-24 border-t border-base-300/50">
-  <div class="max-w-5xl mx-auto grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] items-start" data-reveal>
-    <section class="space-y-5">
-      <p class="text-base font-bold tracking-widest text-primary uppercase">{t("contact.title")}</p>
-      <div class="flex items-center gap-4">
-        <SectionIcon class="size-12 text-primary" />
+<footer id="contact" class="home-section contact-stage" data-chapter="06">
+  <div class="site-container" data-width="content">
+    <h2 class="sr-only">{t("nav.contact")}</h2>
+
+    <div class="contact-stage__grid" data-reveal>
+      <section class="contact-stage__intro">
+        <SectionIcon aria-hidden="true" />
         <div class="prose max-w-none text-base-content/75">
           <Content />
         </div>
-      </div>
-      <a href={contact.linkUrl} class="link link-hover text-secondary">{contactEmail}</a>
-    </section>
+        <a href={contact.linkUrl}>{contactEmail}</a>
+      </section>
 
-    {
-      hasFormAction ? (
-        <form
-          class="grid gap-4"
-          data-contact-form
-          data-contact-email={contactEmail}
-          data-contact-action={contact.formAction}
-          data-default-subject={t("contact.defaultSubject")}
-          data-name-label={t("contact.name")}
-          data-email-label={t("contact.email")}
-          data-sending-message={t("contact.sending")}
-          data-success-message={t("contact.success")}
-          data-error-message={t("contact.error")}
-          data-mailto-fallback-message={t("contact.mailtoFallback")}
-        >
-          <div class="grid gap-2">
-            <label class="text-sm font-semibold" for="contact-name">{t("contact.name")}</label>
-            <input id="contact-name" name="name" type="text" required autocomplete="name" class="input input-bordered w-full" />
-          </div>
+      <form
+        class="contact-form"
+        data-contact-form
+        data-endpoint="/api/contact"
+        data-locale={locale}
+        data-sending={t("contact.sending")}
+        data-success={t("contact.success")}
+        data-error={t("contact.error")}
+      >
+        <input
+          name="website"
+          type="text"
+          class="contact-form__honeypot"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        />
+        <div>
+          <label for="contact-name">{t("contact.name")}</label>
+          <input id="contact-name" name="name" type="text" required maxlength="80" autocomplete="name" />
+        </div>
+        <div>
+          <label for="contact-email">{t("contact.email")}</label>
+          <input id="contact-email" name="email" type="email" required maxlength="254" autocomplete="email" />
+        </div>
+        <div>
+          <label for="contact-subject">{t("contact.subject")}</label>
+          <input id="contact-subject" name="subject" type="text" required maxlength="120" />
+        </div>
+        <div>
+          <label for="contact-message">{t("contact.message")}</label>
+          <textarea id="contact-message" name="message" required minlength="10" maxlength="5000" rows="5"></textarea>
+        </div>
+        <div class="contact-form__footer">
+          <button type="submit" class="btn btn-primary">{t("contact.submit")}</button>
+          <p data-contact-status aria-live="polite"></p>
+        </div>
+      </form>
+    </div>
 
-          <div class="grid gap-2">
-            <label class="text-sm font-semibold" for="contact-email">{t("contact.email")}</label>
-            <input id="contact-email" name="email" type="email" required autocomplete="email" class="input input-bordered w-full" />
-          </div>
-
-          <div class="grid gap-2">
-            <label class="text-sm font-semibold" for="contact-subject">{t("contact.subject")}</label>
-            <input id="contact-subject" name="subject" type="text" required class="input input-bordered w-full" />
-          </div>
-
-          <div class="grid gap-2">
-            <label class="text-sm font-semibold" for="contact-message">{t("contact.message")}</label>
-            <textarea id="contact-message" name="message" required rows="5" class="textarea textarea-bordered w-full resize-y"></textarea>
-          </div>
-
-          <div class="flex justify-end">
-            <button type="submit" class="btn btn-primary">{t("contact.submit")}</button>
-          </div>
-          <p class="min-h-5 text-sm text-base-content/70" data-contact-status aria-live="polite"></p>
-        </form>
-      ) : (
-        <aside class="glass-card rounded-box p-6">
-          <p class="text-sm text-base-content/70 mb-4">{t("contact.formUnavailable")}</p>
-          <a href={contact.linkUrl} class="btn btn-primary">
-            {t("contact.emailDirect")}
-          </a>
-        </aside>
-      )
-    }
-  </div>
-
-  <div class="max-w-5xl mx-auto mt-12 pt-6 border-t border-base-300 text-sm text-base-content/60 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-    <span>Copyright &copy; {new Date().getFullYear()} - {contact.footerText}</span>
-    <a
-      class="link link-hover inline-flex justify-center items-center"
-      href={contact.footerLinkUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <FooterIcon class="size-3 inline-block mr-1" />
-      {contact.footerLinkText}
-    </a>
+    <div class="site-footer__meta">
+      <span>Copyright &copy; {new Date().getFullYear()} — {contact.footerText}</span>
+      <a href={contact.footerLinkUrl} target="_blank" rel="noopener noreferrer">
+        <FooterIcon aria-hidden="true" />
+        {contact.footerLinkText}
+      </a>
+    </div>
   </div>
 </footer>
 
 <script>
-  const initContactForms = () => {
-    document.querySelectorAll<HTMLFormElement>("[data-contact-form]").forEach((form) => {
-      if (form.dataset.bound === "true") return;
-      form.dataset.bound = "true";
-
-      const status = form.querySelector<HTMLElement>("[data-contact-status]");
-      const submitButton = form.querySelector<HTMLButtonElement>("button[type='submit']");
-      const initialButtonText = submitButton?.textContent ?? "";
-
-      const setStatus = (message: string, tone: "info" | "success" | "error" = "info") => {
-        if (!status) return;
-        status.textContent = message;
-        status.classList.toggle("text-success", tone === "success");
-        status.classList.toggle("text-error", tone === "error");
-        status.classList.toggle("text-base-content/70", tone === "info");
-      };
-
-      const setSubmitting = (isSubmitting: boolean) => {
-        if (!submitButton) return;
-        submitButton.disabled = isSubmitting;
-        submitButton.textContent = isSubmitting
-          ? form.dataset.sendingMessage ?? initialButtonText
-          : initialButtonText;
-      };
-
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        if (!form.reportValidity()) return;
-
-        const data = new FormData(form);
-        const to = form.dataset.contactEmail ?? "";
-        const action = form.dataset.contactAction ?? "";
-        const defaultSubject = form.dataset.defaultSubject ?? "";
-        const subject = String(data.get("subject") || defaultSubject || "");
-        const name = String(data.get("name") || "");
-        const email = String(data.get("email") || "");
-        const message = String(data.get("message") || "");
-        const nameLabel = form.dataset.nameLabel ?? "Name";
-        const emailLabel = form.dataset.emailLabel ?? "Email";
-        const body = [
-          `${nameLabel}: ${name}`,
-          `${emailLabel}: ${email}`,
-          "",
-          message,
-        ].join("\n");
-
-        data.set("subject", subject);
-        data.set("_subject", subject);
-        data.set("body", body);
-
-        if (action) {
-          setSubmitting(true);
-          setStatus(form.dataset.sendingMessage ?? "", "info");
-          try {
-            const response = await fetch(action, {
-              method: "POST",
-              body: data,
-              headers: { Accept: "application/json" },
-            });
-
-            if (!response.ok) throw new Error(`Contact request failed: ${response.status}`);
-
-            form.reset();
-            setStatus(form.dataset.successMessage ?? "", "success");
-          } catch (error) {
-            console.error(error);
-            setStatus(form.dataset.errorMessage ?? "", "error");
-          } finally {
-            setSubmitting(false);
-          }
-          return;
-        }
-
-        window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        setStatus(form.dataset.mailtoFallbackMessage ?? "", "info");
-      });
-    });
-  };
-
-  initContactForms();
-  document.addEventListener("astro:after-swap", initContactForms);
+  import "../scripts/contact";
 </script>

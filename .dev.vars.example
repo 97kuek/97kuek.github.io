@@ -1,0 +1,4 @@
+# Copy to .dev.vars only when you need to override local defaults.
+# Configure these as encrypted variables in Cloudflare for production.
+SPAM_SALT="replace-with-a-long-random-value"
+# CONTACT_WEBHOOK_URL="https://example.com/your-private-webhook"

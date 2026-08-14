@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://97kuek.github.io/sitemap-index.xml

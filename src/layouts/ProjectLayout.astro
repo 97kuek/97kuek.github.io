@@ -22,6 +22,7 @@ import {
   PROJECT_CAROUSEL_INTERVAL_MS,
   PROJECT_IMAGE_HEIGHT,
 } from "../utils/constants";
+import PageShell from "../components/layout/PageShell.astro";
 
 interface NavEntry {
   title: string;
@@ -127,7 +128,7 @@ const projectSchema = {
   <ReadingProgress />
   <BackToTop />
 
-  <main id="main-content" class="max-w-6xl mx-auto px-4 pt-20 pb-16">
+  <PageShell>
     <div class="mb-8">
       <BackLink href={projectsListUrl} label={t("project.backToList")} class="btn btn-soft btn-sm" />
     </div>
@@ -165,7 +166,7 @@ const projectSchema = {
             )
           }
 
-          <ContentHeader eyebrow="PROJECT" title={title} description={description}>
+          <ContentHeader title={title} description={description}>
             <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60 mb-6">
               <span class="font-semibold">
                 {formatPeriod(startDate, endDate, dateLocale, t("timeline.present"))}
@@ -223,13 +224,13 @@ const projectSchema = {
           {
             (role || impact || status) && (
               <section class="border border-base-200 bg-base-100 rounded-lg p-6 mb-8">
-                <h2 class="text-sm font-bold tracking-widest text-primary uppercase mb-4">
+                <h2 class="text-base font-semibold text-primary mb-4">
                   {t("project.overview")}
                 </h2>
                 <dl class="grid gap-4 sm:grid-cols-3">
                   {role && (
                     <div>
-                      <dt class="text-xs font-bold tracking-widest uppercase text-base-content/50">
+                      <dt class="text-sm font-medium text-base-content/55">
                         {t("project.role")}
                       </dt>
                       <dd class="mt-1 text-sm font-semibold text-base-content">{role}</dd>
@@ -237,7 +238,7 @@ const projectSchema = {
                   )}
                   {impact && (
                     <div>
-                      <dt class="text-xs font-bold tracking-widest uppercase text-base-content/50">
+                      <dt class="text-sm font-medium text-base-content/55">
                         {t("project.impact")}
                       </dt>
                       <dd class="mt-1 text-sm font-semibold text-base-content">{impact}</dd>
@@ -245,7 +246,7 @@ const projectSchema = {
                   )}
                   {status && (
                     <div>
-                      <dt class="text-xs font-bold tracking-widest uppercase text-base-content/50">
+                      <dt class="text-sm font-medium text-base-content/55">
                         {t("project.status")}
                       </dt>
                       <dd class="mt-1 text-sm font-semibold text-base-content">{status}</dd>
@@ -259,7 +260,7 @@ const projectSchema = {
           {
             skills && skills.length > 0 && (
               <section class="border border-base-200 bg-base-100 rounded-lg p-6 mb-8">
-                <h2 class="text-sm font-bold tracking-widest text-primary uppercase mb-4">
+                <h2 class="text-base font-semibold text-primary mb-4">
                   {t("project.techStack")}
                 </h2>
                 <div class="flex flex-wrap gap-2">
@@ -314,5 +315,5 @@ const projectSchema = {
         )
       }
     </div>
-  </main>
+  </PageShell>
 </Layout>

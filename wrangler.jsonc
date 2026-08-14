@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "97kuek",
+  "compatibility_date": "2026-08-14",
+  "pages_build_output_dir": "./dist",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "portfolio",
+      "database_id": "45c5321f-905e-484a-b5f5-9070c64458b8",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

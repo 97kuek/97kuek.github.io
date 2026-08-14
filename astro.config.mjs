@@ -11,7 +11,7 @@ import rehypeKatex from "rehype-katex";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://97kuek.github.io",
+  site: process.env.SITE_URL ?? "https://97kuek.pages.dev",
 
   i18n: {
     defaultLocale: "ja",

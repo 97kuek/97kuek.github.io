@@ -1,0 +1,56 @@
+---
+import { useTranslations, type Lang } from "../i18n/ui";
+
+const locale = (Astro.currentLocale ?? "ja") as Lang;
+const t = useTranslations(locale);
+const pagePath = Astro.url.pathname;
+---
+
+<section
+  class="comments-panel"
+  data-comments-root
+  data-page={pagePath}
+  data-locale={locale}
+  data-loading={t("comments.loading")}
+  data-empty={t("comments.empty")}
+  data-error={t("comments.error")}
+  data-success={t("comments.success")}
+>
+  <header>
+    <h2>{t("comments.title")}</h2>
+    <p>{t("comments.description")}</p>
+  </header>
+
+  <p class="comments-panel__state" data-comments-state aria-live="polite">
+    {t("comments.loading")}
+  </p>
+  <ol class="comments-list" data-comments-list></ol>
+
+  <form class="comments-form" data-comments-form>
+    <input
+      name="website"
+      type="text"
+      class="comments-form__honeypot"
+      tabindex="-1"
+      autocomplete="off"
+      aria-hidden="true"
+    />
+    <div>
+      <label for="comment-name">{t("comments.name")}</label>
+      <input id="comment-name" name="name" type="text" required maxlength="60" autocomplete="name" />
+    </div>
+    <div>
+      <label for="comment-message">{t("comments.message")}</label>
+      <textarea id="comment-message" name="message" required minlength="2" maxlength="2000" rows="5"></textarea>
+    </div>
+    <div class="comments-form__footer">
+      <p>{t("comments.moderation")}</p>
+      <button type="submit" class="btn btn-primary">{t("comments.submit")}</button>
+    </div>
+    <p class="comments-form__status" data-comments-form-status aria-live="polite"></p>
+  </form>
+</section>
+
+<script>
+  import "../scripts/comments";
+</script>

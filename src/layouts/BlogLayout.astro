@@ -3,7 +3,7 @@ import Layout from "./Layout.astro";
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import SkillBadge from "../components/SkillBadge.astro";
-import Giscus from "../components/Giscus.astro";
+import Comments from "../components/Comments.astro";
 import ShareBar from "../components/ShareBar.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import RelatedContent from "../components/RelatedContent.astro";
@@ -18,6 +18,7 @@ import BackLink from "../components/BackLink.astro";
 import ContentHeader from "../components/ContentHeader.astro";
 import type { NavEntry } from "../utils/content";
 import { CONTENT_IMAGE_HEIGHT, CONTENT_IMAGE_WIDTH } from "../utils/constants";
+import PageShell from "../components/layout/PageShell.astro";
 
 interface Props {
   id: string;
@@ -69,7 +70,7 @@ const blogSchema = {
   </Fragment>
   <ReadingProgress />
   <BackToTop />
-  <main id="main-content" class="max-w-6xl mx-auto px-4 pt-20 pb-16">
+  <PageShell>
     <!-- Back button -->
     <div class="mb-8">
       <BackLink href={`${import.meta.env.BASE_URL}blog`} label={t("blog.backToList")} class="btn btn-soft btn-sm" />
@@ -93,7 +94,7 @@ const blogSchema = {
             )}
 
           <!-- Post Header -->
-          <ContentHeader eyebrow="BLOG" title={title} description={description}>
+          <ContentHeader title={title} description={description}>
             <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60">
               <time datetime={publishDate.toISOString()}>
                 {formatDate(publishDate)}
@@ -116,7 +117,7 @@ const blogSchema = {
                   {tags.map((tag) => (
                     <SkillBadge
                       skill={tag}
-                      href={`${import.meta.env.BASE_URL}blog/tags/${tag}`}
+                      href={`${import.meta.env.BASE_URL}blog/tags/${encodeURIComponent(tag)}/`}
                     />
                   ))}
                 </div>
@@ -149,8 +150,7 @@ const blogSchema = {
             tags={tags || []}
           />
 
-          <!-- Giscus Comments -->
-          <Giscus />
+          <Comments />
 
           <!-- Divider -->
           <div class="divider mt-12"></div>
@@ -174,5 +174,5 @@ const blogSchema = {
         )
       }
     </div>
-  </main>
+  </PageShell>
 </Layout>
