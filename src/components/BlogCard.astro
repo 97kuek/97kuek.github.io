@@ -36,7 +36,7 @@ const tags = article?.tags ?? post!.data.tags ?? [];
 const filterDate = publishDate.getTime();
 const href = article?.url ?? `${import.meta.env.BASE_URL}blog/${post!.id}`;
 const placeholderId = article?.id ?? post!.id;
-const placeholderLabel = article?.source ?? "BLOG";
+const placeholderLabel = article?.source ?? "Blog";
 const sourceLabel = article?.source ?? "Blog";
 ---
 

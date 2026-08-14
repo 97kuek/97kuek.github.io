@@ -7,25 +7,26 @@ import { formatPeriod, calculateDuration } from "../utils/formatDate";
 import SectionHeader from "./SectionHeader.astro";
 import TimelineCard from "./TimelineCard.astro";
 import TimelineListItem from "./TimelineListItem.astro";
+import SectionShell from "./layout/SectionShell.astro";
 
 interface Props {
   collection: "work" | "education";
   variant: "timeline" | "list";
   color?: string;
-  backgroundColor?: string;
   icon: any;
   sectionTitle: string;
   sectionSubtitle?: string;
+  sectionIndex?: string;
 }
 
 const {
   collection,
   variant,
   color = "primary",
-  backgroundColor = "transparent",
   icon,
   sectionTitle,
   sectionSubtitle,
+  sectionIndex,
 } = Astro.props;
 
 const locale = (Astro.currentLocale ?? "ja") as Lang;
@@ -83,14 +84,8 @@ const skillCounts =
 const containerId = `${collection}-items`;
 ---
 
-<section id={collection} class={`py-20 md:py-28 px-4 bg-${backgroundColor}`}>
-  <div class="max-w-4xl mx-auto" data-reveal>
-    <SectionHeader
-      label={sectionTitle}
-      subtitle={sectionSubtitle}
-      class="text-center mb-12"
-      subtitleClass="text-lg text-base-content/60 mt-1"
-    />
+<SectionShell id={collection} index={sectionIndex} width="content" tone={collection === "education" ? "wash" : "plain"}>
+    <SectionHeader label={sectionTitle} subtitle={sectionSubtitle} />
 
     {collection === "work" && entries.length >= 3 && allSkills.length > 0 && (
       <div class="flex justify-center">
@@ -99,7 +94,7 @@ const containerId = `${collection}-items`;
     )}
 
     {variant === "timeline" ? (
-      <ul class="timeline timeline-vertical timeline-snap-icon timeline-compact" id={containerId}>
+      <ol class="experience-list" id={containerId}>
         {entriesWithContent.map(({ entry, Content, period, duration }, index) => (
           <TimelineCard
             entry={entry}
@@ -113,7 +108,7 @@ const containerId = `${collection}-items`;
             isLast={index === entriesWithContent.length - 1}
           />
         ))}
-      </ul>
+      </ol>
     ) : (
       <ul class="list glass-card rounded-box">
         {entriesWithContent.map(({ entry, Content, period, duration }) => (
@@ -141,5 +136,4 @@ const containerId = `${collection}-items`;
         </a>
       </div>
     )}
-  </div>
-</section>
+</SectionShell>

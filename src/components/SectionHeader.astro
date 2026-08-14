@@ -1,17 +1,17 @@
 ---
-import { SECTION_EYEBROW_CLASS } from "../utils/classes";
-
 const {
   label,
   subtitle,
-  class: className = "text-center mb-14",
-  subtitleClass = "text-base text-base-content/60 phrase-wrap",
+  class: className = "",
+  subtitleClass = "section-heading__subtitle phrase-wrap",
   as = "h2",
 } = Astro.props;
 const Heading = as;
 ---
 
-<div class={className}>
-  <Heading class={SECTION_EYEBROW_CLASS}>{label}</Heading>
+<div class:list={["section-heading", className]}>
+  <div class="section-heading__title-row">
+    <Heading class="section-heading__title">{label}</Heading>
+  </div>
   {subtitle && <p class={subtitleClass}>{subtitle}</p>}
 </div>

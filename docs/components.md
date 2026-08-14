@@ -9,24 +9,26 @@
 | `layouts/Layout.astro` | 全ページ共通（head・OGP・JSON-LD・hreflang・Navbar）。`data-reveal` 要素のスクロール reveal もここで初期化 |
 | `layouts/BlogLayout.astro` | ブログ記事ページ（TOC・読了時間・前後ナビ・関連記事） |
 | `layouts/ProjectLayout.astro` | プロジェクト詳細ページ（期間・スキル・前後ナビ） |
+| `components/HomePage.astro` | 日英トップ共通のページ編成・コンテンツ取得・Person JSON-LD |
+| `components/layout/SectionShell.astro` | トップページ章の共通外枠（幅・tone） |
+| `components/layout/PageShell.astro` | 一覧・検索・記事ページの共通外枠 |
 
 ## セクション（トップページ）
 
 | コンポーネント | 役割 |
 | --- | --- |
-| `Hero.astro` | ヒーローセクション（名前・肩書き・SNS リンク）。高さ `100dvh` で全端末1画面。自己紹介文は LLM 出力風にトークンストリーミング表示＋点滅カーソル（日本語は `Intl.Segmenter` で語単位、`prefers-reduced-motion` で即表示、CLS ゼロ）。肩書きは「 / 」区切りごとに `inline-block` 分割して変な位置での折り返しを防ぐ |
-| `About.astro` | 自己紹介セクション |
+| `Hero.astro` | 縦長ポートレート、名前、肩書き、CTA、SNS を左右分割した静的 Hero。モバイルは1カラム |
+| `About.astro` | 自己紹介セクション。スキルは Content Collection の配列から共通 chip で描画 |
 | `Projects.astro` | プロジェクト一覧（`featured: true` のみ） |
 | `Blog.astro` | ブログ一覧（最新3件。自サイト/Zenn/Qiita/note 記事を同じカード体系で表示） |
 | `Timeline.astro` | 職務経歴・学歴タイムライン（`collection` prop で切り替え、コンテンツをカード内に直接表示） |
-| `Hackathons.astro` | ハッカソン一覧 |
-| `Contact.astro` | 連絡先セクション（`formAction` 設定時のみフォーム表示、未設定時はメールリンク導線） |
+| `Contact.astro` | `/api/contact`へ送信する問い合わせフォームとメールリンク |
 
 ## ナビゲーション
 
 | コンポーネント | 役割 |
 | --- | --- |
-| `Navbar.astro` | 固定ヘッダー（言語トグル JA/EN・検索ボタン・スクロール連動スタイル）。半透明ガラスチローム、モバイルメニューは `.glass-popover` |
+| `Navbar.astro` | 固定ヘッダー（章ナビ・JA/EN・検索・モバイルメニュー）。項目と URL は `config/navigation.ts`、動作は `scripts/navbar.ts` |
 | `BackToTop.astro` | トップへ戻るボタン（長押しで目次ポップアップ） |
 | `PrevNextNav.astro` | 前後記事ナビゲーション |
 
@@ -37,7 +39,7 @@
 | `TableOfContents.astro` | 目次（mobile: 折りたたみ / desktop: sticky サイドバー） |
 | `ReadingProgress.astro` | 読了プログレスバー（固定、primary カラー） |
 | `RelatedContent.astro` | 関連コンテンツ（タグ一致スコアで選出） |
-| `Giscus.astro` | ブログ記事の GitHub Discussions コメント欄 |
+| `Comments.astro` | 承認済みコメントの取得と、承認待ちコメントの送信欄 |
 
 ## カード・UI
 
@@ -64,4 +66,4 @@
 
 - `pages/404.astro`・`pages/500.astro`：シェルエラー風ターミナル（`cat: … No such file or directory`、実パスを JS で注入）
 - `pages/search.astro`・`pages/en/search.astro`：Pagefind を `Terminal.astro` で包んだターミナル検索（プロンプト＋等幅＋ダーク配色。dir パスは teal）
-- `Hero.astro`：トークンストリーミング表示（上記参照）
+- `Hero.astro`：写真と抑制した見出しを組み合わせたeditorial構成

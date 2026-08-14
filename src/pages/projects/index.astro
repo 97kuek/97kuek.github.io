@@ -8,6 +8,7 @@ import PageHeader from "../../components/PageHeader.astro";
 import { SITE } from "../../utils/site";
 import { useTranslations } from "../../i18n/ui";
 import { getHomeUrl, getTagSummary, sortProjectsByDisplayDate } from "../../utils/content";
+import PageShell from "../../components/layout/PageShell.astro";
 
 const t = useTranslations("ja");
 
@@ -20,8 +21,8 @@ const { tags: allSkills, tagCounts: skillCounts } = getTagSummary(
 ---
 
 <Layout title={`プロジェクト - ${SITE.ownerNameJa}`} description={t("projects.metaDescription")}>
-  <main id="main-content" class="max-w-6xl mx-auto px-4 py-20">
-    <div class="mb-8">
+  <PageShell>
+    <div class="page-backlink">
       <BackLink href={getHomeUrl("ja")} label={t("404.backHome")} />
     </div>
 
@@ -35,12 +36,12 @@ const { tags: allSkills, tagCounts: skillCounts } = getTagSummary(
           <p class="text-2xl text-base-content/60">{t("projects.empty")}</p>
         </div>
       ) : (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
+        <div class="collection-grid" id="projects-grid">
           {projects.map((project) => (
             <ProjectCard project={project} />
           ))}
         </div>
       )
     }
-  </main>
+  </PageShell>
 </Layout>

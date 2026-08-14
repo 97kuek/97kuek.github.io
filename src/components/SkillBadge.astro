@@ -11,11 +11,11 @@ const { skill, href } = Astro.props;
   href ? (
     <a
       href={href}
-      class="badge badge-md border border-base-300 bg-base-100 text-base-content hover:border-primary hover:text-primary transition-all hover:scale-105 py-2.5"
+      class="skill-chip skill-chip--link"
     >
       {skill}
     </a>
   ) : (
-    <span class="badge badge-sm border border-base-300 bg-base-100 text-base-content">{skill}</span>
+    <span class="skill-chip">{skill}</span>
   )
 }

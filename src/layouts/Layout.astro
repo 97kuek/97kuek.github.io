@@ -67,7 +67,7 @@ const hasTranslation =
       )
     }
 
-    <!-- Scroll-reveal: hide [data-reveal] pre-paint, fade up on viewport entry -->
+    <!-- Gate the hidden reveal state before first paint; behavior is bundled below. -->
     <script is:inline>
       (function () {
         if (
@@ -76,24 +76,10 @@ const hasTranslation =
         )
           return;
         document.documentElement.classList.add("reveal-ready");
-        document.addEventListener("astro:page-load", function () {
-          var els = document.querySelectorAll("[data-reveal]:not(.is-revealed)");
-          if (!els.length) return;
-          var io = new IntersectionObserver(
-            function (entries) {
-              entries.forEach(function (entry) {
-                if (!entry.isIntersecting) return;
-                entry.target.classList.add("is-revealed");
-                io.unobserve(entry.target);
-              });
-            },
-            { rootMargin: "0px 0px -12% 0px" }
-          );
-          els.forEach(function (el) {
-            io.observe(el);
-          });
-        });
       })();
+    </script>
+    <script>
+      import "../scripts/reveal";
     </script>
 
     <!-- Open Graph / Social Media -->
@@ -111,13 +97,6 @@ const hasTranslation =
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
     <!-- Google Search Console -->
     <meta name="google-site-verification" content="IdV4d4hYTHpXQOAso7eobHRcWXJw_-bXMiMWMRdth3k" />
     <!-- RSS Feed -->

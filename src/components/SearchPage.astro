@@ -3,7 +3,8 @@ import Layout from "../layouts/Layout.astro";
 import Terminal from "./Terminal.astro";
 import { useTranslations, type Lang } from "../i18n/ui";
 import { SITE } from "../utils/site";
-import { SECTION_EYEBROW_CLASS } from "../utils/classes";
+import PageShell from "./layout/PageShell.astro";
+import PageHeader from "./PageHeader.astro";
 
 const locale = (Astro.currentLocale ?? "ja") as Lang;
 const isEn = locale === "en";
@@ -18,20 +19,16 @@ const devNotice = t("search.devNotice");
     <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
   </Fragment>
 
-  <main id="main-content" class="max-w-3xl mx-auto px-4 py-20">
-    <div class="text-center mb-10">
-      <p class={SECTION_EYEBROW_CLASS}>SEARCH</p>
-      <h1 class="text-3xl font-bold mb-2">{t("search.title")}</h1>
-      <p class="text-base text-base-content/60">{description}</p>
-    </div>
+  <PageShell width="reading">
+    <PageHeader title={t("search.title")} description={description} />
 
     <Terminal title={`${SITE.terminalUser}:~/search - pagefind`}>
       <p class="search-prompt">
         <span class="g">{SITE.terminalUser}</span><span class="muted">:</span><span class="b">~/search</span><span class="muted">$</span> pagefind --query
       </p>
-      <div id="search"></div>
+      <div id="search" data-dev-notice={devNotice}></div>
     </Terminal>
-  </main>
+  </PageShell>
 </Layout>
 
 <style>
@@ -103,39 +100,8 @@ const devNotice = t("search.devNotice");
   }
 </style>
 
-<script is:inline define:vars={{ devNotice }}>
-  document.addEventListener("astro:page-load", function () {
-    var el = document.getElementById("search");
-    // Guard against double-mounting: this inline script re-runs on every
-    // view-transition visit, so page-load listeners accumulate and each
-    // would otherwise stack another PagefindUI form into #search.
-    if (!el || el.dataset.mounted === "true") return;
-    el.dataset.mounted = "true";
-
-    function mount() {
-      new PagefindUI({
-        element: "#search",
-        showImages: false,
-        showEmptyFilters: false,
-      });
-    }
-
-    if (window.PagefindUI) {
-      mount();
-      return;
-    }
-
-    var script = document.createElement("script");
-    script.src = "/pagefind/pagefind-ui.js";
-    script.onload = mount;
-    script.onerror = function () {
-      el.innerHTML =
-        '<p class="pagefind-dev-notice">' +
-        devNotice.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") +
-        "</p>";
-    };
-    document.head.appendChild(script);
-  });
+<script>
+  import "../scripts/pagefind";
 </script>
 
 <style is:global>

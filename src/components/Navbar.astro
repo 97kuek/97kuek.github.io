@@ -1,27 +1,22 @@
 ---
 import { getEntry } from "astro:content";
-import { useTranslations, type Lang } from "../i18n/ui";
 import { Menu, Search } from "@lucide/astro";
+import { useTranslations, type Lang } from "../i18n/ui";
 import {
-  NAVBAR_SCROLL_THRESHOLD_PX,
-  NAVBAR_SECTION_OFFSET_PX,
-} from "../utils/constants";
-
-const heroEntry = await getEntry("hero", "index");
-const name = heroEntry?.data?.name ?? "Portfolio";
+  PRIMARY_NAVIGATION,
+  getHomeUrl,
+  getNavigationHref,
+  withBase,
+} from "../config/navigation";
+import { NAVBAR_SCROLL_THRESHOLD_PX, NAVBAR_SECTION_OFFSET_PX } from "../utils/constants";
 
 const base = import.meta.env.BASE_URL;
-const { pathname } = Astro.url;
 const locale = (Astro.currentLocale ?? "ja") as Lang;
 const t = useTranslations(locale);
-
-const normalizedBase = base.endsWith("/") ? base : `${base}/`;
-const isHome =
-  pathname === base ||
-  pathname === normalizedBase ||
-  pathname === "/" ||
-  pathname === "/en" ||
-  pathname === "/en/";
+const heroId = locale === "en" ? "en" : "index";
+const heroEntry = await getEntry("hero", heroId as "index");
+const name = heroEntry?.data.name ?? "Keitaro Ueki";
+const { pathname } = Astro.url;
 
 const normalizePath = (value: string) => {
   const pathOnly = value.split("#")[0].split("?")[0];
@@ -29,184 +24,98 @@ const normalizePath = (value: string) => {
   return withSlash === "//" ? "/" : withSlash;
 };
 
+const homeUrl = getHomeUrl(locale, base);
 const currentPath = normalizePath(pathname);
-
-const homeNavLinks = [
-  { href: "#projects", label: t("nav.projects"), key: "projects" },
-  ...(locale === "ja" ? [{ href: "#blog", label: t("nav.blog"), key: "blog" }] : []),
-  { href: "#contact", label: t("nav.contact"), key: "contact" },
-];
-
-const nonHomeNavLinks = [
-  { href: locale === "en" ? "/en/" : base, label: t("nav.home"), key: "home" },
-  { href: locale === "en" ? `${base}en/projects` : `${base}projects`, label: t("nav.projects"), key: "projects" },
-  ...(locale === "ja" ? [{ href: `${base}blog`, label: t("nav.blog"), key: "blog" }] : []),
-  { href: locale === "en" ? "/en/#contact" : `${base}#contact`, label: t("nav.contact"), key: "contact" },
-];
-
-const navLinks = isHome ? homeNavLinks : nonHomeNavLinks;
-
-const langToggleHref = locale === "en" ? "/" : "/en/";
-const searchHref = locale === "en" ? `${base}en/search` : `${base}search`;
+const isHome = currentPath === normalizePath(homeUrl);
+const navItems = PRIMARY_NAVIGATION.filter(
+  (item) => !item.locales || item.locales.includes(locale),
+).map((item) => ({
+  ...item,
+  href: getNavigationHref(item, locale, base, isHome),
+  label: t(item.labelKey),
+}));
 
 const isActiveHref = (href: string) => {
-  if (isHome || href.startsWith("#")) return false;
+  if (href.startsWith("#")) return false;
   const target = normalizePath(href);
-  if (target === "/" || target === "/en/") return currentPath === target;
-  return currentPath === target || currentPath.startsWith(target);
+  return currentPath === target || (target !== "/" && currentPath.startsWith(target));
 };
+
+const languageHref = locale === "en" ? withBase(base) : withBase(base, "en/");
+const searchHref = withBase(base, locale === "en" ? "en/search/" : "search/");
 const isSearchActive = currentPath === normalizePath(searchHref);
 ---
 
 <header
   id="site-navbar"
-  class="fixed top-0 left-0 right-0 z-40 navbar bg-base-100/60 backdrop-blur-xl backdrop-saturate-150 transition-[background-color,box-shadow] duration-200"
+  class="site-header"
   data-scroll-threshold={NAVBAR_SCROLL_THRESHOLD_PX}
   data-section-offset={NAVBAR_SECTION_OFFSET_PX}
+  data-home={isHome ? "true" : "false"}
 >
-  <div class="navbar-start">
-    <a href={locale === "en" ? "/en/" : base} data-nav-key="brand" class="btn btn-ghost font-bold text-base">{name}</a>
-  </div>
+  <div class="site-header__inner site-container" data-width="wide">
+    <a href={homeUrl} class="site-brand" data-nav-key="brand" aria-label={`${name} — ${t("nav.home")}`}>
+      <span class="site-brand__mark" aria-hidden="true"></span>
+      <span class="site-brand__name">{name}</span>
+    </a>
 
-  <div class="navbar-end">
-    <!-- デスクトップ: 横並びリンク -->
-    <nav class="hidden lg:flex gap-1">
-      {navLinks.map((link) => (
+    <nav class="site-nav" aria-label={t("nav.primary")}>
+      {navItems.map((item) => (
         <a
-          href={link.href}
-          data-nav-key={link.key}
-          aria-current={isActiveHref(link.href) ? "page" : undefined}
-          data-active={isActiveHref(link.href) ? "" : undefined}
-          class="btn btn-ghost btn-sm font-medium text-base-content/90 hover:text-base-content hover:bg-base-content/5 data-[active]:text-primary data-[active]:font-semibold"
+          href={item.href}
+          data-nav-key={item.key}
+          data-section-link={isHome ? item.sectionId : undefined}
+          data-active={isActiveHref(item.href) ? "" : undefined}
+          aria-current={isActiveHref(item.href) ? "page" : undefined}
         >
-          {link.label}
+          {item.label}
         </a>
       ))}
     </nav>
 
-    <!-- 言語トグル -->
-    <a
-      href={langToggleHref}
-      data-nav-key="lang"
-      class="btn btn-ghost btn-sm font-mono text-xs font-semibold text-base-content/80 hover:text-base-content"
-      aria-label={t("lang.switchLabel")}
-    >
-      {t("lang.switchTo")}
-    </a>
-
-    <!-- 検索ボタン -->
-    <a
-      href={searchHref}
-      data-nav-key="search"
-      class:list={[
-        "btn btn-ghost btn-square btn-sm text-base-content/80 hover:text-base-content",
-        isSearchActive && "text-primary",
-      ]}
-      aria-label={t("nav.search")}
-      aria-current={isSearchActive ? "page" : undefined}
-    >
-      <Search class="size-[18px]" aria-hidden="true" />
-    </a>
-
-    <!-- モバイル・タブレット: ハンバーガー -->
-    <div class="dropdown dropdown-end lg:hidden">
-      <button tabindex="0" class="btn btn-ghost btn-square text-base-content/80 hover:text-base-content" aria-label={t("nav.openMenu")}>
-        <Menu class="size-[22px]" aria-hidden="true" />
-      </button>
-      <ul
-        tabindex="0"
-        class="dropdown-content menu glass-popover rounded-box z-50 w-48 p-2 mt-2"
+    <div class="site-header__actions">
+      <a
+        href={languageHref}
+        class="language-switch"
+        data-nav-key="lang"
+        aria-label={t("lang.switchLabel")}
       >
-        {navLinks.map((link) => (
-          <li>
-            <a
-              href={link.href}
-              data-nav-key={link.key}
-              class:list={[
-                "text-base-content/80",
-                isActiveHref(link.href) && "text-primary font-semibold",
-              ]}
-              aria-current={isActiveHref(link.href) ? "page" : undefined}
-            >
-              {link.label}
-            </a>
-          </li>
-        ))}
-        <li>
-          <a href={langToggleHref} data-nav-key="lang" class="text-base-content/80 font-mono text-xs">
-            {t("lang.switchTo")}
-          </a>
-        </li>
-      </ul>
+        <span>{locale === "ja" ? "English" : "日本語"}</span>
+      </a>
+
+      <a
+        href={searchHref}
+        class:list={["site-header__icon", isSearchActive && "is-active"]}
+        data-nav-key="search"
+        aria-label={t("nav.search")}
+        aria-current={isSearchActive ? "page" : undefined}
+      >
+        <Search aria-hidden="true" />
+      </a>
+
+      <div class="dropdown dropdown-end site-menu">
+        <button tabindex="0" class="site-header__icon" aria-label={t("nav.openMenu")}>
+          <Menu aria-hidden="true" />
+        </button>
+        <ul tabindex="0" class="dropdown-content menu glass-popover rounded-box z-50 w-56 p-2 mt-3">
+          {navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                data-nav-key={item.key}
+                class:list={[isActiveHref(item.href) && "text-primary font-semibold"]}
+                aria-current={isActiveHref(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </div>
 </header>
 
 <script>
-  const initNavbar = () => {
-    const navbar = document.getElementById('site-navbar');
-    if (!navbar) return;
-    const scrollThreshold = Number(navbar.dataset.scrollThreshold ?? '10');
-    const sectionOffset = Number(navbar.dataset.sectionOffset ?? '120');
-
-    const handlers: Array<() => void> = [];
-
-    const onScroll = () => {
-      if (window.scrollY > scrollThreshold) {
-        navbar.classList.add('bg-base-100/80', 'shadow-sm');
-        navbar.classList.remove('bg-base-100/60');
-      } else {
-        navbar.classList.remove('bg-base-100/80', 'shadow-sm');
-        navbar.classList.add('bg-base-100/60');
-      }
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    handlers.push(() => window.removeEventListener('scroll', onScroll));
-    onScroll();
-
-    const navLinks = navbar.querySelectorAll<HTMLAnchorElement>('nav a[href^="#"]');
-
-    if (navLinks.length > 0) {
-      const ids = [...navLinks].map(l => l.getAttribute('href')!.slice(1));
-
-      const update = () => {
-        const y = window.scrollY + sectionOffset;
-        let current = ids[0];
-        for (const id of ids) {
-          const el = document.getElementById(id);
-          if (el && el.offsetTop <= y) current = id;
-        }
-        navLinks.forEach(l => {
-          if (l.getAttribute('href') === `#${current}`) {
-            l.setAttribute('data-active', '');
-          } else {
-            l.removeAttribute('data-active');
-          }
-        });
-      };
-
-      window.addEventListener('scroll', update, { passive: true });
-      handlers.push(() => window.removeEventListener('scroll', update));
-      update();
-    }
-
-    // daisyUI dropdown stays open via focus: blur after tapping a menu item
-    navbar.querySelectorAll<HTMLAnchorElement>('.dropdown a').forEach((a) => {
-      a.addEventListener('click', () => {
-        (document.activeElement as HTMLElement | null)?.blur();
-      });
-    });
-
-    return () => handlers.forEach((off) => off());
-  };
-
-  let cleanup: (() => void) | undefined;
-
-  const init = () => {
-    cleanup = initNavbar() ?? undefined;
-  };
-
-  init();
-  document.addEventListener('astro:before-swap', () => cleanup?.());
-  document.addEventListener('astro:after-swap', init);
+  import "../scripts/navbar";
 </script>

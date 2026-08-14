@@ -6,6 +6,7 @@ import { useTranslations, type Lang } from "../i18n/ui";
 import SectionHeader from "./SectionHeader.astro";
 import { LATEST_POST_LIMIT } from "../utils/constants";
 import { getExternalArticles } from "../utils/externalArticles";
+import SectionShell from "./layout/SectionShell.astro";
 
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 
@@ -24,11 +25,10 @@ const latestItems = [
   .slice(0, LATEST_POST_LIMIT);
 ---
 
-<section id="blog" class="py-20 md:py-28 px-4">
-  <div class="max-w-6xl mx-auto" data-reveal>
+<SectionShell id="blog" width="wide">
     <SectionHeader label={t("blog.sectionLabel")} subtitle={t("blog.subtitle")} />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="editorial-grid">
       {latestItems.map((item) => (
         item.type === "local"
           ? <BlogCard post={item.post} />
@@ -36,11 +36,10 @@ const latestItems = [
       ))}
     </div>
 
-    <div class="text-center mt-12">
+    <div class="section-action">
       <a href={`${import.meta.env.BASE_URL}blog`} class="btn btn-primary btn-outline gap-2">
         {t("blog.seeAll")}
         <ArrowRight class="size-4" />
       </a>
     </div>
-  </div>
-</section>
+</SectionShell>

@@ -2,7 +2,6 @@
 import Layout from "../../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import BlogCard from "../../../components/BlogCard.astro";
-import SectionHeader from "../../../components/SectionHeader.astro";
 import { SITE } from "../../../utils/site";
 import { useTranslations } from "../../../i18n/ui";
 
@@ -50,7 +49,6 @@ const posts = allPosts
     </div>
 
     <div class="mb-16">
-      <SectionHeader label="TAG" class="mb-0" />
       <h1 class="text-3xl font-bold mb-2">#{tag}</h1>
       <p class="text-base-content/60">{posts.length}件の記事</p>
     </div>

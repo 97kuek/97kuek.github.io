@@ -1,0 +1,30 @@
+---
+interface Props {
+  id: string;
+  index?: string;
+  width?: "reading" | "content" | "wide";
+  tone?: "plain" | "wash";
+  class?: string;
+}
+
+const {
+  id,
+  index,
+  width = "content",
+  tone = "plain",
+  class: className,
+} = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={["home-section", tone === "wash" && "home-section--wash", className]}
+  data-chapter={index}
+>
+  <div class="site-container" data-width={width}>
+    <div data-reveal>
+      <slot />
+    </div>
+  </div>
+</section>
+

@@ -1,0 +1,15 @@
+---
+interface Props {
+  width?: "reading" | "content" | "wide";
+  class?: string;
+}
+
+const { width = "wide", class: className } = Astro.props;
+---
+
+<main id="main-content" class:list={["page-shell ambient-bg", className]}>
+  <div class="site-container" data-width={width}>
+    <slot />
+  </div>
+</main>
+

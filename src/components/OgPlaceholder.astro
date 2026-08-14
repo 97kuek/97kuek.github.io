@@ -44,47 +44,16 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
         dominant-baseline="middle"
         fill={OG_COLORS.thumbnailText}
         font-size="44"
-        font-family="system-ui,-apple-system,sans-serif"
+        font-family="Noto Sans JP,Noto Sans CJK JP,system-ui,sans-serif"
         font-weight="700"
-        letter-spacing="8"
       >
-        {label.toUpperCase()}
-      </text>
-      <text
-        x="400"
-        y="276"
-        text-anchor="middle"
-        fill={OG_COLORS.thumbnailMuted}
-        font-size="18"
-        font-family="system-ui,-apple-system,sans-serif"
-        font-weight="600"
-        letter-spacing="2"
-      >
-        ARTICLE
+        {label}
       </text>
     </Fragment>
   )}
 
   {!minimal && showText && (
     <Fragment>
-      <!-- Left accent bar (coral brand touch) -->
-      <rect x="52" y="60" width="4" height="36" rx="2" fill={OG_COLORS.label} />
-
-      <!-- Label -->
-      {label && (
-        <text
-          x="66"
-          y="84"
-          fill={OG_COLORS.muted}
-          font-size="13"
-          font-family="system-ui,-apple-system,sans-serif"
-          font-weight="700"
-          letter-spacing="2"
-        >
-          {label.toUpperCase()}
-        </text>
-      )}
-
       <!-- Title lines -->
       {capped.map((line, i) => (
         <text
@@ -93,7 +62,7 @@ const startY = 210 - totalH / 2 + lineHeight * 0.8;
           fill={OG_COLORS.title}
           font-size="34"
           font-weight="700"
-          font-family="system-ui,-apple-system,sans-serif"
+          font-family="Noto Sans JP,Noto Sans CJK JP,system-ui,sans-serif"
         >
           {line}
         </text>

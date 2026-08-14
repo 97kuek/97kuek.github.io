@@ -5,6 +5,7 @@ import { ArrowRight } from "@lucide/astro";
 import { useTranslations, type Lang } from "../i18n/ui";
 import SectionHeader from "./SectionHeader.astro";
 import { getFeaturedProjects, getProjectsUrl } from "../utils/content";
+import SectionShell from "./layout/SectionShell.astro";
 
 const projectEntries = await getCollection("projects");
 
@@ -14,9 +15,8 @@ const projectsBase = getProjectsUrl(locale);
 const featuredProjects = getFeaturedProjects(projectEntries);
 ---
 
-<section id="projects" class="py-20 md:py-28 px-4">
-  <div class="max-w-6xl mx-auto" data-reveal>
-    <SectionHeader label="PROJECTS" subtitle={t("projects.subtitle")} />
+<SectionShell id="projects" width="wide" tone="wash">
+    <SectionHeader label="Projects" subtitle={t("projects.subtitle")} />
 
     {
       featuredProjects.length === 0 ? (
@@ -26,7 +26,7 @@ const featuredProjects = getFeaturedProjects(projectEntries);
           </p>
         </div>
       ) : (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="project-grid">
           {featuredProjects.map((project) => (
             <ProjectCard project={project} />
           ))}
@@ -34,11 +34,10 @@ const featuredProjects = getFeaturedProjects(projectEntries);
       )
     }
 
-    <div class="text-center mt-10">
+    <div class="section-action">
       <a href={projectsBase} class="btn btn-primary btn-outline gap-2">
         {t("projects.seeAll")}
         <ArrowRight class="size-4" />
       </a>
     </div>
-  </div>
-</section>
+</SectionShell>

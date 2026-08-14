@@ -1,0 +1,91 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "./Hero.astro";
+import About from "./About.astro";
+import Timeline from "./Timeline.astro";
+import Projects from "./Projects.astro";
+import Blog from "./Blog.astro";
+import Contact from "./Contact.astro";
+import { Briefcase, GraduationCap } from "@lucide/astro";
+import { getEntry, render } from "astro:content";
+import type { Lang } from "../i18n/ui";
+
+interface Props {
+  locale: Lang;
+}
+
+const { locale } = Astro.props;
+const contentId = locale === "en" ? "en" : "index";
+const heroEntry = (await getEntry("hero", contentId as "index"))!;
+const aboutEntry = (await getEntry("about", contentId as "index"))!;
+const { Content: AboutContent } = await render(aboutEntry);
+const generalEntry = (await getEntry("general", "index"))!;
+const general = generalEntry.data;
+
+const sameAs = heroEntry.data.socialLinks
+  .filter((link: { url: string }) => !link.url.startsWith("mailto:"))
+  .map((link: { url: string }) => link.url);
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: heroEntry.data.name,
+  alternateName: heroEntry.data.alternateName,
+  url: Astro.url.origin,
+  sameAs,
+  description: heroEntry.data.description.trim(),
+  alumniOf: {
+    "@type": "EducationalOrganization",
+    name: "Waseda University",
+  },
+};
+
+const pageTitle = locale === "en"
+  ? `${heroEntry.data.name} - Portfolio`
+  : `${heroEntry.data.alternateName ?? heroEntry.data.name} (${heroEntry.data.name}) - Portfolio`;
+---
+
+<Layout title={pageTitle} description={heroEntry.data.description}>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  </Fragment>
+
+  <main id="main-content" class="ambient-bg">
+    <Hero hero={heroEntry.data} />
+
+    {general.showAboutSection && (
+      <About
+        title={aboutEntry.data.title}
+        photo={aboutEntry.data.photo}
+        Content={AboutContent}
+        link={aboutEntry.data.link}
+        skills={aboutEntry.data.skills}
+      />
+    )}
+
+    {general.showProjectsSection && <Projects />}
+    {general.showBlogSection && <Blog />}
+
+    {general.showWorkSection && (
+      <Timeline
+        collection="work"
+        variant="timeline"
+        icon={Briefcase}
+        sectionTitle="Work Experience"
+        sectionIndex="04"
+      />
+    )}
+
+    {general.showEducationSection && (
+      <Timeline
+        collection="education"
+        variant="list"
+        icon={GraduationCap}
+        sectionTitle="Education"
+        sectionIndex="05"
+      />
+    )}
+
+    {general.showContactSection && <Contact />}
+  </main>
+</Layout>
