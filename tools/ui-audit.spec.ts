@@ -23,6 +23,17 @@ test.describe("portfolio UI audit", () => {
     await expect(page.locator("#about .profile-panel--ink")).toHaveCount(0);
     await expect(page.locator("#projects [data-project-marquee]")).toBeVisible();
     await expect(page.locator("#projects .project-marquee__group")).toHaveCount(2);
+    const primaryProjectGallery = page.locator("#projects .project-marquee__group").first();
+    await expect(primaryProjectGallery.locator(".project-card--gallery")).toHaveCount(4);
+    await expect(primaryProjectGallery.locator(".project-card__stack")).toHaveCount(4);
+    await expect(primaryProjectGallery.locator("time, dl, .card-actions")).toHaveCount(0);
+
+    if (testInfo.project.name === "mobile") {
+      const galleryBox = await page.locator("#projects [data-project-marquee]").boundingBox();
+      expect(galleryBox).not.toBeNull();
+      expect(Math.abs(galleryBox!.x)).toBeLessThanOrEqual(1);
+      expect(Math.abs(galleryBox!.width - page.viewportSize()!.width)).toBeLessThanOrEqual(1);
+    }
     await expectNoHorizontalOverflow(page);
   });
 

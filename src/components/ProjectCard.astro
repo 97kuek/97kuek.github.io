@@ -13,9 +13,11 @@ import { getLocalizedProject, getProjectDetailUrl, getProjectsUrl } from "../uti
 
 interface Props {
   project: CollectionEntry<"projects">;
+  variant?: "default" | "gallery";
 }
 
-const { project } = Astro.props;
+const { project, variant = "default" } = Astro.props;
+const isGallery = variant === "gallery";
 const locale = (Astro.currentLocale ?? "ja") as Lang;
 const t = useTranslations(locale);
 const {
@@ -31,7 +33,7 @@ const filterDate = project.data.endDate?.getTime() ?? Number.MAX_SAFE_INTEGER;
 ---
 
 <article
-  class={`${GLASS_CARD_CLASS} relative`}
+  class:list={[GLASS_CARD_CLASS, "relative", isGallery && "project-card--gallery"]}
   data-filter-tags={project.data.skills.join(",")}
   data-filter-title={displayTitle}
   data-filter-description={displayDescription}
@@ -52,17 +54,19 @@ const filterDate = project.data.endDate?.getTime() ?? Number.MAX_SAFE_INTEGER;
       <OgPlaceholder id={project.id} title={displayTitle} label="Project" minimal={true} />
     )}
   </figure>
-  <div class="card-body">
+  <div class:list={["card-body", isGallery && "project-card__gallery-body"]}>
     <h3 class="card-title group-hover:text-primary transition-colors">
       <a
         href={projectUrl}
         class="after:absolute after:inset-0 after:content-[''] hover:text-primary transition-colors"
       >{displayTitle}</a>
     </h3>
-    <time class="text-sm text-base-content/60">
-      {formatPeriod(project.data.startDate, project.data.endDate)}
-    </time>
-    {(role || impact || status) && (
+    {!isGallery && (
+      <time class="text-sm text-base-content/60">
+        {formatPeriod(project.data.startDate, project.data.endDate)}
+      </time>
+    )}
+    {!isGallery && (role || impact || status) && (
       <dl class="grid gap-2 text-sm">
         {role && (
           <div class="flex gap-2">
@@ -84,8 +88,8 @@ const filterDate = project.data.endDate?.getTime() ?? Number.MAX_SAFE_INTEGER;
         )}
       </dl>
     )}
-    <p class="text-base-content/80">{displayDescription}</p>
-    <div class="flex flex-wrap gap-2 mt-2">
+    {!isGallery && <p class="text-base-content/80">{displayDescription}</p>}
+    <div class:list={["flex flex-wrap gap-2", isGallery ? "project-card__stack" : "mt-2"]}>
       {
         project.data.skills.map((skill) => (
           <SkillBadge
@@ -95,33 +99,35 @@ const filterDate = project.data.endDate?.getTime() ?? Number.MAX_SAFE_INTEGER;
         ))
       }
     </div>
-    <div class="card-actions justify-end mt-4 gap-2 relative z-10">
-      {
-        project.data.demoLink && (
-          <a
-            href={project.data.demoLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-sm btn-soft gap-1"
-          >
-            <ExternalLink class="size-4" />
-            {t("project.viewDemo")}
-          </a>
-        )
-      }
-      {
-        project.data.sourceLink && (
-          <a
-            href={project.data.sourceLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-sm btn-soft gap-1"
-          >
-            <GitHubIcon class="size-4" aria-hidden="true" />
-            {t("project.sourceCode")}
-          </a>
-        )
-      }
-    </div>
+    {!isGallery && (
+      <div class="card-actions justify-end mt-4 gap-2 relative z-10">
+        {
+          project.data.demoLink && (
+            <a
+              href={project.data.demoLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-sm btn-soft gap-1"
+            >
+              <ExternalLink class="size-4" />
+              {t("project.viewDemo")}
+            </a>
+          )
+        }
+        {
+          project.data.sourceLink && (
+            <a
+              href={project.data.sourceLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-sm btn-soft gap-1"
+            >
+              <GitHubIcon class="size-4" aria-hidden="true" />
+              {t("project.sourceCode")}
+            </a>
+          )
+        }
+      </div>
+    )}
   </div>
 </article>

@@ -37,14 +37,14 @@ const marqueeDuration = featuredProjects.length * PROJECT_MARQUEE_SECONDS_PER_IT
             <div class="project-marquee__group">
               {featuredProjects.map((project) => (
                 <div class="project-marquee__item">
-                  <ProjectCard project={project} />
+                  <ProjectCard project={project} variant="gallery" />
                 </div>
               ))}
             </div>
             <div class="project-marquee__group" aria-hidden="true" inert>
               {featuredProjects.map((project) => (
                 <div class="project-marquee__item">
-                  <ProjectCard project={project} />
+                  <ProjectCard project={project} variant="gallery" />
                 </div>
               ))}
             </div>
