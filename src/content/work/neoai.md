@@ -2,9 +2,9 @@
 title: "neoAI"
 subtitle: "AIエンジニア"
 location: "🇯🇵 Japan"
-startDate: 2026-06-10
+startDate: 2026-07-01
+logo: '@assets/work/neoai/logo.png'
 link: https://neoai.jp/
-skills: []
+skills: ["RAG", "AIエージェント", "LLM"]
 ---
-- RAGシステム・AIエージェント・LLM学習
-- 画像生成AIを含むマルチモーダルソリューション
+AIエンジニアとして、RAGシステム、AIエージェント、LLM学習を中心に取り組んでいます。

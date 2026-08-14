@@ -14,5 +14,5 @@ export async function getStaticPaths() {
 
 export const GET: APIRoute = async ({ props }) => {
   const { title, tags } = props as { title: string; tags: string[] };
-  return renderPngResponse(buildCollectionOgSvg({ label: "PROJECT", title, tags }));
+  return renderPngResponse(buildCollectionOgSvg({ label: "Project", title, tags }));
 };

@@ -1,9 +1,10 @@
 ---
 title: "neoAI"
-subtitle: "AI Engineer Intern"
+subtitle: "AI Engineer"
 location: "🇯🇵 Japan"
-startDate: 2026-06-10
+startDate: 2026-07-01
+logo: '@assets/work/neoai/logo.png'
 link: https://neoai.jp/
-skills: []
+skills: ["RAG", "AI Agents", "LLMs"]
 ---
-- Describe your work here.
+Working as an AI engineer on RAG systems, AI agents, and LLM training.

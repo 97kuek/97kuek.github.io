@@ -9,6 +9,7 @@ const hero = defineCollection({
       name: z.string(),
       alternateName: z.string().optional(),
       title: z.string(),
+      profession: z.string().optional(),
       description: z.string(),
       avatar: image(),
       location: z.string().optional(),
@@ -94,25 +95,6 @@ const projects = defineCollection({
     }),
 });
 
-// Hackathons collection
-const hackathons = defineCollection({
-  loader: glob({
-    pattern: "**/*.{md,mdoc,yaml}",
-    base: "./src/content/hackathons",
-  }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      location: z.string(),
-      description: z.string(),
-      startDate: z.coerce.date(),
-      endDate: z.coerce.date().optional(),
-      logo: image().optional(),
-      skills: z.array(z.string()).optional(),
-      sourceLink: z.string().url().optional(),
-    }),
-});
-
 // Blog collection
 const blog = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdoc,yaml}", base: "./src/content/blog" }),
@@ -135,6 +117,7 @@ const about = defineCollection({
       title: z.string(),
       photo: image().optional(),
       link: z.string().optional(),
+      skills: z.array(z.string()).optional().default([]),
     }),
 });
 
@@ -147,7 +130,6 @@ const general = defineCollection({
     showBlogSection: z.boolean(),
     showWorkSection: z.boolean(),
     showEducationSection: z.boolean(),
-    showHackathonsSection: z.boolean(),
     showContactSection: z.boolean(),
   }),
 });
@@ -162,7 +144,6 @@ const contact = defineCollection({
     footerText: z.string(),
     footerLinkText: z.string(),
     footerLinkUrl: z.string().url(),
-    formAction: z.string().url().optional(),
   }),
 });
 
@@ -171,7 +152,6 @@ export const collections = {
   work,
   education,
   projects,
-  hackathons,
   blog,
   about,
   general,

@@ -1,8 +1,9 @@
 name: Keitaro Ueki
 alternateName: 植木敬太郎
-title: CS undergrad at Waseda / PM at WASA Birdman Project
+title: Third-year student in Communications and Computer Engineering at Waseda University
+profession: AI Engineer
 description: |
-  Student engineer building web apps and image-processing tools.
+  Working on RAG systems, AI agents, and LLM training.
 avatar: '@assets/hero/avatar.jpg'
 location: 🇯🇵 Japan
 socialLinks:
