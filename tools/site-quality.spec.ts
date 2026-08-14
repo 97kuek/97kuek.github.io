@@ -4,7 +4,7 @@ const representativePaths = [
   "/",
   "/projects/",
   "/blog/",
-  "/blog/slide-generator/",
+  "/blog/welcome-post/",
   "/blog/transformer/",
   "/search/",
   "/en/",
@@ -45,7 +45,8 @@ test.describe("site quality audit", () => {
 
       const ogImage = await page.locator('meta[property="og:image"]').getAttribute("content");
       expect(ogImage).toBeTruthy();
-      const response = await request.get(ogImage!);
+      const ogImageUrl = new URL(ogImage!);
+      const response = await request.get(`${ogImageUrl.pathname}${ogImageUrl.search}`);
       expect(response.ok()).toBeTruthy();
       expect(response.headers()["content-type"]).toContain("image/");
     });

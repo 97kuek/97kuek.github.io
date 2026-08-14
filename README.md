@@ -1,8 +1,8 @@
-# my-portfolio — 97kuek.github.io
+# Keitaro Ueki Portfolio
 
 Keitaro Ueki のポートフォリオサイト。Astro + Markdoc ベースの静的サイト。
 
-**URL**: <https://97kuek.github.io>
+**URL**: <https://97kuek.pages.dev>
 
 ## 技術スタック
 
@@ -13,21 +13,35 @@ Keitaro Ueki のポートフォリオサイト。Astro + Markdoc ベースの静
 | スタイル | TailwindCSS 4 + daisyUI 5 |
 | コードハイライト | astro-expressive-code（Shiki ベース） |
 | 数式 | KaTeX（remark-math + rehype-katex） |
-| ホスティング | GitHub Pages / GitHub Actions |
+| ホスティング | Cloudflare Pages |
+| バックエンド | Cloudflare Pages Functions + D1 |
 
 ## セットアップ
 
 ```bash
 npm install       # 依存関係のインストール
-npm run dev       # 開発サーバー起動（localhost:4321）
+npm run dev       # Pages Functions + ローカルD1（localhost:8788）
+npm run dev:astro # UIのみのAstro開発サーバー（localhost:4321）
+npm run check     # Astro + Functionsの型チェック
 npm run build     # 本番ビルド
-npm run preview   # ビルド結果のプレビュー
-npm run audit:ui  # Playwright による代表画面のUI監査
+npm run audit:ui  # Playwrightによる代表画面のUI監査
 ```
 
-## デプロイ
+`npm run dev` はビルドとローカルD1 migrationを行ってから、本番相当のAPIを含む開発サーバーを起動する。
 
-`main` ブランチへのプッシュで GitHub Actions が自動ビルド & GitHub Pages にデプロイされる。
+## Cloudflareへのデプロイ
+
+`main` へのpushは、GitHub Actionsの品質チェック通過後にCloudflare Pagesへ自動デプロイされる。
+初回のみGitHub Actionsへ `CLOUDFLARE_ACCOUNT_ID` と `CLOUDFLARE_API_TOKEN` を登録し、
+Repository variable `CLOUDFLARE_PAGES_DEPLOY_ENABLED=true` を設定する。
+
+```bash
+npm run db:migrate:remote
+npm run deploy:cloudflare
+```
+
+`wrangler.jsonc` がPagesとD1の一次設定。`SPAM_SALT` はCloudflare secretで管理する。
+任意の `CONTACT_WEBHOOK_URL` を設定すると、D1保存に加えて問い合わせ内容を通知できる。
 
 ## ディレクトリ構成
 
@@ -44,6 +58,8 @@ npm run audit:ui  # Playwright による代表画面のUI監査
 │   ├── components/     # UI コンポーネント
 │   ├── pages/          # ルーティング（.astro）
 │   └── assets/         # 最適化対象の画像
+├── functions/          # Pages Functions（問い合わせ・コメントAPI）
+├── migrations/         # D1 migration
 ├── public/             # 静的ファイル（そのままコピー）
 ├── docs/               # 開発ドキュメント
 │   ├── spec.md         # プロジェクト仕様
@@ -53,7 +69,8 @@ npm run audit:ui  # Playwright による代表画面のUI監査
 ├── AGENTS.md           # Codex / AI エージェント向けガイド
 ├── CLAUDE.md           # Claude Code 向け入口
 ├── markdoc.config.mjs  # Markdoc 設定
-└── astro.config.mjs    # Astro 設定
+├── astro.config.mjs    # Astro 設定
+└── wrangler.jsonc      # Cloudflare Pages / D1 設定
 ```
 
 ## コンテンツの追加

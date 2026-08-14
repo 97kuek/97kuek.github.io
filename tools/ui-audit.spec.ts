@@ -28,44 +28,44 @@ test.describe("portfolio UI audit", () => {
 
     if (testInfo.project.name === "desktop") {
       await expect(toggle).toHaveAttribute("aria-expanded", "true");
-      await page.getByRole("button", { name: "Python (3)" }).click();
-      await expect(page).toHaveURL(/tag=python/);
-      await expect(page.getByText("3件")).toBeVisible();
-      await page.getByRole("searchbox", { name: "キーワード検索" }).fill("Fusion");
-      await expect(page).toHaveURL(/q=fusion/);
+      await page.getByRole("button", { name: "TypeScript (2)" }).click();
+      await expect(page).toHaveURL(/tag=typescript/);
+      await expect(page.getByText("2件")).toBeVisible();
+      await page.getByRole("searchbox", { name: "キーワード検索" }).fill("ホテル");
+      await expect(page).toHaveURL(/q=/);
       await expect(page.getByText("1件")).toBeVisible();
-      await expect(page.getByRole("link", { name: "Fusion Wing Importer" })).toBeVisible();
+      await expect(page.getByRole("link", { name: /HRS - ホテル予約管理システム/ })).toBeVisible();
       await page.getByRole("combobox", { name: "並び替え" }).selectOption("title");
       await expect(page).toHaveURL(/sort=title/);
     } else {
       await expect(toggle).toHaveAttribute("aria-expanded", "false");
-      await expect(page.getByRole("button", { name: "Python (3)" })).toBeHidden();
+      await expect(page.getByRole("button", { name: "TypeScript (2)" })).toBeHidden();
       await toggle.click();
       await expect(toggle).toHaveAttribute("aria-expanded", "true");
-      await expect(page.getByRole("button", { name: "Python (3)" })).toBeVisible();
+      await expect(page.getByRole("button", { name: "TypeScript (2)" })).toBeVisible();
     }
 
     await expectNoHorizontalOverflow(page);
   });
 
   test("blog discovery restores URL search and tag state", async ({ page }, testInfo) => {
-    await page.goto("/blog/?q=claude&tag=claude&sort=title");
+    await page.goto("/blog/?q=transformer&tag=transformer&sort=title");
     if (testInfo.project.name === "mobile") {
       await page.getByRole("button", { name: "Tags", exact: true }).click();
     }
-    await expect(page.getByRole("searchbox", { name: "キーワード検索" })).toHaveValue("claude");
+    await expect(page.getByRole("searchbox", { name: "キーワード検索" })).toHaveValue("transformer");
     await expect(page.getByRole("combobox", { name: "並び替え" })).toHaveValue("title");
-    await expect(page.getByRole("button", { name: "Claude (1)" })).toHaveClass(/active/);
+    await expect(page.getByRole("button", { name: "Transformer (1)" })).toHaveClass(/active/);
     await expect(page.getByText("1件")).toBeVisible();
-    await expect(page.getByRole("link", { name: /GitHub Issues/ })).toBeVisible();
+    await expect(page.getByRole("link", { name: /Transformerの設計意図/ })).toBeVisible();
     await expectNoHorizontalOverflow(page);
   });
 
   test("article page starts with one readable header and mobile TOC", async ({ page }, testInfo) => {
-    await page.goto("/blog/slide-generator/");
+    await page.goto("/blog/transformer/");
     await expect(page.locator("main h1")).toHaveCount(1);
-    await expect(page.locator("main h1")).toContainText("GitHub Issues");
-    await expect(page.getByText("読了目安: 約14分")).toBeVisible();
+    await expect(page.locator("main h1")).toContainText("Transformerの設計意図");
+    await expect(page.getByText(/読了目安: 約\d+分/)).toBeVisible();
 
     if (testInfo.project.name === "mobile") {
       await expect(page.getByRole("navigation").filter({ hasText: "目次" })).toBeVisible();
@@ -94,12 +94,25 @@ test.describe("portfolio UI audit", () => {
     await expectNoHorizontalOverflow(page);
   });
 
-  test("contact exposes a clear email path when no form endpoint is configured", async ({ page }) => {
+  test("contact uses the first-party backend and keeps a direct email fallback", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page.locator("[data-contact-form]")).toHaveCount(0);
-    await expect(page.getByText("現在はメールリンクからの連絡を受け付けています。")).toBeVisible();
-    await expect(page.getByRole("link", { name: "メールで連絡する" })).toHaveAttribute("href", /^mailto:/);
+    const form = page.locator("[data-contact-form]");
+    await expect(form).toHaveCount(1);
+    await expect(form).toHaveAttribute("data-endpoint", "/api/contact");
+    await expect(form.getByLabel("お名前")).toBeAttached();
+    await expect(form.getByLabel("メールアドレス")).toBeAttached();
+    await expect(form.getByLabel("お問い合わせ内容")).toBeAttached();
+    await expect(page.getByRole("link", { name: /keitaro\.ueki@/ })).toHaveAttribute("href", /^mailto:/);
+    await expectNoHorizontalOverflow(page);
+  });
+
+  test("article comments use the first-party form", async ({ page }) => {
+    await page.goto("/blog/transformer/");
+
+    await expect(page.locator("[data-comments-root]")).toHaveCount(1);
+    await expect(page.locator("[data-comments-form]").getByLabel("お名前")).toBeAttached();
+    await expect(page.locator("[data-comments-form]").getByLabel("コメント")).toBeAttached();
     await expectNoHorizontalOverflow(page);
   });
 

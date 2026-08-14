@@ -5,7 +5,7 @@
 ### ブランチ構成
 
 ```
-main          ← 本番（GitHub Pages にデプロイされる）
+main          ← 本番（Cloudflare Pagesのデプロイ元）
 └── feat/*    ← 新機能・記事追加
 └── fix/*     ← バグ修正・誤字修正
 └── perf/*    ← パフォーマンス改善・画像最適化
@@ -96,7 +96,7 @@ markdownコードブロック内にネストした```が含まれていたため
 
 1. `main` から作業ブランチを作成
 2. 作業・コミット
-3. `npm run build` でビルドエラーがないことを確認
+3. `npm run check && npm run build` で型・ビルドエラーがないことを確認
 4. GitHub で PR を作成（タイトルはコミットメッセージと同じ形式）
 5. セルフレビューして `main` にマージ
 
@@ -118,6 +118,7 @@ Windows PowerShell で `npm` が実行ポリシーにより止まる場合は、
 ```bash
 npm run build
 npm run audit:ui
+npm run audit:site
 ```
 
 ---

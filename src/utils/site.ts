@@ -6,6 +6,6 @@ export const SITE = {
   qiitaUsername: "",
   noteUsername: "97kuek_",
   repository: "97kuek/97kuek.github.io",
-  domain: "97kuek.github.io",
+  domain: "97kuek.pages.dev",
   terminalUser: "keitaro@portfolio",
 } as const;

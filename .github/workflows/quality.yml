@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  deployments: write
 
 jobs:
   quality:
@@ -34,4 +35,11 @@ jobs:
         run: npm run audit:ui
       - name: Site quality audit
         run: npm run audit:site
-
+      - name: Deploy to Cloudflare Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.CLOUDFLARE_PAGES_DEPLOY_ENABLED == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=97kuek
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
