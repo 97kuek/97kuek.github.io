@@ -19,57 +19,51 @@ const { title, photo, Content, link, skills = [] } = Astro.props;
 const t = useTranslations((Astro.currentLocale ?? "ja") as Lang);
 ---
 
-<SectionShell id="about" width="content">
+<SectionShell id="about" width="wide">
   <SectionHeader label="About" subtitle={t("about.subtitle")} />
 
-  <div class="profile-panel profile-panel--ink">
+  <div class="about-layout">
+    {
+      photo && (
+        <figure class="about-layout__media">
+          <div>
+            {typeof photo === "string" ? (
+              <img src={photo} alt={title} />
+            ) : (
+              <Image src={photo} alt={title} />
+            )}
+          </div>
+        </figure>
+      )
+    }
+    <div class="about-layout__content">
+      <h3>{title}</h3>
+      <article class="prose prose-base max-w-none">
+        <Content />
+      </article>
+      {skills.length > 0 && (
+        <div class="about-layout__skills" aria-label={t("about.skills")}>
+          {skills.map((skill) => <SkillBadge skill={skill} />)}
+        </div>
+      )}
       {
-        photo && (
-          <figure class="profile-panel__media">
-            <div>
-              {typeof photo === "string" ? (
-                <img
-                  src={photo}
-                  alt={title}
-                />
-              ) : (
-                <Image
-                  src={photo}
-                  alt={title}
-                />
-              )}
-            </div>
-          </figure>
+        link && (
+          <div class="mt-6">
+            <a
+              href={
+                link.startsWith("http")
+                  ? link
+                  : `${import.meta.env.BASE_URL}${link.startsWith("/") ? link.slice(1) : link}`
+              }
+              target={link.startsWith("http") ? "_blank" : "_self"}
+              class="btn btn-primary"
+            >
+              <Plus class="size-5" />
+              {t("about.seeMore")}
+            </a>
+          </div>
         )
       }
-      <div class="profile-panel__content">
-        <h3>{title}</h3>
-        <article class="prose prose-base max-w-none">
-          <Content />
-        </article>
-        {skills.length > 0 && (
-          <div class="profile-panel__skills" aria-label={t("about.skills")}>
-            {skills.map((skill) => <SkillBadge skill={skill} />)}
-          </div>
-        )}
-        {
-          link && (
-            <div class="mt-6">
-              <a
-                href={
-                  link.startsWith("http")
-                    ? link
-                    : `${import.meta.env.BASE_URL}${link.startsWith("/") ? link.slice(1) : link}`
-                }
-                target={link.startsWith("http") ? "_blank" : "_self"}
-                class="btn btn-primary"
-              >
-                <Plus class="size-5" />
-                {t("about.seeMore")}
-              </a>
-            </div>
-          )
-        }
-      </div>
+    </div>
   </div>
 </SectionShell>

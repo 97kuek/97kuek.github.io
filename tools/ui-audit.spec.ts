@@ -19,6 +19,10 @@ test.describe("portfolio UI audit", () => {
     await expect(projectsLink).toBeVisible();
 
     await expect(page.locator("#site-navbar").getByRole("link", { name: /検索|Search/ })).toBeVisible();
+    await expect(page.locator("#about .about-layout")).toBeVisible();
+    await expect(page.locator("#about .profile-panel--ink")).toHaveCount(0);
+    await expect(page.locator("#projects [data-project-marquee]")).toBeVisible();
+    await expect(page.locator("#projects .project-marquee__group")).toHaveCount(2);
     await expectNoHorizontalOverflow(page);
   });
 

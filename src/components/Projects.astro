@@ -5,6 +5,7 @@ import { ArrowRight } from "@lucide/astro";
 import { useTranslations, type Lang } from "../i18n/ui";
 import SectionHeader from "./SectionHeader.astro";
 import { getFeaturedProjects, getProjectsUrl } from "../utils/content";
+import { PROJECT_MARQUEE_SECONDS_PER_ITEM } from "../utils/constants";
 import SectionShell from "./layout/SectionShell.astro";
 
 const projectEntries = await getCollection("projects");
@@ -12,7 +13,8 @@ const projectEntries = await getCollection("projects");
 const locale = (Astro.currentLocale ?? "ja") as Lang;
 const t = useTranslations(locale);
 const projectsBase = getProjectsUrl(locale);
-const featuredProjects = getFeaturedProjects(projectEntries);
+const featuredProjects = getFeaturedProjects(projectEntries, projectEntries.length);
+const marqueeDuration = featuredProjects.length * PROJECT_MARQUEE_SECONDS_PER_ITEM;
 ---
 
 <SectionShell id="projects" width="wide" tone="wash">
@@ -26,10 +28,27 @@ const featuredProjects = getFeaturedProjects(projectEntries);
           </p>
         </div>
       ) : (
-        <div class="project-grid">
-          {featuredProjects.map((project) => (
-            <ProjectCard project={project} />
-          ))}
+        <div
+          class="project-marquee"
+          style={`--project-marquee-duration: ${marqueeDuration}s`}
+          data-project-marquee
+        >
+          <div class="project-marquee__track">
+            <div class="project-marquee__group">
+              {featuredProjects.map((project) => (
+                <div class="project-marquee__item">
+                  <ProjectCard project={project} />
+                </div>
+              ))}
+            </div>
+            <div class="project-marquee__group" aria-hidden="true" inert>
+              {featuredProjects.map((project) => (
+                <div class="project-marquee__item">
+                  <ProjectCard project={project} />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )
     }
