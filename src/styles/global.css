@@ -113,13 +113,14 @@ kbd {
   }
 }
 
-/* Ambient canvas: soft coral / teal / amber washes for the glass to sample.
-   Subtle enough to stay an undertone, strong enough that blur reads. */
+/* Ambient canvas: one warm coral family so every chapter reads as the same
+   cream page. Teal is reserved for interactive text — mixing it in here tinted
+   the mid-page sections green. */
 .ambient-bg {
   background-image:
-    radial-gradient(60rem 42rem at 12% 4%, color-mix(in oklch, var(--color-primary) 10%, transparent), transparent 65%),
-    radial-gradient(64rem 48rem at 90% 28%, color-mix(in oklch, var(--color-secondary) 9%, transparent), transparent 68%),
-    radial-gradient(56rem 44rem at 24% 82%, color-mix(in oklch, var(--color-accent) 8%, transparent), transparent 68%);
+    radial-gradient(60rem 42rem at 12% 4%, color-mix(in oklch, var(--color-primary) 9%, transparent), transparent 65%),
+    radial-gradient(64rem 48rem at 90% 30%, color-mix(in oklch, var(--color-primary) 6%, transparent), transparent 68%),
+    radial-gradient(56rem 44rem at 22% 80%, color-mix(in oklch, var(--color-primary) 5%, transparent), transparent 68%);
 }
 
 /* Optical typography: large text tightens, body stays neutral. */
@@ -644,17 +645,24 @@ p {
   gap: clamp(1rem, 2.4vw, 2rem);
 }
 
+/* Auto-scrolling project gallery. The track is a real scroll container so it
+   can be swiped by hand; `scripts/project-marquee` drives the drift and wraps
+   the offset so the loop never runs out. */
 .project-marquee {
   --project-marquee-gap: clamp(1rem, 2.4vw, 2rem);
-  --project-marquee-offset: 0px;
-  overflow: hidden;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.project-marquee::-webkit-scrollbar {
+  display: none;
 }
 
 .project-marquee__track {
   display: flex;
   width: max-content;
-  animation: project-marquee var(--project-marquee-duration, 36s) linear infinite;
-  will-change: transform;
 }
 
 .project-marquee__group {
@@ -688,34 +696,9 @@ p {
   margin-top: auto;
 }
 
-.project-marquee:hover .project-marquee__track,
-.project-marquee:focus-within .project-marquee__track {
-  animation-play-state: paused;
-}
-
-@keyframes project-marquee {
-  from {
-    transform: translateX(var(--project-marquee-offset));
-  }
-
-  to {
-    transform: translateX(calc(-50% + var(--project-marquee-offset)));
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .project-marquee {
-    overflow-x: auto;
     scroll-snap-type: x mandatory;
-  }
-
-  .project-marquee__track {
-    animation: none;
-    transform: none;
-  }
-
-  .project-marquee__group[aria-hidden="true"] {
-    display: none;
   }
 }
 
@@ -1217,27 +1200,93 @@ p {
     padding-inline: 0.55rem;
   }
 
+  /* Mobile hero is tuned to land the actions + social links inside the first
+     screenful: portrait centered and reduced, vertical rhythm compressed. */
   .hero-stage {
     min-height: auto;
-    padding-block: calc(var(--header-height) + 2.5rem) 5.5rem;
+    padding-block: calc(var(--header-height) + 1.25rem) 3rem;
+    text-align: center;
   }
 
   .hero-stage__grid {
     grid-template-columns: 1fr;
-    gap: 3.5rem;
+    gap: 1.5rem;
+    justify-items: center;
   }
 
   .hero-portrait {
-    width: min(88%, 23rem);
-    justify-self: start;
+    width: min(46%, 9rem);
+    justify-self: center;
+  }
+
+  .hero-copy {
+    width: 100%;
   }
 
   .hero-copy h1 {
-    font-size: clamp(2.6rem, 12vw, 3.8rem);
+    max-width: none;
+    font-size: clamp(1.85rem, 7.6vw, 2.4rem);
+  }
+
+  .hero-copy__alternate {
+    margin-top: 0.3rem;
+    font-size: 1.05rem;
   }
 
   .hero-copy__role {
-    margin-top: 1.5rem;
+    margin-top: 0.7rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .hero-copy__profession {
+    font-size: 1rem;
+  }
+
+  .hero-copy__location {
+    justify-content: center;
+    margin-top: 0.45rem;
+  }
+
+  .hero-copy__description {
+    margin-top: 0.8rem;
+    margin-inline: auto;
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    justify-content: center;
+    margin-top: 1.1rem;
+  }
+
+  .hero-actions .btn {
+    min-height: 2.75rem;
+    padding-inline: 0.9rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .hero-socials {
+    justify-content: center;
+    gap: 1.4rem;
+    margin-top: 1.1rem;
+    padding-top: 0.85rem;
+  }
+
+  /* Icon-only on mobile — the labels cost a row the first screenful needs. */
+  .hero-socials a span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .hero-socials svg {
+    width: 1.35rem;
+    height: 1.35rem;
   }
 
   .home-section {
@@ -1273,7 +1322,6 @@ p {
   }
 
   .project-marquee {
-    --project-marquee-offset: 14vw;
     position: relative;
     left: 50%;
     width: 100vw;

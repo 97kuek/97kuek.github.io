@@ -5,7 +5,7 @@ import { ArrowRight } from "@lucide/astro";
 import { useTranslations, type Lang } from "../i18n/ui";
 import SectionHeader from "./SectionHeader.astro";
 import { getFeaturedProjects, getProjectsUrl } from "../utils/content";
-import { PROJECT_MARQUEE_SECONDS_PER_ITEM } from "../utils/constants";
+import { PROJECT_MARQUEE_SPEED_PX_PER_SEC } from "../utils/constants";
 import SectionShell from "./layout/SectionShell.astro";
 
 const projectEntries = await getCollection("projects");
@@ -14,7 +14,6 @@ const locale = (Astro.currentLocale ?? "ja") as Lang;
 const t = useTranslations(locale);
 const projectsBase = getProjectsUrl(locale);
 const featuredProjects = getFeaturedProjects(projectEntries, projectEntries.length);
-const marqueeDuration = featuredProjects.length * PROJECT_MARQUEE_SECONDS_PER_ITEM;
 ---
 
 <SectionShell id="projects" width="wide" tone="wash">
@@ -30,8 +29,11 @@ const marqueeDuration = featuredProjects.length * PROJECT_MARQUEE_SECONDS_PER_IT
       ) : (
         <div
           class="project-marquee"
-          style={`--project-marquee-duration: ${marqueeDuration}s`}
           data-project-marquee
+          data-marquee-speed={PROJECT_MARQUEE_SPEED_PX_PER_SEC}
+          role="group"
+          aria-label={t("projects.subtitle")}
+          tabindex="0"
         >
           <div class="project-marquee__track">
             <div class="project-marquee__group">
@@ -41,7 +43,8 @@ const marqueeDuration = featuredProjects.length * PROJECT_MARQUEE_SECONDS_PER_IT
                 </div>
               ))}
             </div>
-            <div class="project-marquee__group" aria-hidden="true" inert>
+            {/* Duplicate pass so the scroll offset can wrap without a visible reset. */}
+            <div class="project-marquee__group" aria-hidden="true" data-marquee-clone>
               {featuredProjects.map((project) => (
                 <div class="project-marquee__item">
                   <ProjectCard project={project} variant="gallery" />
@@ -60,3 +63,7 @@ const marqueeDuration = featuredProjects.length * PROJECT_MARQUEE_SECONDS_PER_IT
       </a>
     </div>
 </SectionShell>
+
+<script>
+  import "../scripts/project-marquee";
+</script>
