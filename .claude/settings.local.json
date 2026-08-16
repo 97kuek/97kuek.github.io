@@ -97,7 +97,8 @@
       "Bash(npx playwright *)",
       "Bash(perl -0pi -e 's/^\\\\s*\"theme\\\\.toggle\": \"\\(テーマを切り替え|Toggle theme\\)\",\\\\n//mg' src/i18n/ui.ts)",
       "Bash(echo \"exit: $?\")",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(lsof -nP -iTCP -sTCP:LISTEN)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ямашita\\Documents\\my-portfolio\\src\\content\\projects",
