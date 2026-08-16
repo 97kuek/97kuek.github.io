@@ -29,10 +29,26 @@ function initializeMarquee(marquee: HTMLElement): () => void {
     .querySelectorAll<HTMLElement>("[data-marquee-clone] a, [data-marquee-clone] button")
     .forEach((element) => element.setAttribute("tabindex", "-1"));
 
-  // The track holds two identical groups, so any offset is interchangeable with
-  // offset ± one group width. Wrapping inside that range makes the loop endless
-  // without a visible reset.
-  const groupWidth = () => track.scrollWidth / 2;
+  // The cards are laid out twice, so scrolling by exactly one pass lands on an
+  // identical frame — that distance is where the offset wraps, which is what
+  // makes the loop endless with no visible reset.
+  //
+  // It is read off the first clone's own position rather than derived from
+  // scrollWidth or a wrapper's width: those depend on the engine's intrinsic
+  // sizing, and WebKit measures them larger than the cards actually occupy.
+  let cycle = 0;
+
+  const measure = () => {
+    const first = track.firstElementChild as HTMLElement | null;
+    const firstClone = track.querySelector<HTMLElement>("[data-marquee-clone]");
+    cycle = first && firstClone ? firstClone.offsetLeft - first.offsetLeft : 0;
+  };
+
+  measure();
+
+  const resizeObserver = new ResizeObserver(measure);
+  resizeObserver.observe(track);
+  disposers.push(() => resizeObserver.disconnect());
 
   const isPaused = () => pointerHeld || hovered || !visible || document.hidden;
 
@@ -42,8 +58,7 @@ function initializeMarquee(marquee: HTMLElement): () => void {
     const elapsed = lastFrame === 0 ? 0 : Math.min(now - lastFrame, MAX_FRAME_MS);
     lastFrame = now;
 
-    const width = groupWidth();
-    if (width <= 0) return;
+    if (cycle <= 0) return;
 
     // A hand swipe moves scrollLeft behind our back — adopt it as the new truth.
     if (Math.abs(marquee.scrollLeft - position) > 1) position = marquee.scrollLeft;
@@ -52,8 +67,8 @@ function initializeMarquee(marquee: HTMLElement): () => void {
     if (drifting) position += (speed * elapsed) / 1000;
 
     let wrapped = position;
-    while (wrapped >= width) wrapped -= width;
-    while (wrapped < 0) wrapped += width;
+    while (wrapped >= cycle) wrapped -= cycle;
+    while (wrapped < 0) wrapped += cycle;
 
     const jumped = wrapped !== position;
     position = wrapped;

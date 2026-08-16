@@ -35,22 +35,23 @@ const featuredProjects = getFeaturedProjects(projectEntries, projectEntries.leng
           aria-label={t("projects.subtitle")}
           tabindex="0"
         >
+          {/*
+            Cards sit directly in the track — one flat flex row, no per-pass
+            wrapper. A nested flex container gets an oversized intrinsic width
+            in WebKit, which showed up as dead space at the end of every pass.
+            The second pass is what the scroll offset wraps onto.
+          */}
           <div class="project-marquee__track">
-            <div class="project-marquee__group">
-              {featuredProjects.map((project) => (
-                <div class="project-marquee__item">
-                  <ProjectCard project={project} variant="gallery" />
-                </div>
-              ))}
-            </div>
-            {/* Duplicate pass so the scroll offset can wrap without a visible reset. */}
-            <div class="project-marquee__group" aria-hidden="true" data-marquee-clone>
-              {featuredProjects.map((project) => (
-                <div class="project-marquee__item">
-                  <ProjectCard project={project} variant="gallery" />
-                </div>
-              ))}
-            </div>
+            {featuredProjects.map((project) => (
+              <div class="project-marquee__item">
+                <ProjectCard project={project} variant="gallery" />
+              </div>
+            ))}
+            {featuredProjects.map((project) => (
+              <div class="project-marquee__item" aria-hidden="true" data-marquee-clone>
+                <ProjectCard project={project} variant="gallery" />
+              </div>
+            ))}
           </div>
         </div>
       )

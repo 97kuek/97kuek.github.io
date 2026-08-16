@@ -36,5 +36,11 @@ export default defineConfig({
         browserName: "chromium",
       },
     },
+    // Real iOS runs WebKit, and its intrinsic sizing differs enough from Blink
+    // to break layouts that pass everywhere else — the gallery loop did.
+    {
+      name: "mobile-safari",
+      use: devices["iPhone 13"],
+    },
   ],
 });

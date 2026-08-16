@@ -660,19 +660,24 @@ p {
   display: none;
 }
 
+/* One flat row of cards — the gap alone spaces them, including across the
+   seam between the two passes, so every interval is identical.
+
+   The track is deliberately *not* `width: max-content`: WebKit sizes a
+   max-content flex container from its items' unwrapped content instead of
+   their flex-basis, which left ~1100px of dead space at the end of the row.
+   Letting the fixed-basis cards simply overflow the scroll container gives the
+   same scrollable row with no engine-dependent measurement. */
 .project-marquee__track {
   display: flex;
-  width: max-content;
-}
-
-.project-marquee__group {
-  display: flex;
   gap: var(--project-marquee-gap);
-  padding-right: var(--project-marquee-gap);
 }
 
 .project-marquee__item {
   flex: 0 0 clamp(19rem, 32vw, 29rem);
+  /* Keep every card exactly the basis wide: without this, a long title's
+     min-content width stretches its card and the row loses its rhythm. */
+  min-width: 0;
   scroll-snap-align: start;
 }
 
@@ -688,6 +693,9 @@ p {
 .project-card--gallery .card-title {
   font-size: clamp(1rem, 1.7vw, 1.25rem);
   line-height: 1.45;
+  /* Gallery cards are a fixed width, so a title with no break opportunity has
+     to break anyway rather than spill past the card edge. */
+  overflow-wrap: anywhere;
 }
 
 .project-card__stack {
