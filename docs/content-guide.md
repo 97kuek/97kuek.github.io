@@ -57,17 +57,13 @@ endDate: "YYYY-MM-DD"       # 省略可（省略すると「進行中」）
 updatedDate: "YYYY-MM-DD"   # 省略可
 skills: ["TypeScript", "React"]
 featured: true              # トップページへの表示
-role: "担当領域"            # 省略可。カード/詳細の要約に表示
-impact: "成果・効果"        # 省略可。カード/詳細の要約に表示
-status: "公開中"            # 省略可。カード/詳細の要約に表示
-role_en: "Role"             # 省略可
-impact_en: "Outcome"        # 省略可
-status_en: "Live"           # 省略可
 image: "@assets/projects/プロジェクト名/thumbnail.png"  # 省略可
 demoLink: "https://..."     # 省略可
 sourceLink: "https://..."   # 省略可
 ---
 ```
+
+`role` / `impact` / `status`（および `_en`）もスキーマ上は使えるが、**現在のプロジェクトはどれも使っていない**。要約は `description` に集約する方針なので、一部のプロジェクトにだけ足さない。
 
 ---
 
